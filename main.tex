@@ -8,14 +8,24 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{float}
-\usepackage{cuted}     % entorno strip: bloque a doble columna que no flota
-\usepackage{capt-of}   % \captionof, para rotular dentro de un strip
 \usepackage{tcolorbox}
 \usepackage{eso-pic}
 \usepackage{transparent}
 \usepackage{hyperref}  % debe cargarse de último para no duplicar anclas de floats
 
 \pagestyle{plain}
+
+% Los flotantes a doble columna (figure* y table*) de este informe son grandes:
+% se amplía el espacio que pueden ocupar en la parte superior de la página para
+% que no se acumulen ni se desplacen lejos del texto que los cita.
+\renewcommand{\topfraction}{0.92}
+\renewcommand{\textfraction}{0.06}
+\renewcommand{\floatpagefraction}{0.72}
+\renewcommand{\dbltopfraction}{0.92}
+\renewcommand{\dblfloatpagefraction}{0.72}
+\setcounter{topnumber}{3}
+\setcounter{dbltopnumber}{3}
+\setcounter{totalnumber}{5}
 
 \newif\ifshowwatermark
 \showwatermarktrue
@@ -45,6 +55,11 @@
     showstringspaces=false,
     breaklines=true,
     breakatwhitespace=false,
+    % Sin esto, la continuación de una línea partida se alinea con la sangría
+    % original; en el código de Plotly, con sangrías de más de 50 columnas, eso
+    % desborda la caja. Se parte al margen izquierdo del bloque.
+    breakautoindent=false,
+    breakindent=0pt,
     tabsize=4,
     captionpos=b,
     xleftmargin=15pt,
@@ -60,7 +75,15 @@
         {≈}{{$\approx$}}1
         {¨}{}1
         {—}{{---}}1
+        {–}{{--}}1
         {·}{{\textperiodcentered}}1
+        {×}{{$\times$}}1
+        {−}{{$-$}}1
+        {²}{{$^{2}$}}1
+        {Δ}{{$\Delta$}}1
+        {√}{{$\surd$}}1
+        {ŷ}{{$\hat{y}$}}1
+        {¿}{{\textquestiondown}}1
 }
 
 % Estilos por lenguaje: Python para el cálculo principal y R para la
@@ -92,8 +115,8 @@
     \bstctlcite{IEEEtran:BSTcontrol}
 
     \title{
-        Análisis estadístico descriptivo del consumo energético
-        utilizando Python y R
+        Análisis de regresión y visualización avanzada del consumo energético:
+        del diagnóstico de supuestos a la validación predictiva
     }
 
     \author{\IEEEauthorblockN{
@@ -110,32 +133,37 @@
     \thispagestyle{plain}
 
     \begin{abstract}
-        Este informe analiza el consumo energético mensual de 120 clientes de los
-        sectores residencial, comercial e industrial mediante distribuciones de
-        frecuencia, medidas de tendencia central, dispersión y sus principales
-        gráficos. La comparación muestra que los sectores presentan escalas de
-        consumo diferentes, mientras que dentro de cada uno la media y la mediana
-        son cercanas. En el conjunto total la media (819,1 kWh) supera ampliamente 
-        a la mediana (378,6 kWh), además, el vacío observado entre clases revela 
-        subpoblaciones y explica la marcada asimetría positiva. Aunque la desviación 
-        estándar aumenta entre sectores, sus coeficientes de variación son
-        similares (23,6\%--25,9\%), por lo que la variabilidad global (106,7\%) se
-        debe principalmente a la distancia entre los grupos y no a su dispersión
-        interna. Los cálculos, realizados en Python y replicados en R, coinciden 
-        dígito a dígito, confirmando la consistencia del análisis independientemente  
-        de la herramienta utilizada.
+        Una recta que explica el 99,7\% de la variabilidad parece un resultado
+        difícil de mejorar, pero este informe muestra que ese número, por sí solo,
+        no dice si el modelo es correcto. Sobre el consumo energético mensual de 120
+        clientes de los sectores residencial, comercial e industrial se estima una
+        regresión simple que alcanza un coeficiente de determinación de 0,9969 y aun
+        así rechaza la homocedasticidad y la normalidad de sus residuos, que no son
+        ruido sino que se ordenan por sector, con medias de $-4{,}4$, $+15{,}5$ y
+        $-19{,}2$ miles de pesos. Que la prueba RESET no rechace señala que el
+        problema no es la forma funcional sino una variable omitida, por lo que se
+        incorpora el sector y su interacción con el consumo. Las pendientes del
+        modelo resultante tienen nombre propio, pues son las tarifas de cada sector
+        (791,6, 704,8 y 671,0 pesos por kilovatio hora) y reproducen con menos del
+        4\% de diferencia el cociente entre costo y consumo calculado sin
+        intervención del modelo. La mejora se sostiene fuera de la muestra, ya que la
+        validación cruzada de diez pliegues reduce el error un 16,7\% y sobre 36
+        clientes no vistos alcanza un coeficiente de determinación de 0,9944 con un
+        error porcentual absoluto medio del 3,68\%. La verificación cruzada en R
+        reproduce los seis coeficientes dígito a dígito, y el descuento por escala
+        queda cuantificado en 121 pesos por kilovatio hora entre el sector
+        industrial y el residencial.
     \end{abstract}
 
     \vspace{10pt}
 
     \begin{IEEEkeywords}
-        Distribución de frecuencias, estadística descriptiva, Matplotlib, medidas de
-        dispersión, medidas de tendencia central, principios de visualización, R,
-        regla de Sturges.
+        Criterios de información, diagnóstico de supuestos, ggplot2, Plotly,
+        regresión lineal múltiple, scikit-learn, seaborn, statsmodels, validación
+        cruzada, visualización avanzada.
     \end{IEEEkeywords}
 
     \input{src/sections/introduction/introduction.tex}
-    \input{src/sections/fundamentals/fundamentals.tex}
     \input{src/sections/methodology/methodology.tex}
     \input{src/sections/results/results.tex}
     \input{src/sections/conclusions/conclusions.tex}

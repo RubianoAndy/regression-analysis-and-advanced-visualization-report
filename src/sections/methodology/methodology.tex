@@ -1,130 +1,222 @@
 \section{Metodología}
-    El desarrollo se implementó en dos scripts independientes que se ejecutan con orden
-    incremental, puesto que cada paso depende del anterior, iniciando con la preparación
-    del entorno, siguiendo con la generación del conjunto de datos, la construcción de la
-    distribución de frecuencias por la regla de Sturges, el cálculo de las medidas de
-    tendencia central y de dispersión y, por último, la producción de los gráficos
-    básicos y su verificación cruzada en R. Ambos scripts se reproducen completos en los
-    Anexos \ref{anexo_python} y \ref{anexo_r}, de modo que esta sección describe las
-    decisiones de implementación y el lector puede contrastarlas allí línea por línea.
-
-    \subsection{Herramientas y entorno de trabajo}
-        Las alternativas disponibles para un laboratorio de estadística descriptiva 
-        se agrupan en tres familias, las hojas de cálculo, que ofrecen funciones y 
-        gráficos inmediatos pero mezclan datos, fórmulas y resultados en un mismo 
-        lienzo y dificultan auditar los cálculos y reproducirlos sobre datos nuevos
-        \cite{toro2022ciencia}, \cite{timbers2024datascience},
-        \cite{castro2026cienciadatos}, los entornos de programación científica, que
-        expresan cada cálculo como código versionable capaz de regenerar exactamente 
-        los mismos resultados y figuras \cite{castro2026visualizacion} y las librerías
-        declarativas junto con las plataformas de inteligencia de negocios, que 
-        producen gráficos con poco código a cambio de un menor control sobre los 
-        elementos que los principios de diseño exigen ajustar \cite{few2012show}.
-
-        \vspace{10pt}
-
-        Se elige la segunda familia con \textit{pandas} y \textit{Matplotlib} como
-        herramienta principal por dos razones, la primera es que el cálculo y su
-        representación conviven en el mismo script, pues la tabla de frecuencias 
-        se obtiene con \texttt{numpy.histogram} \cite{harris2020numpy} y las medidas 
-        por grupo con \textit{pandas} \cite{mckinney2010data} y esas mismas estructuras
-        alimentan directamente las figuras, eliminando transcripciones manuales que son
-        fuente de error, la segunda es que \textit{Matplotlib} otorga el control fino 
-        que exige la aplicación de los principios de diseño \cite{hunter2007matplotlib}, 
-        ya que permite fijar las clases de Sturges como bordes del histograma, superponer
-        las líneas de media, mediana y moda, forzar el eje de frecuencias desde cero o
-        situar la cuadrícula detrás de los datos \cite{few2012show}, 
-        \cite{castro2026visualizacion}. Como herramienta de contraste se emplea R base, 
-        que implementa los mismos cálculos con funciones nativas como \texttt{mean}, 
-        \texttt{median}, \texttt{var}, \texttt{sd} e \texttt{hist}, sin dependencias 
-        externas \cite{castro2026visualizacion}, \cite{rcore2024r}. La comparación es 
-        directa porque \texttt{var()} y \texttt{sd()} de R son muestrales, con divisor 
-        $n - 1$, exactamente como el parámetro \texttt{ddof=1} de \textit{pandas}, 
-        de modo que los resultados deben coincidir dígito a dígito.
-
     \subsection{Conjunto de datos}
-        Se emplea un conjunto de datos simulado que corresponde al consumo energético
-        mensual de 120 clientes de una empresa distribuidora, generado con semilla fija
-        (42) para garantizar que las observaciones sean reproducibles y puedan
-        regenerarse de manera idéntica en cada ejecución. Los sectores se asignan con
-        probabilidades de 0,50 para Residencial, 0,30 para Comercial y 0,20 para
-        Industrial, el consumo proviene de distribuciones normales con parámetros
-        propios de cada sector y el costo resulta de una tarifa diferenciada con un
-        ruido multiplicativo del 4\%. Las variables del dataset se muestran a 
-        continuación:
+        Se emplea el conjunto de datos simulado del consumo energético mensual de
+        120 clientes de una empresa distribuidora, generado con la semilla fija 42
+        para que cualquier ejecución reproduzca exactamente las mismas
+        observaciones. La Tabla \ref{dataset_variables} describe sus variables.
 
         \begin{table}[H]
             \centering
             \caption{Variables del conjunto de datos}
             \begin{center}
-                \begin{tabular}{|l|l|>{\raggedright\arraybackslash}p{3.1cm}|}
+                \begin{tabular}{|l|l|>{\raggedright\arraybackslash}p{3.0cm}|}
                     \hline
                     \textbf{Variable} & \textbf{Tipo} & \textbf{Descripción} \\
                     \hline
-                    cliente\_id & Nominal & Identificador único del cliente
-                    (CL-001 a CL-120) \\
+                    cliente\_id & Nominal & Identificador único del cliente \\
                     \hline
-                    sector & Nominal & Residencial, Comercial o Industrial \\
+                    sector & Nominal & Residencial (62), Comercial (40) o
+                    Industrial (18) \\
                     \hline
-                    consumo\_kwh & Cuantitativa continua & Consumo mensual en
-                    kilovatios-hora \\
+                    consumo\_kwh & Continua & Consumo mensual en kilovatios hora \\
                     \hline
-                    costo\_miles\_cop & Cuantitativa continua & Facturación mensual en
-                    miles de pesos colombianos \\
+                    costo\_miles\_cop & Continua & Costo facturado en miles de
+                    pesos \\
+                    \hline
+                    tarifa\_cop\_kwh & Derivada & Cociente costo $\times$ 1000 /
+                    consumo, en pesos por kilovatio hora \\
                     \hline
                 \end{tabular}
                 \label{dataset_variables}
             \end{center}
         \end{table}
 
-        El carácter simulado del dataset constituye una ventaja metodológica para este
-        laboratorio, puesto que al conocerse de antemano que existen tres poblaciones
-        con medias separadas, es posible evaluar si cada estadístico y cada gráfico
-        revela u oculta esa estructura, explicando con precisión por qué las medidas
-        globales difieren tanto de las sectoriales.
+        La variable derivada \texttt{tarifa\_cop\_kwh} cumple un papel especial en el
+        análisis, ya que se calcula directamente del cociente entre el costo y el
+        consumo, sin intervención de ningún modelo, y por eso sirve como patrón
+        externo contra el cual contrastar las pendientes estimadas por la regresión.
+
+        \vspace{10pt}
+
+        Que el conjunto sea simulado es una ventaja metodológica y no una
+        limitación, puesto que se sabe de antemano que existen tres poblaciones con
+        tarifas medias distintas, de modo que el modelo puede evaluarse por su
+        capacidad de recuperar una estructura conocida y no solo por su ajuste.
+
+    \subsection{Modelos y medidas empleadas}
+        El análisis se organiza como una secuencia de tres modelos de complejidad
+        creciente, en la que cada uno responde a una falla diagnosticada en el
+        anterior \cite{montgomery2021regression}, \cite{wooldridge2020econometrics}:
+
+        \vspace{10pt}
+
+        \begin{itemize}
+            \item \textbf{M1, regresión simple}. El costo se explica solo por el
+            consumo. Sirve de referencia y su diagnóstico es el que motiva todo lo
+            demás.
+
+            \item \textbf{M2, regresión múltiple aditiva}. Se añade el sector como
+            variable indicadora, lo que permite un intercepto distinto por grupo
+            pero conserva una única pendiente.
+
+            \item \textbf{M3, regresión múltiple con interacción}. Se añaden los
+            productos entre consumo y sector, de modo que cada grupo obtiene su
+            propia pendiente.
+        \end{itemize}
+
+        \vspace{10pt}
+
+        Los tres se comparan con criterios que no se dejan engañar por el
+        coeficiente de determinación, porque este crece siempre que se añaden
+        regresores, es decir, el coeficiente ajustado, los criterios de información
+        de Akaike \cite{akaike1974new} y de Schwarz \cite{schwarz1978estimating}, el
+        error cuadrático medio en las unidades originales y las pruebas de supuestos.
+        Después, las mismas especificaciones se someten a validación cruzada con
+        \textit{scikit-learn} para medir su capacidad predictiva sobre datos no
+        vistos \cite{hastie2009elements}, \cite{james2023islp}. La Tabla
+        \ref{measures} reúne las medidas empleadas junto con su expresión formal.
+
+        \begin{table*}[!t]
+            \centering
+            \caption{Medidas y fórmulas empleadas en el análisis}
+            \begin{center}
+                % La columna de fórmulas es la más ancha del informe: se estrecha
+                % la separación entre columnas y las dos columnas de texto para que
+                % la tabla quepa exacta en el ancho a doble columna.
+                \setlength{\tabcolsep}{4pt}
+                \begin{tabular}{|>{\raggedright\arraybackslash}p{3.3cm}|c|
+                                >{\raggedright\arraybackslash}p{5.2cm}|}
+                    \hline
+                    \textbf{Medida} & \textbf{Fórmula} & \textbf{Qué aporta} \\
+                    \hline
+                    Correlación de Pearson &
+                    $r = \dfrac{\sum_{i=1}^{n} (x_{i} - \bar{x})(y_{i} - \bar{y})}
+                    {\sqrt{\sum_{i=1}^{n} (x_{i} - \bar{x})^{2}
+                    \sum_{i=1}^{n} (y_{i} - \bar{y})^{2}}}$ &
+                    Intensidad y sentido de la asociación lineal entre dos
+                    variables \\
+                    \hline
+                    Regresión lineal simple &
+                    $y_{i} = \beta_{0} + \beta_{1} x_{i} + \varepsilon_{i}$ &
+                    Descompone el costo en una parte lineal en el consumo y un error
+                    aleatorio \\
+                    \hline
+                    Criterio de mínimos cuadrados &
+                    $\displaystyle\min \sum_{i=1}^{n}
+                    (y_{i} - \beta_{0} - \beta_{1} x_{i})^{2}$ &
+                    Elige la recta que minimiza la suma de los cuadrados de los
+                    residuos \\
+                    \hline
+                    Estimadores de la pendiente y el intercepto &
+                    $\hat{\beta}_{1} = \dfrac{\sum_{i=1}^{n}
+                    (x_{i} - \bar{x})(y_{i} - \bar{y})}
+                    {\sum_{i=1}^{n} (x_{i} - \bar{x})^{2}}$, \quad
+                    $\hat{\beta}_{0} = \bar{y} - \hat{\beta}_{1} \bar{x}$ &
+                    Solución cerrada del criterio anterior, sin búsqueda numérica \\
+                    \hline
+                    Coeficiente de determinación &
+                    $R^{2} = 1 - \dfrac{\sum_{i=1}^{n} (y_{i} - \hat{y}_{i})^{2}}
+                    {\sum_{i=1}^{n} (y_{i} - \bar{y})^{2}}$ &
+                    Proporción de la variabilidad del costo que el modelo explica \\
+                    \hline
+                    Regresión múltiple con interacción &
+                    $y_{i} = \beta_{0} + \beta_{1} x_{i} + \beta_{2} D_{C,i} +
+                    \beta_{3} D_{I,i} + \beta_{4} x_{i} D_{C,i} +
+                    \beta_{5} x_{i} D_{I,i} + \varepsilon_{i}$ &
+                    Da a cada sector su propio intercepto y su propia pendiente \\
+                    \hline
+                    Coeficiente de determinación ajustado &
+                    $R^{2}_{aj} = 1 - (1 - R^{2}) \dfrac{n - 1}{n - k - 1}$ &
+                    Penaliza el número de parámetros, que el coeficiente sin ajustar
+                    premia \\
+                    \hline
+                    Criterio de información de Akaike &
+                    $AIC = -2 \ln L + 2k$ &
+                    Compara modelos equilibrando ajuste y complejidad \\
+                    \hline
+                    Criterio de información de Schwarz &
+                    $BIC = -2 \ln L + k \ln n$ &
+                    Igual que el anterior, pero castiga más la complejidad \\
+                    \hline
+                    Raíz del error cuadrático medio &
+                    $RMSE = \sqrt{\dfrac{1}{n} \sum_{i=1}^{n}
+                    (y_{i} - \hat{y}_{i})^{2}}$ &
+                    Error medio en las unidades del costo, comunicable a un lector
+                    no técnico \\
+                    \hline
+                \end{tabular}
+                \label{measures}
+            \end{center}
+        \end{table*}
+
+        En la tabla, $n$ es el número de observaciones, $k$ el número de parámetros
+        del modelo, $\hat{y}$ el valor ajustado, $\bar{y}$ la media de la variable
+        dependiente y $L$ la log-verosimilitud. Los supuestos que sostienen la
+        inferencia se contrastan aparte, con la prueba RESET de Ramsey para la
+        linealidad, la de Breusch-Pagan para la homocedasticidad
+        \cite{breusch1979simple}, la de Jarque-Bera para la normalidad de los
+        residuos y el estadístico de Durbin-Watson para su independencia
+        \cite{triola2018estadistica}, \cite{wooldridge2020econometrics}.
 
     \subsection{Flujo de trabajo y reproducibilidad}
-        El flujo inicia en Python (Anexo \ref{anexo_python}), donde \textit{statistics.py} 
-        genera el dataset, calcula los estadísticos y exporta los resultados y las 
-        figuras en formatos CSV y PNG, posteriormente, R (Anexo \ref{anexo_r}) utiliza 
-        el mismo conjunto de datos para recalcular los estadísticos de forma independiente y
-        replicar las figuras mediante su graficación base, permitiendo contrastar ambos 
-        resultados.
+        El laboratorio se ejecuta en seis fases encadenadas, repartidas entre Python
+        y R, resumidas en la Tabla \ref{workflow}. La Fase 0 genera el conjunto de
+        datos; la Fase 4 lee las tablas que dejó la Fase 2 en lugar de recalcularlas,
+        de modo que las cifras de las figuras y las del texto no puedan divergir; y
+        la Fase 5 cierra el circuito comparando contra las estimaciones de Python.
 
-    \subsection{Construcción de la distribución de frecuencias}
-        La tabla de frecuencias se construye aplicando la regla de Sturges 
-        (ecuación \ref{sturges}) al consumo global para determinar el número de clases, 
-        los intervalos, de igual amplitud, se generan con \texttt{numpy.linspace}, 
-        mientras que \texttt{numpy.histogram} calcula las frecuencias absolutas para 
-        luego obtener las frecuencias acumuladas y relativas y la marca de clase de 
-        cada intervalo.
+        \begin{table}[H]
+            \centering
+            \caption{Fases del flujo de trabajo}
+            \begin{center}
+                \begin{tabular}{|c|l|>{\raggedright\arraybackslash}p{3.1cm}|}
+                    \hline
+                    \textbf{Fase} & \textbf{Script} & \textbf{Qué produce} \\
+                    \hline
+                    0 & \textit{dataset.py} & Conjunto de datos reproducible de 120
+                    clientes \\
+                    \hline
+                    1 & \textit{simple\_regression.py} & Correlaciones, modelo M1,
+                    pruebas de supuestos y 3 figuras \\
+                    \hline
+                    2 & \textit{multiple\_regression.py} & Modelos M2 y M3, contraste
+                    F, tarifas por sector y 3 figuras \\
+                    \hline
+                    3 & \textit{ml\_regression.py} & Partición estratificada,
+                    validación cruzada y 1 figura \\
+                    \hline
+                    4 & \textit{advanced\_viz.py} & 4 figuras de \textit{seaborn} y 2
+                    piezas interactivas de \textit{Plotly} \\
+                    \hline
+                    5 & \textit{regression.R} & Reestimación con \texttt{lm()},
+                    verificación cruzada y 4 figuras \\
+                    \hline
+                \end{tabular}
+                \label{workflow}
+            \end{center}
+        \end{table}
 
-    \subsection{Cálculo de las medidas de tendencia central}
-        La media y la mediana se calculan directamente con \textit{pandas}, mientras 
-        que la moda, al tratarse de una variable continua, se estima mediante la 
-        función \texttt{interpolated\_mode}, adicionalmente, se identifica la clase 
-        modal con \texttt{argmax} y aplica la ecuación (\ref{moda_interpolada}), 
-        considerando el caso $d_{1}+d_{2}=0$, en el que se utiliza el punto medio 
-        de la clase. El procedimiento se repite para cada sector recalculando sus 
-        intervalos según la regla de Sturges para adaptarlos al tamaño de cada 
-        muestra.
+        El entorno es Python 3.14 con \textit{statsmodels} 0.14.6
+        \cite{seabold2010statsmodels}, \textit{scikit-learn} 1.9.0
+        \cite{pedregosa2011scikit}, \textit{Matplotlib} 3.11.1
+        \cite{hunter2007matplotlib}, \textit{seaborn} 0.13.2 \cite{waskom2021seaborn}
+        y \textit{Plotly} 6.9.0 \cite{plotly2015collaborative}, sobre NumPy
+        \cite{harris2020numpy} y \textit{pandas} \cite{mckinney2010data}, y R 4.6.1
+        \cite{rcore2026r}, \cite{fox2019companion} con \textit{ggplot2} 4.0.3
+        \cite{wickham2016ggplot2}, editado desde RStudio Desktop
+        \cite{posit2026rstudio}.
 
-    \subsection{Cálculo de las medidas de dispersión}
-        Las medidas de dispersión se calculan con las ecuaciones (\ref{rango}) a
-        (\ref{iqr}), fijando de manera explícita \texttt{ddof=1} en la varianza y en la
-        desviación estándar para obtener los estimadores muestrales, que son justamente
-        los que R implementa por defecto en \texttt{var()} y \texttt{sd()}, condición que
-        hace posible la verificación cruzada dígito a dígito.
+        \vspace{10pt}
 
-    \subsection{Verificación cruzada en R}
-        El script de R no reutiliza ningún resultado de Python, únicamente lee el 
-        archivo CSV con las 120 observaciones y vuelve a calcular desde cero la tabla 
-        de frecuencias y todos los estadísticos, de manera que cualquier discrepancia
-        revelaría un error de implementación en alguno de los dos entornos; la 
-        distribución de frecuencias en R reproduce el mismo procedimiento, generando 
-        los bordes con \texttt{seq} y contando con \texttt{hist} en modo silencioso, 
-        con el argumento \texttt{include.lowest} activo para que la observación mínima 
-        quede dentro de la primera clase, tal como lo hace \texttt{numpy.histogram}, 
-        por último, la función \texttt{summary\_stats} condensa en un solo vector las
-        ocho medidas de las Tablas \ref{central_tendency} y \ref{dispersion} y se 
-        aplica a cada sector y al conjunto global.
+        El reparto entre ambas librerías de Python no es arbitrario, dado que
+        \textit{statsmodels} entrega los errores estándar, los intervalos y las
+        pruebas de supuestos que sostienen la interpretación de los coeficientes,
+        mientras que \textit{scikit-learn} aporta la partición estratificada y la
+        validación cruzada que aquella no tiene; R cumple el papel de control,
+        reestimando los mismos modelos de forma independiente. La reproducibilidad
+        descansa en cuatro decisiones, la semilla fija en la generación de datos y en
+        todas las particiones (\texttt{random\_state = 42}), las versiones ancladas
+        en \textit{requirements.txt}, las rutas resueltas desde la ubicación del
+        script en ambos lenguajes y el encapsulamiento del preprocesamiento en un
+        \texttt{Pipeline}, que garantiza que el escalado se ajuste únicamente con los
+        datos de entrenamiento.

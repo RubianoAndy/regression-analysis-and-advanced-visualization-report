@@ -1,41 +1,45 @@
 \section{Introducción}
-    La estadística descriptiva constituye la primera etapa de todo análisis de datos,
-    ya que su propósito es organizar, resumir y caracterizar un conjunto de
-    observaciones a través de tres familias de instrumentos complementarios que son:
-    las distribuciones de frecuencia, que muestran cómo se reparten los datos a lo
-    largo de su recorrido; las medidas de tendencia central (media, mediana y moda)
-    que localizan el valor alrededor del cual se agrupan; y las métricas de dispersión
-    (rango, varianza y desviación estándar) que cuantifican qué tanto se alejan de ese
-    centro \cite{triola2018estadistica}, \cite{walpole2012probabilidad}.
+    Una recta que explica el 99,7\% de la variabilidad de los datos parece un
+    resultado difícil de mejorar. Este informe muestra que ese número, por sí solo,
+    no dice si el modelo es correcto, dado que la misma regresión que alcanza un
+    coeficiente de determinación de 0,9969 deja residuos que no son ruido, sino que
+    se ordenan según una variable que quedó fuera del modelo. Detectar esa
+    estructura, incorporarla y verificar que el modelo corregido cumple los
+    supuestos que sostienen su inferencia es el recorrido completo de un análisis de
+    regresión \cite{montgomery2021regression}, \cite{wooldridge2020econometrics}, y
+    es también el recorrido de este trabajo.
 
     \vspace{10pt}
 
-    Este informe de laboratorio aplica esos tres instrumentos al conjunto de datos de
-    consumo energético mensual medido en kWh de 120 clientes pertenecientes a tres
-    sectores con escalas muy distintas, calculando la distribución de frecuencias, las
-    medidas de tendencia central y las medidas de dispersión del consumo, tanto a nivel
-    global como por sector, y construyendo los gráficos básicos que las representan
-    (histograma, polígono de frecuencias, ojiva, diagrama de barras y diagrama de caja)
-    tanto en Python como en R \cite{sturges1926choice}, \cite{few2012show},
-    \cite{castro2026visualizacion}, para ello, se realiza un análisis estadístico
-    riguroso, dado que permite transformar un conjunto de observaciones dispersas en
-    información comprensible sobre el comportamiento de una o múltiples variables, de
-    igual manera, se implementan gráficos que hacen visibles patrones, concentraciones
-    y valores atípicos que difícilmente se perciben en una tabla de números
-    \cite{castro2026visualizacion}, reduciendo la inferencia de conclusiones erróneas.
+    El análisis se apoya en un conjunto de datos simulado del consumo energético
+    mensual de 120 clientes de una empresa distribuidora, repartidos en los sectores
+    Residencial, Comercial e Industrial. Que el conjunto sea simulado es una ventaja
+    metodológica y no una limitación, puesto que se sabe de antemano que existen
+    tres poblaciones con tarifas medias distintas, de modo que el modelo puede
+    evaluarse por su capacidad de recuperar una estructura conocida y no solo por su
+    ajuste.
 
     \vspace{10pt}
 
-    Como anticipo de los resultados, la media global del consumo (819,1 kWh) duplica
-    con creces a la mediana (378,6 kWh), una discrepancia que no obedece a errores sino
-    a la coexistencia de tres poblaciones de escalas diferentes y que solo se hace
-    evidente cuando se leen de manera conjunta la tabla de frecuencias, la relación
-    entre las medidas de tendencia central y el histograma. Este hallazgo confirma la
-    importancia de acompañar cada cálculo con su representación gráfica, razón por la
-    cual todas las figuras del informe conservan los principios de diseño que garantizan
-    una visualización efectiva, como la integridad gráfica, el etiquetado completo, la
-    escala honesta, el color funcional y la cuadrícula ubicada por detrás de los datos
-    \cite{few2012show}, \cite{castro2026visualizacion}. Con estos elementos, las
-    secciones siguientes presentan los conceptos fundamentales, las herramientas
-    seleccionadas, la metodología, los cálculos, las gráficas y su interpretación,
-    desarrollados en paralelo en Python y en R.
+    El informe se organiza en dos capítulos. El primero describe la metodología,
+    con el conjunto de datos, la secuencia de modelos estimados, las medidas que los
+    comparan y el flujo de trabajo reproducible que los produce; el segundo presenta
+    los resultados, desde el análisis de correlación hasta la verificación cruzada
+    entre Python y R, pasando por el diagnóstico del modelo simple, la especificación
+    múltiple, la validación predictiva y la visualización avanzada
+    \cite{castro2026avanzada}. Los seis scripts que sostienen el análisis se
+    reproducen completos en los Apéndices \ref{anexo_python} y \ref{anexo_r}, de modo
+    que cada cifra del informe puede rastrearse hasta la línea que la produce.
+
+    \vspace{10pt}
+
+    Tres hallazgos anticipan el contenido. El primero es que las pendientes del
+    modelo múltiple tienen nombre propio, pues son las tarifas de cada sector,
+    791,6, 704,8 y 671,0 pesos por kilovatio hora, y reproducen con menos del 4\% de
+    diferencia el cociente entre costo y consumo calculado sin pasar por la
+    regresión. El segundo es que ese modelo no solo ajusta mejor dentro de la
+    muestra, sino que también predice mejor fuera de ella, ya que la validación
+    cruzada de diez pliegues reduce el error un 16,7\% frente al modelo simple. El
+    tercero es que el sector Industrial paga 121 pesos por kilovatio hora menos que
+    el Residencial, un descuento por escala que el análisis cuantifica y que la
+    empresa puede contrastar con su política tarifaria.

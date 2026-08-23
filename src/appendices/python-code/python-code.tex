@@ -1,11 +1,54 @@
 \section{Código en Python}
     \label{anexo_python}
-    El script \textit{statistics.py} regenera el dataset con semilla fija, construye la
-    tabla de frecuencias por la regla de Sturges, calcula las medidas de tendencia
-    central y de dispersión por sector y a nivel global, y produce las tablas en CSV y
-    las cinco figuras del informe. Se reproduce completo y en su orden de ejecución, con
-    sus bloques correspondiéndose uno a uno con las subsecciones de la metodología.
+    Las fases 0 a 4 de la Tabla \ref{workflow} se implementan en Python y se
+    reproducen completas a continuación, en su orden de ejecución.
 
-    \vspace{10pt}
+    \subsection{\textit{dataset.py}}
+        Regenera el conjunto de datos con la semilla fija 42 y añade la variable
+        derivada \texttt{tarifa\_cop\_kwh} de la Tabla \ref{dataset_variables}, que
+        después sirve como patrón externo contra el cual contrastar las pendientes
+        estimadas.
 
-    \lstinputlisting[style=python]{utils/codes/full/statistics.py}
+        \vspace{10pt}
+
+        \lstinputlisting[style=python]{utils/codes/python/dataset.py}
+
+    \subsection{\textit{simple\_regression.py}}
+        Calcula las correlaciones de la Tabla \ref{correlations}, estima el modelo M1
+        de la Tabla \ref{coef_m1}, aplica las cuatro pruebas de supuestos de la Tabla
+        \ref{diagnostics_m1}, cuantifica el sesgo por sector de la Tabla
+        \ref{sector_bias} y produce las Figuras \ref{fit_m1}, \ref{diag_panel} y
+        \ref{bias_boxplot}.
+
+        \vspace{10pt}
+
+        \lstinputlisting[style=python]{utils/codes/python/simple_regression.py}
+
+    \subsection{\textit{multiple\_regression.py}}
+        Estima los modelos M2 y M3, ejecuta el contraste F de la Tabla \ref{anova},
+        traduce las pendientes a las tarifas de la Tabla \ref{tariffs}, compara los
+        tres modelos en la Tabla \ref{model_comparison} y genera las Figuras
+        \ref{fit_m3}, \ref{coef_plot} y \ref{criteria}.
+
+        \vspace{10pt}
+
+        \lstinputlisting[style=python]{utils/codes/python/multiple_regression.py}
+
+    \subsection{\textit{ml\_regression.py}}
+        Construye la partición estratificada y la validación cruzada de diez pliegues
+        dentro de un \texttt{Pipeline}, produciendo la Tabla \ref{ml_validation} y la
+        Figura \ref{holdout}.
+
+        \vspace{10pt}
+
+        \lstinputlisting[style=python]{utils/codes/python/ml_regression.py}
+
+    \subsection{\textit{advanced\_viz.py}}
+        Lee las tablas que dejó la fase 2 en lugar de recalcularlas y construye las
+        cuatro figuras de \textit{seaborn} (\ref{heatmap}, \ref{scatter_matrix},
+        \ref{lmplot} y \ref{lowess}) y las dos piezas interactivas de \textit{Plotly}
+        (\ref{dashboard} y \ref{scatter_plotly}).
+
+        \vspace{10pt}
+
+        \lstinputlisting[style=python]{utils/codes/python/advanced_viz.py}

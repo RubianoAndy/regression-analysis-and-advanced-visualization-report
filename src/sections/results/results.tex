@@ -1,297 +1,584 @@
 \section{Resultados}
-    \subsection{Distribución de frecuencias del consumo}
-        Con $n = 120$, la regla de Sturges arroja $k = 8$ clases de amplitud 457,0 kWh
-        sobre el recorrido comprendido entre 121,2 y 3.777,1 kWh. Antes de leer las
-        frecuencias conviene saber quién ocupa cada clase, pues los tres sectores cubren
-        franjas de consumo que apenas se solapan y, en consecuencia, cada clase resulta
-        casi de un solo sector, tal como lo detalla la Tabla \ref{class_sector}.
+    \subsection{Análisis de correlación}
+        La asociación entre el consumo y el costo facturado es prácticamente
+        perfecta, y lo decisivo es que se mantiene dentro de cada sector, es decir,
+        no se trata de una correlación inducida por mezclar tres poblaciones de
+        escalas distintas. La cercanía entre los coeficientes de Pearson y de
+        Spearman confirma además que la relación no solo es monótona sino
+        aproximadamente lineal.
 
         \begin{table}[H]
             \centering
-            \caption{Composición por sector de cada clase de consumo}
-            \begin{center}
-                \begin{tabular}{|l|c|c|c|c|}
-                    \hline
-                    \textbf{Clase (kWh)} & \textbf{Resid.} & \textbf{Comer.} &
-                    \textbf{Indus.} & \textbf{Clientes} \\
-                    \hline
-                    [121,2 -- 578,2)     & 62 & 3  & --  & 65 \\
-                    \hline
-                    [578,2 -- 1.035,2)   & -- & 27 & --  & 27 \\
-                    \hline
-                    [1.035,2 -- 1.492,2) & -- & 10 & --  & 10 \\
-                    \hline
-                    [1.492,2 -- 1.949,2) & -- & -- & 5   & 5  \\
-                    \hline
-                    [1.949,2 -- 2.406,1) & -- & -- & 1   & 1  \\
-                    \hline
-                    [2.406,1 -- 2.863,1) & -- & -- & 6   & 6  \\
-                    \hline
-                    [2.863,1 -- 3.320,1) & -- & -- & 3   & 3  \\
-                    \hline
-                    [3.320,1 -- 3.777,1] & -- & -- & 3   & 3  \\
-                    \hline
-                    \textbf{Total}       & \textbf{62} & \textbf{40} & \textbf{18} &
-                    \textbf{120} \\
-                    \hline
-                \end{tabular}
-                \label{class_sector}
-            \end{center}
-        \end{table}
-
-        Sobre esas mismas clases se construye la distribución de frecuencias completa que
-        se observa en la Tabla \ref{freq_table}.
-
-        \begin{table}[H]
-            \centering
-            \caption{Distribución de frecuencias del consumo mensual (kWh)}
+            \caption{Correlación entre consumo y costo, global y por sector}
             \begin{center}
                 \begin{tabular}{|l|c|c|c|c|c|}
                     \hline
-                    \textbf{Clase (kWh)} & \textbf{Marca} & $\mathbf{f_{i}}$ &
-                    $\mathbf{F_{i}}$ & $\mathbf{h_{i}}$ \textbf{(\%)} &
-                    $\mathbf{H_{i}}$ \textbf{(\%)} \\
+                    \textbf{Grupo} & $\mathbf{n}$ & \textbf{Pearson} $\mathbf{r}$ &
+                    $\mathbf{R^{2}}$ & \textbf{Spearman} $\boldsymbol{\rho}$ &
+                    \textbf{Tarifa} \\
                     \hline
-                    [121,2 -- 578,2)     & 349,7   & 65 & 65  & 54,2 & 54,2  \\
+                    Global      & 120 & 0,9984 & 0,9969 & 0,9947 & 758,1 \\
                     \hline
-                    [578,2 -- 1.035,2)   & 806,7   & 27 & 92  & 22,5 & 76,7  \\
+                    Residencial & 62  & 0,9820 & 0,9643 & 0,9671 & 821,8 \\
                     \hline
-                    [1.035,2 -- 1.492,2) & 1.263,7 & 10 & 102 & 8,3  & 85,0  \\
+                    Comercial   & 40  & 0,9866 & 0,9733 & 0,9799 & 710,4 \\
                     \hline
-                    [1.492,2 -- 1.949,2) & 1.720,7 & 5  & 107 & 4,2  & 89,2  \\
-                    \hline
-                    [1.949,2 -- 2.406,1) & 2.177,6 & 1  & 108 & 0,8  & 90,0  \\
-                    \hline
-                    [2.406,1 -- 2.863,1) & 2.634,6 & 6  & 114 & 5,0  & 95,0  \\
-                    \hline
-                    [2.863,1 -- 3.320,1) & 3.091,6 & 3  & 117 & 2,5  & 97,5  \\
-                    \hline
-                    [3.320,1 -- 3.777,1] & 3.548,6 & 3  & 120 & 2,5  & 100,0 \\
+                    Industrial  & 18  & 0,9937 & 0,9875 & 0,9856 & 645,0 \\
                     \hline
                 \end{tabular}
-                \label{freq_table}
+                \label{correlations}
             \end{center}
         \end{table}
 
-        La concentración en los niveles bajos de consumo es clara, la primera clase reúne
-        el 54,2\% de las observaciones y las dos primeras acumulan el 76,7\%, mientras que
-        el 10\% de los clientes con consumos superiores a 1.949,2 kWh se reparte en cuatro
-        clases. El hueco de la quinta clase, con una sola observación, es la franja vacía
-        que separa el techo del sector Comercial del grueso del Industrial. La
-        distribución no corresponde entonces a una población única con cola larga, sino a
-        tres subpoblaciones de escalas distintas resumidas en una sola tabla, hecho que
-        anticipa la brecha entre la media y la mediana globales.
-
-        \vspace{10pt}
-
-        La Figura \ref{hist_sturges} representa la distribución mediante un histograma y 
-        superpone las tres medidas de tendencia central, junto con su réplica independiente 
-        en R. La posición de estas medidas permite identificar claramente la forma de la 
-        distribución, dado que la mediana (378,6 kWh) y la moda interpolada (409,6 kWh) se 
-        encuentran próximas entre sí y dentro de la zona de mayor concentración de 
-        observaciones, mientras que la media (819,1 kWh) se desplaza considerablemente 
-        hacia la derecha debido a los elevados consumos del sector Industrial. Este
-        comportamiento evidencia una marcada asimetría positiva, en la que la media, 
-        aunque incorpora todas las observaciones, se ve influenciada por los valores 
-        extremos y deja de representar adecuadamente el consumo del cliente típico.
-
-        \begin{strip}
-            \centering
-            \begin{minipage}{0.49\textwidth}
-                \centering
-                \includegraphics[width=\linewidth]{assets/images/figures/python/hist_sturges_central_tendency.png}
-            \end{minipage}
-            \hfill
-            \begin{minipage}{0.49\textwidth}
-                \centering
-                \includegraphics[width=\linewidth]{assets/images/figures/r/hist_sturges_central_tendency.png}
-            \end{minipage}
-
-            \vspace{4pt}
-
-            \captionof{figure}{Distribución de frecuencias del consumo mensual con media,
-            mediana y moda, en Matplotlib (izquierda) y su réplica en R (derecha)}
-            \label{hist_sturges}
-        \end{strip}
-
-        La Figura \ref{polygon_ogive} presenta las otras dos representaciones de la
-        misma tabla, el polígono de frecuencias y la ojiva, sobre la cual la horizontal
-        del 50\% corta la curva en la mediana de aproximadamente 379 kWh. El polígono 
-        comunica la misma información del histograma pero enfatiza la tendencia antes 
-        que la magnitud de cada clase, mientras que la ojiva convierte la pregunta 
-        ``cuántos clientes hay en esta clase'` en ``qué fracción del total queda por 
-        debajo de este consumo'', permitiendo leer directamente sobre el eje cualquier 
-        percentil, empezando por la mediana.
-
-        \clearpage
-
-        \begin{strip}
-            \centering
-            \includegraphics[width=0.86\linewidth]{assets/images/figures/python/freq_polygon_ogive.png}
-
-            \vspace{6pt}
-
-            \includegraphics[width=0.86\linewidth]{assets/images/figures/r/freq_polygon_ogive.png}
-
-            \vspace{4pt}
-
-            \captionof{figure}{Polígono de frecuencias y ojiva del consumo mensual, en
-            Matplotlib (arriba) y su réplica en R (abajo)}
-            \label{polygon_ogive}
-        \end{strip}
-
-        La réplica en R exige un detalle de implementación que ilustra los principios de
-        visualización, dado que la graficación base dibuja la cuadrícula encima de lo ya
-        trazado, por lo que cada figura se construye en dos pasadas, la primera sin
-        relleno para fijar los ejes y la escala, luego se inserta la cuadrícula y la
-        segunda pasada dibuja los datos por encima, garantizando que la retícula quede
-        siempre por detrás.
-
-    \subsection{Medidas de tendencia central}
-        La Tabla \ref{central_tendency} presenta la media, la mediana y la moda
-        interpolada del consumo por sector y a nivel global. La moda de la variable
-        nominal sector es Residencial, con 62 de los 120 clientes, equivalentes al
-        52\%.
-
-        \begin{table}[H]
-            \centering
-            \caption{Medidas de tendencia central del consumo mensual (kWh)}
-            \begin{center}
-                \begin{tabular}{|l|c|c|c|c|}
-                    \hline
-                    \textbf{Grupo} & $\mathbf{n}$ & \textbf{Media} & \textbf{Mediana} &
-                    \textbf{Moda interp.} \\
-                    \hline
-                    Residencial & 62  & 248,3   & 240,6   & 232,7   \\
-                    \hline
-                    Comercial   & 40  & 878,1   & 866,6   & 787,8   \\
-                    \hline
-                    Industrial  & 18  & 2.654,0 & 2.666,8 & 1.849,3 \\
-                    \hline
-                    Global      & 120 & 819,1   & 378,6   & 409,6   \\
-                    \hline
-                \end{tabular}
-                \label{central_tendency}
-            \end{center}
-        \end{table}
-
-        El contraste entre los niveles de la tabla es el hallazgo central del análisis,
-        puesto que dentro de cada sector la media y la mediana son casi iguales, con
-        248,3 frente a 240,6 en Residencial, 878,1 frente a 866,6 en Comercial y
-        2.654,0 frente a 2.666,8 en Industrial, lo que es una señal de distribuciones
-        simétricas, y la moda interpolada industrial se aleja algo más por el tamaño
-        reducido del grupo ($n = 18$), que hace inestable la clase modal.
-
-        \vspace{10pt}
-
-        A nivel global, en cambio, la media duplica con creces a la mediana, no porque
-        existan datos atípicos sino porque el promedio mezcla tres poblaciones de
-        escalas distintas. La Figura \ref{bar_sector} muestra la distribución de la
-        variable nominal y compara la media con la mediana de cada sector, donde la casi
-        igualdad de las parejas de barras hace visible la simetría interna de cada grupo.
-
-        \vspace{10pt}
-
-        El diagrama de barras es la representación propia de una variable nominal y por
-        esa razón sus barras aparecen separadas, a diferencia del histograma que
-        son contiguas porque el consumo es continuo, adicionalmente, las etiquetas de
-        datos evitan que el lector deba estimar la altura contra el eje, aplicando el 
-        principio de etiquetado completo \cite{few2012show}.
-
-        \clearpage
-
-        \begin{strip}
-            \centering
-            \includegraphics[width=0.45\linewidth]{assets/images/figures/python/bar_freq_by_sector.png}
-            \hfill
-            \includegraphics[width=0.45\linewidth]{assets/images/figures/python/bar_mean_median_by_sector.png}
-
-            \vspace{6pt}
-
-            \includegraphics[width=0.45\linewidth]{assets/images/figures/r/bar_freq_by_sector.png}
-            \hfill
-            \includegraphics[width=0.45\linewidth]{assets/images/figures/r/bar_mean_median_by_sector.png}
-
-            \vspace{4pt}
-
-            \captionof{figure}{Frecuencia de clientes por sector con la moda nominal
-            Residencial (izquierda) y comparación entre media y mediana por sector
-            (derecha), en Matplotlib (arriba) y su réplica en R (abajo)}
-            \label{bar_sector}
-        \end{strip}
-
-    \subsection{Medidas de dispersión}
-        La Tabla \ref{dispersion} presenta las medidas de dispersión del consumo por
-        sector y a nivel global, y la Figura \ref{boxplot_dispersion} las representa
-        mediante el diagrama de caja con la media y la desviación estándar superpuestas.
-
-        \begin{table}[H]
-            \centering
-            \caption{Medidas de dispersión del consumo mensual (kWh)}
-            \begin{center}
-                \begin{tabular}{|l|c|c|c|c|c|}
-                    \hline
-                    \textbf{Grupo} & \textbf{Rango} & \textbf{Varianza} &
-                    $\mathbf{s}$ & \textbf{CV (\%)} & \textbf{IQR} \\
-                    \hline
-                    Residencial & 303,6   & 3.736,3   & 61,1  & 24,6  & 69,5    \\
-                    \hline
-                    Comercial   & 908,4   & 42.989,5  & 207,3 & 23,6  & 255,3   \\
-                    \hline
-                    Industrial  & 2.103,1 & 471.785,8 & 686,9 & 25,9  & 1.322,8 \\
-                    \hline
-                    Global      & 3.655,9 & 763.564,7 & 873,8 & 106,7 & 742,0   \\
-                    \hline
-                \end{tabular}
-                \label{dispersion}
-            \end{center}
-        \end{table}
-
-        Con el fin de representar las cifras obtenidas en su forma gráfica, la Figura
-        \ref{boxplot_dispersion} traduce los valores de la Tabla \ref{dispersion} en el
-        diagrama de caja, que resume en una sola imagen la posición de la mediana, la
-        amplitud del rango intercuartílico y el alcance de los bigotes, con la media y la
-        desviación estándar superpuestas en cada grupo, junto con su réplica en R, de
-        esta manera, la brecha de escala entre sectores y la homogeneidad de su
-        dispersión relativa, que en la tabla se leen número a número, se aprecian de un
-        solo vistazo.
+        La columna de la derecha, que recoge la tarifa media en pesos por kilovatio
+        hora, adelanta el hallazgo que estructura todo el informe, ya que la tarifa
+        media no es la misma en los tres sectores, sino que desciende de 821,8 a
+        645,0 a medida que crece la escala del cliente. Esa diferencia es la variable
+        que el modelo simple ignora.
 
         \begin{figure}[H]
             \centering
-            \includegraphics[width=1\linewidth]{assets/images/figures/python/boxplot_dispersion_by_sector.png}
-
-            \vspace{4pt}
-
-            \includegraphics[width=1\linewidth]{assets/images/figures/r/boxplot_dispersion_by_sector.png}
-            \caption{Dispersión del consumo por sector con mediana, IQR, media y
-            $\sigma$, en Matplotlib (arriba) y su réplica en R (abajo)}
-            \label{boxplot_dispersion}
+            \includegraphics[width=\linewidth]{assets/images/figures/python/advanced/sns_heatmap_correlacion.png}
+            \caption{Matriz de correlaciones entre las variables del modelo,
+            construida con \textit{seaborn}}
+            \label{heatmap}
         \end{figure}
 
-        La lectura conjunta de la tabla y la figura arroja tres deducciones, la primera,
-        que la dispersión absoluta crece con la escala del sector, pues la desviación
-        estándar pasa de 61,1 kWh en Residencial a 686,9 kWh en Industrial y la varianza
-        amplifica esa brecha en dos órdenes de magnitud, lo que en el diagrama de caja se
-        aprecia como cajas y bigotes progresivamente más amplios, la segunda radica en
-        que la dispersión relativa resulta homogénea, ya que el coeficiente de variación
-        se mantiene entre 23,6\% y 25,9\% en los tres sectores, es decir, cada grupo
-        es igualmente variable en proporción a su media y la tercera, que el CV global
-        (106,7\%) cuadruplica al de cualquier sector, una explosión de variabilidad
-        relativa que no proviene de la dispersión interna de los grupos sino de la
-        distancia entre sus centros, lo que constituye la evidencia numérica de que el
-        conjunto global es una mezcla de poblaciones, en plena coherencia con el vacío de
-        la Tabla \ref{freq_table} y la separación sin traslape de las cajas en la Figura
-        \ref{boxplot_dispersion}.
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\linewidth]{assets/images/figures/python/advanced/sns_matriz_dispersion.png}
+            \caption{Matriz de dispersión por sector con las densidades en la
+            diagonal}
+            \label{scatter_matrix}
+        \end{figure}
+
+        El mapa de calor de la Figura \ref{heatmap} cuantifica lo que la matriz de
+        dispersión de la Figura \ref{scatter_matrix} muestra, dado que la tarifa
+        correlaciona $-0{,}7639$ con el consumo, es decir, quien más consume paga
+        menos por unidad. Y la matriz de dispersión revela una segunda característica
+        de los datos que tendrá consecuencias, puesto que los tres sectores ocupan
+        regiones casi disjuntas en cualquiera de los planos, sin solapamiento
+        apreciable entre sus recorridos de consumo.
+
+    \subsection{Regresión lineal simple y su diagnóstico}
+        El modelo estimado por mínimos cuadrados es
+        $\hat{y} = 50{,}42 + 0{,}6349\,x$, con ambos coeficientes significativos con
+        enorme holgura. La Tabla \ref{coef_m1} recoge la estimación completa.
+
+        \begin{table*}[!t]
+            \centering
+            \caption{Coeficientes del modelo simple M1 con intervalos de confianza al
+            95\%}
+            \begin{center}
+                \begin{tabular}{|l|c|c|c|c|c|}
+                    \hline
+                    \textbf{Término} & \textbf{Coeficiente} &
+                    \textbf{Error estándar} & $\mathbf{t}$ & \textbf{p-valor} &
+                    \textbf{IC 95\%} \\
+                    \hline
+                    Intercepto & 50,4228 & 3,9229 & 12,85 &
+                    $3{,}5 \times 10^{-24}$ & [42,65 ; 58,19] \\
+                    \hline
+                    Consumo (kWh) & 0,6349 & 0,0033 & 193,40 &
+                    $1{,}7 \times 10^{-149}$ & [0,6283 ; 0,6414] \\
+                    \hline
+                \end{tabular}
+                \label{coef_m1}
+            \end{center}
+        \end{table*}
+
+        La pendiente admite lectura directa, ya que como el costo está en miles de
+        pesos, 0,6349 equivale a una tarifa media de 634,9 pesos por kilovatio hora.
+        El intercepto, en cambio, es un artificio, puesto que predice un costo de
+        50.400 pesos para un consumo nulo, un punto que queda muy lejos del recorrido
+        observado, dado que el consumo mínimo es de 121,2 kWh, y que por tanto no
+        debe interpretarse como un cargo fijo.
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\linewidth]{assets/images/figures/python/regression/dispersion_ajuste_simple.png}
+            \caption{Ajuste por mínimos cuadrados, con el intervalo de confianza de
+            la recta media y el intervalo de predicción individual}
+            \label{fit_m1}
+        \end{figure}
+
+        La Figura \ref{fit_m1} separa dos preguntas que suelen confundirse, dado que
+        la banda estrecha acota dónde está la recta media de la población y se
+        angosta en el centro de los datos, mientras que la banda ancha acota dónde
+        caerá la factura de un cliente concreto e incorpora, además de la
+        incertidumbre de la recta, la variabilidad individual. Predecir un caso
+        siempre es más incierto que estimar un promedio.
+
+        \vspace{10pt}
+
+        Hasta aquí el modelo parece inmejorable. El diagnóstico de supuestos,
+        recogido en la Tabla \ref{diagnostics_m1}, dice otra cosa.
+
+        \begin{table*}[!t]
+            \centering
+            \caption{Diagnóstico de los supuestos del modelo simple M1}
+            \begin{center}
+                \begin{tabular}{|l|c|c|l|l|}
+                    \hline
+                    \textbf{Prueba} & \textbf{Estadístico} & \textbf{p-valor} &
+                    \textbf{Supuesto evaluado} & \textbf{Conclusión} \\
+                    \hline
+                    Breusch-Pagan & 23,018 & $1{,}6 \times 10^{-6}$ &
+                    Varianza constante & Se rechaza \\
+                    \hline
+                    Jarque-Bera & 214,134 & $3{,}2 \times 10^{-47}$ &
+                    Residuos normales & Se rechaza \\
+                    \hline
+                    Durbin-Watson & 2,275 & --- &
+                    Residuos no correlacionados & No se rechaza \\
+                    \hline
+                    RESET de Ramsey & 0,896 & 0,346 &
+                    Forma lineal adecuada & No se rechaza \\
+                    \hline
+                \end{tabular}
+                \label{diagnostics_m1}
+            \end{center}
+        \end{table*}
+
+        La combinación de resultados es informativa por sí misma. Que la prueba RESET
+        no rechace indica que la forma funcional es correcta, es decir, que la
+        relación entre consumo y costo sí es lineal. Que Breusch-Pagan y Jarque-Bera
+        rechacen con esa contundencia señala, por tanto, un problema distinto del de
+        la forma, esto es, falta una variable.
+
+        \begin{figure*}[!tp]
+            \centering
+            \includegraphics[width=0.72\linewidth]{assets/images/figures/python/regression/diagnostico_simple.png}
+            \caption{Panel de diagnóstico del modelo simple; el color por sector
+            convierte un control rutinario en el hallazgo central del análisis}
+            \label{diag_panel}
+        \end{figure*}
+
+        El primer panel de la Figura \ref{diag_panel} identifica al culpable, puesto
+        que los residuos no se distribuyen de forma aleatoria alrededor del cero,
+        sino que se agrupan por sector, con los clientes comerciales sistemáticamente
+        por encima de la recta y los industriales por debajo. La Tabla
+        \ref{sector_bias} pone número a esa observación, y en un modelo correctamente
+        especificado esos tres promedios deberían ser nulos.
+
+        \begin{table}[H]
+            \centering
+            \caption{Residuo medio del modelo simple dentro de cada sector (miles de
+            COP)}
+            \begin{center}
+                \begin{tabular}{|l|c|c|c|}
+                    \hline
+                    \textbf{Sector} & $\mathbf{n}$ & \textbf{Residuo medio} &
+                    \textbf{Desviación estándar} \\
+                    \hline
+                    Residencial & 62 & $-4{,}39$   & 13,36 \\
+                    \hline
+                    Comercial   & 40 & $+15{,}45$  & 28,20 \\
+                    \hline
+                    Industrial  & 18 & $-19{,}23$  & 57,51 \\
+                    \hline
+                \end{tabular}
+                \label{sector_bias}
+            \end{center}
+        \end{table}
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\linewidth]{assets/images/figures/python/regression/residuos_por_sector.png}
+            \caption{Sesgo sistemático del modelo simple: ninguna de las tres cajas
+            se centra en el residuo nulo}
+            \label{bias_boxplot}
+        \end{figure}
+
+        La conclusión de esta sección es que un coeficiente de determinación de
+        0,9969 puede acompañar a un modelo mal especificado. Lo que detecta el
+        problema no es la bondad del ajuste, sino el diagnóstico.
+
+    \subsection{Regresión múltiple y selección del modelo}
+        Incorporar el sector como variable indicadora y su interacción con el consumo
+        permite que cada grupo tenga su propio intercepto y su propia pendiente. La
+        Tabla \ref{coef_m3} recoge la estimación del modelo M3, tomando el sector
+        Residencial como categoría de referencia.
+
+        \begin{table*}[!t]
+            \centering
+            \caption{Coeficientes del modelo múltiple M3 con interacción}
+            \begin{center}
+                % Los nombres de los términos son largos: se estrecha la separación
+                % entre columnas para que la tabla quepa a doble columna.
+                \setlength{\tabcolsep}{4pt}
+                \begin{tabular}{|l|c|c|c|c|c|}
+                    \hline
+                    \textbf{Término} & \textbf{Coeficiente} &
+                    \textbf{Error estándar} & $\mathbf{t}$ & \textbf{p-valor} &
+                    \textbf{IC 95\%} \\
+                    \hline
+                    Intercepto (Residencial) & 7,1067 & 13,6264 & 0,52 & 0,603 &
+                    [$-19{,}89$ ; 34,10] \\
+                    \hline
+                    Sector Comercial & $-2{,}6594$ & 22,3549 & $-0{,}12$ & 0,906 &
+                    [$-46{,}94$ ; 41,63] \\
+                    \hline
+                    Sector Industrial & $-71{,}9656$ & 28,1145 & $-2{,}56$ & 0,012 &
+                    [$-127{,}66$ ; $-16{,}27$] \\
+                    \hline
+                    Consumo (pendiente Residencial) & 0,7916 & 0,0533 & 14,85 &
+                    $2{,}0 \times 10^{-28}$ & [0,6860 ; 0,8972] \\
+                    \hline
+                    Consumo $\times$ Comercial & $-0{,}0868$ & 0,0568 & $-1{,}53$ &
+                    0,129 & [$-0{,}1994$ ; 0,0257] \\
+                    \hline
+                    Consumo $\times$ Industrial & $-0{,}1206$ & 0,0541 & $-2{,}23$ &
+                    0,028 & [$-0{,}2277$ ; $-0{,}0135$] \\
+                    \hline
+                \end{tabular}
+                \label{coef_m3}
+            \end{center}
+        \end{table*}
+
+        Dos lecturas importan aquí. La primera es que el intercepto deja de ser
+        significativo ($p = 0{,}603$), puesto que al modelar cada sector por separado
+        desaparece el cargo fijo espurio que el modelo simple había inventado, y el
+        ajuste pasa esencialmente por el origen, como corresponde a una factura
+        proporcional al consumo. La segunda es que el término de interacción del
+        sector Industrial sí es significativo, lo que confirma que la pendiente, es
+        decir, la tarifa, cambia entre grupos.
+
+        \vspace{10pt}
+
+        El contraste F entre los tres modelos anidados, presentado en la Tabla
+        \ref{anova}, confirma que cada término añadido compensa los grados de
+        libertad que gasta.
+
+        \begin{table}[H]
+            \centering
+            \caption{Contraste F entre los modelos anidados M1, M2 y M3}
+            \begin{center}
+                \begin{tabular}{|l|c|c|c|c|}
+                    \hline
+                    \textbf{Modelo} & \textbf{gl res.} & \textbf{SC residual} &
+                    $\mathbf{F}$ & \textbf{p-valor} \\
+                    \hline
+                    M1 · Simple      & 118 & 115.535,5 & ---    & ---   \\
+                    \hline
+                    M2 · Aditivo     & 116 & 78.342,8  & 28,714 &
+                    $8{,}0 \times 10^{-11}$ \\
+                    \hline
+                    M3 · Interacción & 114 & 73.831,0  & 3,483  & 0,034 \\
+                    \hline
+                \end{tabular}
+                \label{anova}
+            \end{center}
+        \end{table}
+
+        \begin{figure*}[!tp]
+            \centering
+            \includegraphics[width=0.9\linewidth]{assets/images/figures/python/regression/ajuste_por_sector.png}
+            \caption{El modelo con interacción frente al simple; el panel derecho
+            traduce las pendientes a la magnitud que separa a los sectores}
+            \label{fit_m3}
+        \end{figure*}
+
+        En la escala del costo las tres rectas casi se superponen, porque el consumo
+        domina cualquier otro efecto. El panel derecho de la Figura \ref{fit_m3} las
+        traduce a pesos por kilovatio hora y ahí la estructura aparece con nitidez,
+        junto con la validación externa del modelo, dado que las pendientes estimadas
+        reproducen la tarifa observada, calculada directamente del cociente entre
+        costo y consumo, como detalla la Tabla \ref{tariffs}.
+
+        \begin{table*}[!t]
+            \centering
+            \caption{Pendientes estimadas frente a la tarifa media observada por
+            sector}
+            \begin{center}
+                \begin{tabular}{|l|c|c|c|c|}
+                    \hline
+                    \textbf{Sector} & \textbf{Pendiente estimada} &
+                    \textbf{Tarifa implícita (COP/kWh)} &
+                    \textbf{Tarifa observada (COP/kWh)} & \textbf{Diferencia} \\
+                    \hline
+                    Residencial & 0,7916 & 791,6 & 821,8 & $-3{,}67$\% \\
+                    \hline
+                    Comercial   & 0,7048 & 704,8 & 710,4 & $-0{,}79$\% \\
+                    \hline
+                    Industrial  & 0,6710 & 671,0 & 645,0 & $+4{,}03$\% \\
+                    \hline
+                \end{tabular}
+                \label{tariffs}
+            \end{center}
+        \end{table*}
+
+        Esta correspondencia es el argumento más fuerte a favor del modelo, y ningún
+        criterio de información puede darlo, puesto que los coeficientes no solo
+        ajustan bien, sino que significan algo verificable fuera del modelo. El
+        descuento por escala queda cuantificado en 121 pesos por kilovatio hora entre
+        el sector Industrial y el Residencial, y en 87 entre el Comercial y el
+        Residencial.
+
+        \begin{figure*}[!tp]
+            \centering
+            \includegraphics[width=0.9\linewidth]{assets/images/figures/python/regression/coeficientes_ic.png}
+            \caption{Coeficientes del modelo M3 con sus intervalos de confianza al
+            95\%, separados por escala}
+            \label{coef_plot}
+        \end{figure*}
+
+        El gráfico de coeficientes de la Figura \ref{coef_plot} traduce la tabla a
+        una lectura visual, dado que un término es significativo cuando su intervalo
+        no cruza la línea del cero. Tres lo consiguen, la pendiente del sector
+        Residencial, el intercepto del Industrial y su término de interacción,
+        mientras que los términos del sector Comercial no alcanzan la significancia,
+        algo coherente con una diferencia de tarifa mucho menor frente a la categoría
+        de referencia.
+
+        \begin{table*}[!t]
+            \centering
+            \caption{Comparación de los tres modelos}
+            \begin{center}
+                \begin{tabular}{|l|c|c|c|c|c|c|c|}
+                    \hline
+                    \textbf{Modelo} & $\mathbf{k}$ & $\mathbf{R^{2}}$ \textbf{aj.} &
+                    \textbf{AIC} & \textbf{BIC} & \textbf{RMSE} &
+                    \textbf{Breusch-Pagan p} & \textbf{Jarque-Bera p} \\
+                    \hline
+                    M1 · Simple & 2 & 0,9968 & 1.168,9 & 1.174,5 & 31,03 &
+                    $1{,}6 \times 10^{-6}$ & $3{,}2 \times 10^{-47}$ \\
+                    \hline
+                    M2 · Aditivo & 4 & 0,9978 & 1.126,3 & 1.137,5 & 25,55 &
+                    $7{,}4 \times 10^{-4}$ & $1{,}6 \times 10^{-254}$ \\
+                    \hline
+                    M3 · Interacción & 6 & 0,9979 & 1.123,2 & 1.139,9 & 24,80 &
+                    $1{,}2 \times 10^{-3}$ & $1{,}2 \times 10^{-248}$ \\
+                    \hline
+                \end{tabular}
+                \label{model_comparison}
+            \end{center}
+        \end{table*}
+
+        La comparación de la Tabla \ref{model_comparison} confirma la jerarquía, ya
+        que cada término añadido mejora el ajuste una vez descontada la complejidad,
+        y M3 gana en coeficiente ajustado, en el criterio de Akaike y en error
+        cuadrático medio. Queda, eso sí, una limitación que conviene reconocer antes
+        de interpretar nada, y es que los tres modelos siguen rechazando la
+        homocedasticidad y la normalidad de los residuos, porque el error crece con
+        el tamaño de la factura. Los coeficientes se mantienen insesgados y su
+        lectura como tarifas es válida, pero los intervalos de predicción de los
+        clientes más grandes deben leerse con cautela.
+
+        \begin{figure*}[!tp]
+            \centering
+            \includegraphics[width=0.95\linewidth]{assets/images/figures/python/regression/comparacion_modelos.png}
+            \caption{Los tres modelos bajo tres criterios de selección, todos
+            expresados en magnitudes con cero natural}
+            \label{criteria}
+        \end{figure*}
+
+        Los tres paneles de la Figura \ref{criteria} evitan deliberadamente graficar
+        el coeficiente de determinación con el eje truncado, que es la forma habitual
+        de exagerar diferencias en la cuarta cifra decimal. En su lugar muestran la
+        varianza no explicada, la distancia al mejor criterio bayesiano y el error en
+        las unidades del problema, tres magnitudes en las que el cero significa algo.
+
+    \subsection{Validación predictiva con \textit{scikit-learn}}
+        Los criterios anteriores se calculan sobre los mismos datos que sirvieron
+        para ajustar. Para medir la capacidad de predecir observaciones nuevas se
+        reserva un 30\% de los clientes, con estratificación por sector, obligatoria
+        aquí porque con solo 18 clientes industriales una partición aleatoria simple
+        podría dejar el conjunto de prueba sin representación del grupo que más
+        factura, y se complementa con validación cruzada de diez pliegues
+        \cite{hastie2009elements}, \cite{james2023islp}. Las dos especificaciones
+        centrales, la simple y la múltiple con interacción, se someten al mismo
+        procedimiento dentro de un \texttt{Pipeline} que impide filtrar información
+        del conjunto de prueba.
+
+        \begin{table*}[!t]
+            \centering
+            \caption{Desempeño de las dos especificaciones en prueba retenida y
+            validación cruzada}
+            \begin{center}
+                \begin{tabular}{|l|c|c|c|c|c|}
+                    \hline
+                    \textbf{Estimador} & $\mathbf{R^{2}}$ \textbf{prueba} &
+                    \textbf{RMSE prueba} & \textbf{MAPE prueba} &
+                    $\mathbf{R^{2}}$ \textbf{val. cruzada} &
+                    \textbf{RMSE val. cruzada} \\
+                    \hline
+                    MCO simple (solo consumo) & 0,9934 & 39,27 & 5,12\% & 0,9942 &
+                    $30{,}61 \pm 10{,}01$ \\
+                    \hline
+                    MCO múltiple (consumo $\times$ sector) & 0,9944 & 36,26 & 3,68\% &
+                    0,9960 & $25{,}49 \pm 10{,}53$ \\
+                    \hline
+                \end{tabular}
+                \label{ml_validation}
+            \end{center}
+        \end{table*}
+
+        El resultado de la Tabla \ref{ml_validation} es la pieza que faltaba, porque
+        añadir el sector no solo mejoraba el ajuste dentro de la muestra, donde un
+        coeficiente de determinación creciente nunca puede descartar por sí solo el
+        sobreajuste, sino que también mejora la predicción fuera de ella, dado que el
+        error cuadrático medio en validación cruzada cae de 30,61 a 25,49 miles de
+        pesos, una reducción del 16,7\%. La ganancia es, por tanto, real y no un
+        artefacto de la complejidad añadida.
+
+        \begin{figure*}[!tp]
+            \centering
+            \includegraphics[width=0.9\linewidth]{assets/images/figures/python/regression/real_vs_predicho.png}
+            \caption{Validación del modelo múltiple sobre el conjunto de prueba
+            retenido}
+            \label{holdout}
+        \end{figure*}
+
+        Sobre los 36 clientes que el modelo nunca vio, el coeficiente de
+        determinación es 0,9944 y el error porcentual absoluto medio, 3,68\%. Los
+        residuos de prueba ya no muestran el sesgo por sector que delataba a M1,
+        puesto que el panel derecho de la Figura \ref{holdout} los reparte alrededor
+        del cero sin que ningún grupo quede sistemáticamente por encima o por debajo.
+        Para la empresa, esa cifra significa que la factura de un cliente nuevo puede
+        anticiparse con un error medio inferior al 4\%.
+
+    \subsection{Visualización avanzada y tablero interactivo}
+        Las visualizaciones de esta sección no ilustran el análisis, sino que forman
+        parte de él \cite{castro2026avanzada}, dado que el sesgo por sector se
+        descubrió coloreando un gráfico de residuos, y el suavizado local lo confirmó
+        sin suponer ninguna forma funcional.
+
+        \begin{figure*}[!tp]
+            \centering
+            \includegraphics[width=0.9\linewidth]{assets/images/figures/python/advanced/sns_lmplot_sectores.png}
+            \caption{Una regresión independiente por sector con su banda de
+            confianza, construida con \texttt{lmplot} de \textit{seaborn}}
+            \label{lmplot}
+        \end{figure*}
+
+        Separar los sectores en facetas con ejes libres, como hace la Figura
+        \ref{lmplot}, permite ver la relación dentro de cada grupo sin que la escala
+        del sector Industrial aplaste a los otros dos. Las pendientes anotadas en
+        cada panel coinciden con las del modelo M3, porque un modelo con interacción
+        completa equivale a estimar una regresión separada por grupo.
+
+        \begin{figure*}[!tp]
+            \centering
+            \includegraphics[width=0.9\linewidth]{assets/images/figures/python/advanced/sns_residuos_lowess.png}
+            \caption{Residuos de M1 y M3 con suavizado local, construidos con
+            \texttt{residplot} de \textit{seaborn}}
+            \label{lowess}
+        \end{figure*}
+
+        La curva \textit{lowess} de la Figura \ref{lowess} no supone ninguna forma
+        funcional, sino que se limita a promediar localmente los residuos. Si el
+        modelo capturó toda la estructura, esa curva debe ser plana, y aquí se desvía
+        visiblemente en M1 y se aplana en M3. Es la confirmación no paramétrica del
+        diagnóstico que las pruebas formales habían señalado.
+
+        \begin{figure*}[!tp]
+            \centering
+            \includegraphics[width=0.72\linewidth]{assets/images/figures/python/dashboard/dashboard_regresion.png}
+            \caption{Tablero interactivo de cuatro paneles con filtro por sector,
+            construido con \textit{Plotly}}
+            \label{dashboard}
+        \end{figure*}
+
+        El tablero de la Figura \ref{dashboard} reúne en una sola página las cuatro
+        preguntas del análisis, es decir, cómo ajusta el modelo, qué queda en los
+        residuos, cuál de las especificaciones gana y qué coeficientes son distintos
+        de cero. Los botones superiores filtran los paneles por sector y la
+        información emergente identifica a cada cliente, de modo que un lector que no
+        ejecuta código puede recorrer el mismo razonamiento que produjo el informe.
+
+        \begin{figure*}[!tp]
+            \centering
+            \includegraphics[width=0.72\linewidth]{assets/images/figures/python/dashboard/scatter_interactivo.png}
+            \caption{Dispersión interactiva con tendencia por sector, construida con
+            \textit{Plotly}}
+            \label{scatter_plotly}
+        \end{figure*}
+
+        La dispersión interactiva de la Figura \ref{scatter_plotly} aporta lo que una
+        figura estática no puede dar, puesto que al posar el cursor sobre un punto
+        aparecen el identificador del cliente y sus cifras exactas, y la leyenda
+        permite aislar un sector con un solo clic. Junto con el tablero, constituye el
+        entregable navegable que acompaña al repositorio y que permite a un lector sin
+        formación técnica recorrer el mismo razonamiento del informe.
 
     \subsection{Verificación cruzada entre Python y R}
-        El script de R recalculó de forma independiente la tabla de frecuencias completa,
-        con las mismas ocho clases donde las medidas de tendencia central, incluida la
-        moda interpolada por clase modal y las medidas de dispersión coinciden dígito a
-        dígito con los resultados de Python, por ende, se puede concluir que la
-        equivalencia entre \texttt{var()} y \texttt{sd()} de R y el parámetro
-        \texttt{ddof=1} de pandas explica la coincidencia exacta de las varianzas
-        muestrales. Las réplicas gráficas en sus paneles de R conservan además los
-        principios de diseño, con la cuadrícula trazada en dos pasadas, confirmando que
-        tanto los cálculos como su representación son independientes de la herramienta
-        empleada.
+        La función \texttt{lm()} de R reestimó de forma independiente los tres
+        modelos. Los seis coeficientes del modelo con interacción coinciden con los
+        de \textit{statsmodels} en todas las cifras reportadas, lo que era esperable
+        porque ambos resuelven el mismo sistema de ecuaciones normales, pero que
+        conviene verificar antes que suponer.
 
+        \begin{table}[H]
+            \centering
+            \caption{Verificación cruzada de los coeficientes del modelo M3}
+            \begin{center}
+                \begin{tabular}{|l|c|c|c|}
+                    \hline
+                    \textbf{Término} & \textbf{Python} & \textbf{R} &
+                    \textbf{Dif. abs.} \\
+                    \hline
+                    Intercepto (Residencial) & 7,1067 & 7,1067 & 0,0000 \\
+                    \hline
+                    Sector Comercial & $-2{,}6594$ & $-2{,}6594$ & 0,0000 \\
+                    \hline
+                    Sector Industrial & $-71{,}9656$ & $-71{,}9656$ & 0,0000 \\
+                    \hline
+                    Pendiente Residencial & 0,7916 & 0,7916 & 0,0000 \\
+                    \hline
+                    Consumo $\times$ Comercial & $-0{,}0868$ & $-0{,}0868$ &
+                    0,0000 \\
+                    \hline
+                    Consumo $\times$ Industrial & $-0{,}1206$ & $-0{,}1206$ &
+                    0,0000 \\
+                    \hline
+                \end{tabular}
+                \label{cross_check}
+            \end{center}
+        \end{table}
+
+        Dos diferencias de convención aparecieron en el camino y merecen registrarse.
+        La primera es que R ordena la matriz de diseño poniendo primero las variables
+        continuas mientras que \textit{patsy} pone primero las categóricas, de modo
+        que la comparación debe emparejarse por nombre de término y no por posición.
+        La segunda es que el criterio de Akaike de R supera al de
+        \textit{statsmodels} en exactamente 2,0 unidades, porque R cuenta la varianza
+        residual como un parámetro adicional; la diferencia es constante y no altera
+        el orden de los modelos.
+
+        \begin{figure*}[!tp]
+            \centering
+            \includegraphics[width=0.9\linewidth]{assets/images/figures/r/regression/ggplot_ajuste_por_sector.png}
+            \caption{Una regresión por sector construida con \textit{ggplot2}, donde
+            el ajuste es una capa más del gráfico}
+            \label{ggplot_fit}
+        \end{figure*}
+
+        \begin{figure*}[!tp]
+            \centering
+            \includegraphics[width=0.85\linewidth]{assets/images/figures/r/regression/ggplot_residuos_por_sector.png}
+            \caption{El sesgo por sector desaparece al incluir la interacción,
+            verificado en R}
+            \label{ggplot_bias}
+        \end{figure*}
+
+        La réplica en R del hallazgo central, recogida en las Figuras
+        \ref{ggplot_fit} y \ref{ggplot_bias}, descarta que se trate de un artefacto
+        de una librería, dado que el residuo medio de cada sector, marcado con un
+        rombo, se desplaza del cero en el modelo simple y se centra en él cuando entra
+        la interacción.
+
+        \begin{figure*}[!tp]
+            \centering
+            \includegraphics[width=0.72\linewidth]{assets/images/figures/r/regression/base_diagnostico_m1.png}
+            \caption{Diagnóstico canónico del modelo simple obtenido con
+            \texttt{plot(modelo)} de la graficación base de R}
+            \label{base_diag}
+        \end{figure*}
+
+        La Figura \ref{base_diag} ilustra una diferencia práctica entre los dos
+        ecosistemas, puesto que R entrega las cuatro vistas del diagnóstico, incluida
+        la de residuos frente a apalancamiento con las curvas de Cook y las
+        observaciones influyentes etiquetadas, en una sola llamada, mientras que en
+        Python hubo que construirlas panel a panel. A cambio, Python ofrece el
+        andamiaje de validación que R no tiene en su instalación base.
