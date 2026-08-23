@@ -1,0 +1,130 @@
+\section{Metodología}
+    El desarrollo se implementó en dos scripts independientes que se ejecutan con orden
+    incremental, puesto que cada paso depende del anterior, iniciando con la preparación
+    del entorno, siguiendo con la generación del conjunto de datos, la construcción de la
+    distribución de frecuencias por la regla de Sturges, el cálculo de las medidas de
+    tendencia central y de dispersión y, por último, la producción de los gráficos
+    básicos y su verificación cruzada en R. Ambos scripts se reproducen completos en los
+    Anexos \ref{anexo_python} y \ref{anexo_r}, de modo que esta sección describe las
+    decisiones de implementación y el lector puede contrastarlas allí línea por línea.
+
+    \subsection{Herramientas y entorno de trabajo}
+        Las alternativas disponibles para un laboratorio de estadística descriptiva 
+        se agrupan en tres familias, las hojas de cálculo, que ofrecen funciones y 
+        gráficos inmediatos pero mezclan datos, fórmulas y resultados en un mismo 
+        lienzo y dificultan auditar los cálculos y reproducirlos sobre datos nuevos
+        \cite{toro2022ciencia}, \cite{timbers2024datascience},
+        \cite{castro2026cienciadatos}, los entornos de programación científica, que
+        expresan cada cálculo como código versionable capaz de regenerar exactamente 
+        los mismos resultados y figuras \cite{castro2026visualizacion} y las librerías
+        declarativas junto con las plataformas de inteligencia de negocios, que 
+        producen gráficos con poco código a cambio de un menor control sobre los 
+        elementos que los principios de diseño exigen ajustar \cite{few2012show}.
+
+        \vspace{10pt}
+
+        Se elige la segunda familia con \textit{pandas} y \textit{Matplotlib} como
+        herramienta principal por dos razones, la primera es que el cálculo y su
+        representación conviven en el mismo script, pues la tabla de frecuencias 
+        se obtiene con \texttt{numpy.histogram} \cite{harris2020numpy} y las medidas 
+        por grupo con \textit{pandas} \cite{mckinney2010data} y esas mismas estructuras
+        alimentan directamente las figuras, eliminando transcripciones manuales que son
+        fuente de error, la segunda es que \textit{Matplotlib} otorga el control fino 
+        que exige la aplicación de los principios de diseño \cite{hunter2007matplotlib}, 
+        ya que permite fijar las clases de Sturges como bordes del histograma, superponer
+        las líneas de media, mediana y moda, forzar el eje de frecuencias desde cero o
+        situar la cuadrícula detrás de los datos \cite{few2012show}, 
+        \cite{castro2026visualizacion}. Como herramienta de contraste se emplea R base, 
+        que implementa los mismos cálculos con funciones nativas como \texttt{mean}, 
+        \texttt{median}, \texttt{var}, \texttt{sd} e \texttt{hist}, sin dependencias 
+        externas \cite{castro2026visualizacion}, \cite{rcore2024r}. La comparación es 
+        directa porque \texttt{var()} y \texttt{sd()} de R son muestrales, con divisor 
+        $n - 1$, exactamente como el parámetro \texttt{ddof=1} de \textit{pandas}, 
+        de modo que los resultados deben coincidir dígito a dígito.
+
+    \subsection{Conjunto de datos}
+        Se emplea un conjunto de datos simulado que corresponde al consumo energético
+        mensual de 120 clientes de una empresa distribuidora, generado con semilla fija
+        (42) para garantizar que las observaciones sean reproducibles y puedan
+        regenerarse de manera idéntica en cada ejecución. Los sectores se asignan con
+        probabilidades de 0,50 para Residencial, 0,30 para Comercial y 0,20 para
+        Industrial, el consumo proviene de distribuciones normales con parámetros
+        propios de cada sector y el costo resulta de una tarifa diferenciada con un
+        ruido multiplicativo del 4\%. Las variables del dataset se muestran a 
+        continuación:
+
+        \begin{table}[H]
+            \centering
+            \caption{Variables del conjunto de datos}
+            \begin{center}
+                \begin{tabular}{|l|l|>{\raggedright\arraybackslash}p{3.1cm}|}
+                    \hline
+                    \textbf{Variable} & \textbf{Tipo} & \textbf{Descripción} \\
+                    \hline
+                    cliente\_id & Nominal & Identificador único del cliente
+                    (CL-001 a CL-120) \\
+                    \hline
+                    sector & Nominal & Residencial, Comercial o Industrial \\
+                    \hline
+                    consumo\_kwh & Cuantitativa continua & Consumo mensual en
+                    kilovatios-hora \\
+                    \hline
+                    costo\_miles\_cop & Cuantitativa continua & Facturación mensual en
+                    miles de pesos colombianos \\
+                    \hline
+                \end{tabular}
+                \label{dataset_variables}
+            \end{center}
+        \end{table}
+
+        El carácter simulado del dataset constituye una ventaja metodológica para este
+        laboratorio, puesto que al conocerse de antemano que existen tres poblaciones
+        con medias separadas, es posible evaluar si cada estadístico y cada gráfico
+        revela u oculta esa estructura, explicando con precisión por qué las medidas
+        globales difieren tanto de las sectoriales.
+
+    \subsection{Flujo de trabajo y reproducibilidad}
+        El flujo inicia en Python (Anexo \ref{anexo_python}), donde \textit{statistics.py} 
+        genera el dataset, calcula los estadísticos y exporta los resultados y las 
+        figuras en formatos CSV y PNG, posteriormente, R (Anexo \ref{anexo_r}) utiliza 
+        el mismo conjunto de datos para recalcular los estadísticos de forma independiente y
+        replicar las figuras mediante su graficación base, permitiendo contrastar ambos 
+        resultados.
+
+    \subsection{Construcción de la distribución de frecuencias}
+        La tabla de frecuencias se construye aplicando la regla de Sturges 
+        (ecuación \ref{sturges}) al consumo global para determinar el número de clases, 
+        los intervalos, de igual amplitud, se generan con \texttt{numpy.linspace}, 
+        mientras que \texttt{numpy.histogram} calcula las frecuencias absolutas para 
+        luego obtener las frecuencias acumuladas y relativas y la marca de clase de 
+        cada intervalo.
+
+    \subsection{Cálculo de las medidas de tendencia central}
+        La media y la mediana se calculan directamente con \textit{pandas}, mientras 
+        que la moda, al tratarse de una variable continua, se estima mediante la 
+        función \texttt{interpolated\_mode}, adicionalmente, se identifica la clase 
+        modal con \texttt{argmax} y aplica la ecuación (\ref{moda_interpolada}), 
+        considerando el caso $d_{1}+d_{2}=0$, en el que se utiliza el punto medio 
+        de la clase. El procedimiento se repite para cada sector recalculando sus 
+        intervalos según la regla de Sturges para adaptarlos al tamaño de cada 
+        muestra.
+
+    \subsection{Cálculo de las medidas de dispersión}
+        Las medidas de dispersión se calculan con las ecuaciones (\ref{rango}) a
+        (\ref{iqr}), fijando de manera explícita \texttt{ddof=1} en la varianza y en la
+        desviación estándar para obtener los estimadores muestrales, que son justamente
+        los que R implementa por defecto en \texttt{var()} y \texttt{sd()}, condición que
+        hace posible la verificación cruzada dígito a dígito.
+
+    \subsection{Verificación cruzada en R}
+        El script de R no reutiliza ningún resultado de Python, únicamente lee el 
+        archivo CSV con las 120 observaciones y vuelve a calcular desde cero la tabla 
+        de frecuencias y todos los estadísticos, de manera que cualquier discrepancia
+        revelaría un error de implementación en alguno de los dos entornos; la 
+        distribución de frecuencias en R reproduce el mismo procedimiento, generando 
+        los bordes con \texttt{seq} y contando con \texttt{hist} en modo silencioso, 
+        con el argumento \texttt{include.lowest} activo para que la observación mínima 
+        quede dentro de la primera clase, tal como lo hace \texttt{numpy.histogram}, 
+        por último, la función \texttt{summary\_stats} condensa en un solo vector las
+        ocho medidas de las Tablas \ref{central_tendency} y \ref{dispersion} y se 
+        aplica a cada sector y al conjunto global.

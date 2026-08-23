@@ -1,0 +1,41 @@
+\section{Introducción}
+    La estadística descriptiva constituye la primera etapa de todo análisis de datos,
+    ya que su propósito es organizar, resumir y caracterizar un conjunto de
+    observaciones a través de tres familias de instrumentos complementarios que son:
+    las distribuciones de frecuencia, que muestran cómo se reparten los datos a lo
+    largo de su recorrido; las medidas de tendencia central (media, mediana y moda)
+    que localizan el valor alrededor del cual se agrupan; y las métricas de dispersión
+    (rango, varianza y desviación estándar) que cuantifican qué tanto se alejan de ese
+    centro \cite{triola2018estadistica}, \cite{walpole2012probabilidad}.
+
+    \vspace{10pt}
+
+    Este informe de laboratorio aplica esos tres instrumentos al conjunto de datos de
+    consumo energético mensual medido en kWh de 120 clientes pertenecientes a tres
+    sectores con escalas muy distintas, calculando la distribución de frecuencias, las
+    medidas de tendencia central y las medidas de dispersión del consumo, tanto a nivel
+    global como por sector, y construyendo los gráficos básicos que las representan
+    (histograma, polígono de frecuencias, ojiva, diagrama de barras y diagrama de caja)
+    tanto en Python como en R \cite{sturges1926choice}, \cite{few2012show},
+    \cite{castro2026visualizacion}, para ello, se realiza un análisis estadístico
+    riguroso, dado que permite transformar un conjunto de observaciones dispersas en
+    información comprensible sobre el comportamiento de una o múltiples variables, de
+    igual manera, se implementan gráficos que hacen visibles patrones, concentraciones
+    y valores atípicos que difícilmente se perciben en una tabla de números
+    \cite{castro2026visualizacion}, reduciendo la inferencia de conclusiones erróneas.
+
+    \vspace{10pt}
+
+    Como anticipo de los resultados, la media global del consumo (819,1 kWh) duplica
+    con creces a la mediana (378,6 kWh), una discrepancia que no obedece a errores sino
+    a la coexistencia de tres poblaciones de escalas diferentes y que solo se hace
+    evidente cuando se leen de manera conjunta la tabla de frecuencias, la relación
+    entre las medidas de tendencia central y el histograma. Este hallazgo confirma la
+    importancia de acompañar cada cálculo con su representación gráfica, razón por la
+    cual todas las figuras del informe conservan los principios de diseño que garantizan
+    una visualización efectiva, como la integridad gráfica, el etiquetado completo, la
+    escala honesta, el color funcional y la cuadrícula ubicada por detrás de los datos
+    \cite{few2012show}, \cite{castro2026visualizacion}. Con estos elementos, las
+    secciones siguientes presentan los conceptos fundamentales, las herramientas
+    seleccionadas, la metodología, los cálculos, las gráficas y su interpretación,
+    desarrollados en paralelo en Python y en R.

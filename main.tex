@@ -1,0 +1,148 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage[spanish]{babel}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{array}     % columnas p{} con \raggedright, para evitar cajas underfull
+\usepackage{textcomp}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{cuted}     % entorno strip: bloque a doble columna que no flota
+\usepackage{capt-of}   % \captionof, para rotular dentro de un strip
+\usepackage{tcolorbox}
+\usepackage{eso-pic}
+\usepackage{transparent}
+\usepackage{hyperref}  % debe cargarse de último para no duplicar anclas de floats
+
+\pagestyle{plain}
+
+\newif\ifshowwatermark
+\showwatermarktrue
+\AddToShipoutPictureBG{%
+    \ifshowwatermark
+        \AtPageCenter{%
+            \makebox(0,0){%
+                \transparent{0.18}%
+                \includegraphics[width=1.0\textwidth]{assets/images/Logo}%
+            }%
+        }%
+    \fi
+}
+
+\lstset{
+    columns=fullflexible,
+    basicstyle=\ttfamily\scriptsize\color[RGB]{30,30,30},
+    keywordstyle=\bfseries\color[RGB]{0,90,160},
+    commentstyle=\itshape\color[RGB]{100,100,100},
+    stringstyle=\color[RGB]{160,60,0},
+    numberstyle=\tiny\color[RGB]{150,150,150},
+    numbers=left,
+    numbersep=8pt,
+    stepnumber=1,
+    backgroundcolor=\color[RGB]{248,248,252},
+    frame=none,
+    showstringspaces=false,
+    breaklines=true,
+    breakatwhitespace=false,
+    tabsize=4,
+    captionpos=b,
+    xleftmargin=15pt,
+    xrightmargin=5pt,
+    inputencoding=utf8,
+    extendedchars=true,
+    literate=
+        {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+        {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+        {ñ}{{\~n}}1 {Ñ}{{\~N}}1
+        {°}{{\textdegree}}1
+        {σ}{{$\sigma$}}1
+        {≈}{{$\approx$}}1
+        {¨}{}1
+}
+
+% Estilos por lenguaje: Python para el cálculo principal y R para la
+% verificación cruzada, ambos sobre la misma identidad visual.
+\lstdefinestyle{python}{
+    language=Python,
+    morekeywords={np, plt, pd, ax, ax1, ax2, axes, fig, Path},
+}
+
+\lstdefinestyle{rlang}{
+    language=R,
+    morekeywords={png, dev, par, grid, abline, barplot, boxplot, legend, text,
+                  points, lines, hist, sapply, tapply, cumsum, seq, sprintf},
+}
+
+\lstset{style=python}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\renewcommand{\refname}{Referencias}
+
+\addto\captionsspanish{%
+    \renewcommand{\tablename}{Tabla}%
+    \renewcommand{\lstlistingname}{Código}%
+}
+
+\begin{document}
+    \raggedbottom
+    \bstctlcite{IEEEtran:BSTcontrol}
+
+    \title{
+        Análisis estadístico descriptivo del consumo energético
+        utilizando Python y R
+    }
+
+    \author{\IEEEauthorblockN{
+        Andrés Giovanny Rubiano Muñoz ``Andy Rubiano''}
+        \IEEEauthorblockA{
+            \textit{Maestría en Inteligencia Artificial, Facultad de Ingeniería} \\
+            \textit{Universidad de La Salle} \\
+            Bogotá, Colombia \\
+            arubiano67@unisalle.edu.co
+        }
+    }
+
+    \maketitle
+    \thispagestyle{plain}
+
+    \begin{abstract}
+        Este informe analiza el consumo energético mensual de 120 clientes de los
+        sectores residencial, comercial e industrial mediante distribuciones de
+        frecuencia, medidas de tendencia central, dispersión y sus principales
+        gráficos. La comparación muestra que los sectores presentan escalas de
+        consumo diferentes, mientras que dentro de cada uno la media y la mediana
+        son cercanas. En el conjunto total la media (819,1 kWh) supera ampliamente 
+        a la mediana (378,6 kWh), además, el vacío observado entre clases revela 
+        subpoblaciones y explica la marcada asimetría positiva. Aunque la desviación 
+        estándar aumenta entre sectores, sus coeficientes de variación son
+        similares (23,6\%--25,9\%), por lo que la variabilidad global (106,7\%) se
+        debe principalmente a la distancia entre los grupos y no a su dispersión
+        interna. Los cálculos, realizados en Python y replicados en R, coinciden 
+        dígito a dígito, confirmando la consistencia del análisis independientemente  
+        de la herramienta utilizada.
+    \end{abstract}
+
+    \vspace{10pt}
+
+    \begin{IEEEkeywords}
+        Distribución de frecuencias, estadística descriptiva, Matplotlib, medidas de
+        dispersión, medidas de tendencia central, principios de visualización, R,
+        regla de Sturges.
+    \end{IEEEkeywords}
+
+    \input{src/sections/introduction/introduction.tex}
+    \input{src/sections/fundamentals/fundamentals.tex}
+    \input{src/sections/methodology/methodology.tex}
+    \input{src/sections/results/results.tex}
+    \input{src/sections/conclusions/conclusions.tex}
+
+    \appendices
+    \input{src/appendices/python-code/python-code.tex}
+    \input{src/appendices/r-code/r-code.tex}
+
+    \bibliographystyle{IEEEtran}
+    \bibliography{utils/references/references.bib}
+
+\end{document}

@@ -1,0 +1,53 @@
+\section{Conclusiones}
+    \begin{itemize}
+        \item La distribución de frecuencias construida con la regla de Sturges resume
+        en ocho clases la estructura del consumo donde el 54,2\% de los clientes cae
+        en la primera clase, el 76,7\% se acumula por debajo de 1.035,2 kWh y el vacío
+        entre 1.949,2 y 2.406,1 kWh delata la existencia de subpoblaciones separadas,
+        hecho que el cruce con el sector confirma, pues cada clase agrupa casi
+        exclusivamente a clientes de un mismo sector, información que ninguna medida
+        resumen entrega por sí sola.
+
+        \vspace{10pt}
+
+        \item La relación entre las tres medidas de tendencia central funciona como
+        diagnóstico de forma, puesto que a nivel global la media (819,1 kWh) supera
+        ampliamente a la mediana (378,6 kWh) y a la moda interpolada (409,6 kWh), firma
+        de una asimetría positiva pronunciada, mientras que dentro de cada sector media
+        y mediana casi coinciden, evidencia de simetría local.
+
+        \vspace{10pt}
+
+        \item La media global no describe a ningún cliente típico, pues su discrepancia
+        con la mediana no obedece a valores atípicos sino a la mezcla de tres poblaciones
+        con escalas distintas, por lo que todo análisis operativo del consumo debe
+        segmentarse por sector antes de promediar.
+
+        \vspace{10pt}
+
+        \item Las medidas de dispersión cuentan la misma historia desde la variabilidad,
+        ya que la desviación estándar crece con la escala del sector, pasando de 61,1 a
+        207,3 y a 686,9 kWh, pero el coeficiente de variación permanece homogéneo entre
+        23,6\% y 25,9\%, y su salto a 106,7\% en el agregado global cuantifica que
+        la variabilidad del conjunto proviene de la distancia entre los centros de los
+        grupos y no de la dispersión interna.
+
+        \vspace{10pt}
+
+        \item Los gráficos básicos son la contraparte visual exacta de cada cálculo,
+        puesto que el histograma y el polígono materializan la tabla de frecuencias, la
+        ojiva permite leer la mediana en el 50\% acumulado, el diagrama de barras
+        describe la variable nominal y contrasta media con mediana en cada sector, y el
+        diagrama de caja integra mediana, IQR, media y desviación
+        estándar en una sola figura, de modo que estadístico y gráfico se validan
+        mutuamente.
+
+        \vspace{10pt}
+
+        \item La verificación cruzada entre pandas con Matplotlib y R base, con
+        coincidencia dígito a dígito de todos los estadísticos gracias a la equivalencia
+        entre \texttt{var()} y \texttt{sd()} de R y el parámetro \texttt{ddof=1} de
+        pandas, confirma la corrección de la implementación y muestra que el análisis
+        descriptivo y sus principios de representación son independientes de la
+        herramienta.
+    \end{itemize}
