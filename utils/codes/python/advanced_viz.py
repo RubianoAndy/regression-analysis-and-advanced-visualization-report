@@ -1,24 +1,3 @@
-"""Actividad 4 - Fase 4: visualización avanzada con seaborn y Plotly.
-
-Las fases anteriores dejaron el análisis resuelto; esta lo hace comunicable.
-Se separa en dos bloques con propósitos distintos:
-
-* **seaborn** produce las figuras estáticas de alta densidad que entran en el
-  informe: matriz de dispersión, mapa de calor de correlaciones, ajustes por
-  facetas y análisis de residuos con suavizado local.
-* **Plotly** produce las piezas interactivas: un diagrama de dispersión
-  explorable y un tablero de cuatro paneles con filtro por sector, que es el
-  entregable navegable de la actividad.
-
-Ambos bloques leen las tablas que escribieron las Fases 2 y 3, de modo que las
-cifras mostradas son exactamente las estimadas allí y no un recálculo paralelo.
-
-Rutas: el script se ubica en codes -> utils -> raíz del proyecto.
-Escribe las figuras estáticas en
-``public/assets/images/figures/python/advanced/`` y las interactivas en
-``public/assets/images/figures/python/dashboard/``.
-"""
-
 from pathlib import Path
 
 import numpy as np
@@ -64,13 +43,6 @@ comparacion = pd.read_csv(PROCESSED_DIR / "comparacion_modelos.csv")
 coeficientes = pd.read_csv(PROCESSED_DIR / "regresion_multiple.csv")
 tarifas = pd.read_csv(PROCESSED_DIR / "tarifas_estimadas.csv")
 
-"""1. MATRIZ DE DISPERSIÓN (seaborn).
-
-Un ``pairplot`` cruza todas las variables continuas a la vez y pone la
-densidad de cada una en la diagonal. Es la vista que justifica de un golpe por
-qué el sector debía entrar al modelo: los tres grupos ocupan regiones
-prácticamente disjuntas en cualquiera de los planos.
-"""
 variables = ["consumo_kwh", "costo_miles_cop", "tarifa_cop_kwh"]
 rejilla = sns.pairplot(df, vars=variables, hue="sector", diag_kind="kde",
                        plot_kws=dict(s=26, edgecolor="white", linewidth=0.4),
@@ -92,13 +64,6 @@ rejilla.savefig(ADVANCED_DIR / "sns_matriz_dispersion.png",
                 bbox_inches="tight")
 plt.close(rejilla.figure)
 
-"""2. MAPA DE CALOR DE CORRELACIONES (seaborn).
-
-El triángulo inferior evita repetir la información simétrica y la paleta
-divergente centrada en cero distingue de un vistazo asociaciones positivas de
-negativas: la tarifa cae cuando el consumo sube, que es el descuento por
-escala que después confirma la regresión.
-"""
 matriz = df[["consumo_kwh", "costo_miles_cop", "tarifa_cop_kwh"]].corr()
 mascara = np.triu(np.ones_like(matriz, dtype=bool), k=1)
 fig, ax = plt.subplots(figsize=(5.8, 4.6))
@@ -112,13 +77,6 @@ fig.tight_layout()
 fig.savefig(ADVANCED_DIR / "sns_heatmap_correlacion.png")
 plt.close(fig)
 
-"""3. AJUSTE POR FACETAS (seaborn).
-
-``lmplot`` ajusta y dibuja una regresión independiente dentro de cada faceta
-con su banda de confianza. Separar los sectores en paneles con ejes libres es
-lo que permite ver la relación dentro de cada grupo sin que la escala del
-sector Industrial aplaste a los otros dos.
-"""
 facetas = sns.lmplot(data=df, x="consumo_kwh", y="costo_miles_cop",
                      col="sector", hue="sector", height=3.2, aspect=1.0,
                      facet_kws=dict(sharex=False, sharey=False),
@@ -136,12 +94,6 @@ facetas.figure.suptitle("Una regresión por sector, cada una en su propia "
 facetas.savefig(ADVANCED_DIR / "sns_lmplot_sectores.png", bbox_inches="tight")
 plt.close(facetas.figure)
 
-"""4. RESIDUOS CON SUAVIZADO LOCAL (seaborn).
-
-``residplot`` con ``lowess`` traza una curva no paramétrica sobre los
-residuos: si el modelo capturó toda la estructura, esa curva debe ser plana.
-Comparar M1 y M3 en la misma figura muestra el efecto de añadir el sector.
-"""
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10.6, 3.9), sharey=True)
 for ax, columna, titulo in [
     (ax1, "residuo_m1", "M1 · simple: la curva se desvía de cero"),
@@ -161,12 +113,6 @@ fig.tight_layout()
 fig.savefig(ADVANCED_DIR / "sns_residuos_lowess.png")
 plt.close(fig)
 
-"""5. DISPERSIÓN INTERACTIVA (Plotly).
-
-La misma información del gráfico estático, más lo que este no puede dar: al
-posar el cursor sobre un punto aparece el identificador del cliente y sus
-cifras exactas, y la leyenda permite aislar un sector con un clic.
-"""
 figura_scatter = px.scatter(
     df, x="consumo_kwh", y="costo_miles_cop", color="sector",
     trendline="ols", trendline_scope="trace",
@@ -186,14 +132,6 @@ figura_scatter.write_html(DASHBOARD_DIR / "scatter_interactivo.html",
                           include_plotlyjs="cdn")
 figura_scatter.write_image(DASHBOARD_DIR / "scatter_interactivo.png", scale=2)
 
-"""6. TABLERO INTERACTIVO DE CUATRO PANELES (Plotly).
-
-El tablero reúne en una sola página las cuatro preguntas del análisis: cómo
-ajusta el modelo, qué queda en los residuos, cuál de las especificaciones
-gana y qué coeficientes son distintos de cero. Los botones superiores filtran
-los tres primeros paneles por sector, de modo que el lector puede aislar un
-grupo sin regenerar nada.
-"""
 tablero = make_subplots(
     rows=2, cols=2, vertical_spacing=0.16, horizontal_spacing=0.10,
     subplot_titles=(

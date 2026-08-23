@@ -1,13 +1,3 @@
-"""Actividad 4 - Fase 0: generación del conjunto de datos.
-
-Regenera con la semilla fija 42 el mismo conjunto de 120 clientes que vienen
-usando las actividades anteriores, de modo que todo el esfuerzo de esta
-actividad se concentre en modelar los datos y no en describirlos.
-
-Rutas: el script se ubica en codes -> utils -> raíz del proyecto y escribe el
-CSV en ``data/dataset``.
-"""
-
 from pathlib import Path
 
 import numpy as np
@@ -17,9 +7,6 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = PROJECT_ROOT / "data" / "dataset"
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 
-"""Tres sectores con niveles de consumo y tarifas distintas: es justamente esa
-heterogeneidad la que el modelo simple ignora y el modelo múltiple recupera.
-El ruido multiplicativo del 4 % evita que la relación sea exacta."""
 rng = np.random.default_rng(42)
 n = 120
 sectores = rng.choice(

@@ -1,22 +1,3 @@
-"""Actividad 4 - Fase 2: regresión lineal múltiple y comparación de modelos.
-
-Toma el diagnóstico de la Fase 1 —los residuos del modelo simple se ordenan
-por sector— y lo convierte en especificación. Se estiman y comparan tres
-modelos anidados por complejidad creciente:
-
-    M1  costo ~ consumo             (simple, referencia)
-    M2  costo ~ consumo + sector    (rectas paralelas, ANCOVA)
-    M3  costo ~ consumo * sector    (una pendiente por sector)
-
-La comparación no se hace solo por R2: se añaden los criterios de información
-de Akaike y Schwarz, el error de predicción en unidades originales y las
-pruebas de supuestos, porque un R2 siempre crece al agregar regresores.
-
-Rutas: el script se ubica en codes -> utils -> raíz del proyecto.
-Lee el CSV de ``data/dataset``, escribe las tablas en ``data/processed`` y
-las imágenes en ``public/assets/images/figures/python/regression/``.
-"""
-
 from pathlib import Path
 
 import numpy as np
@@ -54,13 +35,6 @@ df["tarifa_cop_kwh"] = df["costo_miles_cop"] * 1000 / df["consumo_kwh"]
 n = len(df)
 y = df["costo_miles_cop"]
 
-"""1. ESTIMACIÓN DE LOS TRES MODELOS.
-
-``Residencial`` actúa como categoría de referencia, así que los coeficientes
-de sector se leen como diferencias respecto de ese grupo. El operador ``*``
-de la fórmula expande a efectos principales más interacción, que es la forma
-de permitir que cada sector tenga su propia pendiente (su propia tarifa).
-"""
 REF = "C(sector, Treatment(reference='Residencial'))"
 m1 = smf.ols("costo_miles_cop ~ consumo_kwh", data=df).fit()
 m2 = smf.ols(f"costo_miles_cop ~ consumo_kwh + {REF}", data=df).fit()
@@ -70,9 +44,7 @@ print("=" * 72)
 print("MODELO 3 - regresión múltiple con interacción consumo x sector")
 print(m3.summary())
 
-
 def resumen(modelo, nombre, formula):
-    # Métricas comparables entre modelos, siempre en unidades originales.
     resid = y - modelo.fittedvalues
     bp_p = het_breuschpagan(modelo.resid, modelo.model.exog)[1]
     jb_p = jarque_bera(modelo.resid)[1]
@@ -91,7 +63,6 @@ def resumen(modelo, nombre, formula):
         "durbin_watson": round(durbin_watson(modelo.resid), 3),
     }
 
-
 comparacion = pd.DataFrame([
     resumen(m1, "M1 · Simple", "costo ~ consumo"),
     resumen(m2, "M2 · Múltiple aditivo", "costo ~ consumo + sector"),
@@ -101,12 +72,6 @@ comparacion.to_csv(PROCESSED_DIR / "comparacion_modelos.csv", index=False)
 print("\nComparación de los tres modelos")
 print(comparacion.drop(columns=["especificacion"]).to_string(index=False))
 
-"""2. CONTRASTE DE MODELOS ANIDADOS.
-
-M1, M2 y M3 forman una jerarquía: cada uno añade términos al anterior. La
-prueba F de Fisher decide si la mejora de ajuste compensa los grados de
-libertad gastados; un p-valor bajo indica que el término añadido aporta.
-"""
 tabla_anova = anova_lm(m1, m2, m3)
 tabla_anova.index = ["M1 · Simple", "M2 · Aditivo", "M3 · Interacción"]
 tabla_anova = tabla_anova.round(4).reset_index(names="modelo")
@@ -114,12 +79,6 @@ tabla_anova.to_csv(PROCESSED_DIR / "anova_modelos.csv", index=False)
 print("\nContraste F entre modelos anidados")
 print(tabla_anova.to_string(index=False))
 
-"""3. COEFICIENTES DEL MODELO MÚLTIPLE.
-
-Cada coeficiente se acompaña de su error estándar, su estadístico t y su
-intervalo de confianza al 95 %: un término es significativo cuando ese
-intervalo no contiene al cero.
-"""
 conf = m3.conf_int(alpha=0.05)
 coef_m3 = pd.DataFrame({
     "termino": [
@@ -141,13 +100,6 @@ coef_m3.to_csv(PROCESSED_DIR / "regresion_multiple.csv", index=False)
 print("\nCoeficientes del modelo M3 con interacción")
 print(coef_m3.to_string(index=False))
 
-"""4. VALIDACIÓN EXTERNA DE LAS PENDIENTES.
-
-Si el modelo con interacción está bien especificado, la pendiente estimada en
-cada sector debe reproducir la tarifa media observada en ese sector. Es una
-comprobación independiente: la tarifa se calcula directamente del cociente
-costo/consumo, sin pasar por la regresión.
-"""
 p = m3.params
 pendientes = {
     "Residencial": p["consumo_kwh"],
@@ -174,12 +126,6 @@ print(f"\nDescuento por escala: el sector Industrial paga "
       f"{(pendientes['Residencial'] - pendientes['Industrial']) * 1000:,.0f} "
       f"COP/kWh menos que el Residencial")
 
-"""5. FIGURAS DE LA REGRESIÓN MÚLTIPLE."""
-
-"""Tres rectas, una por sector: la interacción hecha gráfico. En la escala del
-costo las rectas casi se superponen —el consumo domina cualquier otro efecto—,
-así que el panel derecho las traduce a la magnitud que sí separa a los
-sectores: la pendiente, que es la tarifa en COP por kWh."""
 fig, (ax, ax_t) = plt.subplots(1, 2, figsize=(11.0, 4.2))
 for s in SECTOR_ORDER:
     sub = df[df["sector"] == s]
@@ -223,11 +169,6 @@ fig.tight_layout()
 fig.savefig(FIGURES_DIR / "ajuste_por_sector.png")
 plt.close(fig)
 
-"""Comparación de los tres modelos en tres criterios. Los R2 ajustados
-difieren en la cuarta cifra decimal, así que graficarlos directamente exigiría
-truncar el eje; en su lugar se grafica su complemento —la varianza que el
-modelo no explica—, que tiene cero natural y hace visible la diferencia real.
-Por la misma razón el BIC se expresa como distancia al mejor modelo."""
 fig, axes = plt.subplots(1, 3, figsize=(11.0, 3.6))
 etiquetas = ["M1", "M2", "M3"]
 series = [
@@ -250,9 +191,6 @@ fig.tight_layout()
 fig.savefig(FIGURES_DIR / "comparacion_modelos.png")
 plt.close(fig)
 
-"""Gráfico de coeficientes con intervalos de confianza: un término es
-significativo cuando su intervalo no cruza el cero. Los términos de
-interacción se separan en su propio panel porque están en otra escala."""
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10.6, 3.8))
 bloques = [
     (ax1, coef_m3.iloc[[0, 1, 2]], "Interceptos (miles de COP)"),

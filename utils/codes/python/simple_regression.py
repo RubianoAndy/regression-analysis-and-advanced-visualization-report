@@ -1,20 +1,3 @@
-"""Actividad 4 - Fase 1: correlación y regresión lineal simple con statsmodels.
-
-Lee el dataset de consumo energético heredado de las actividades anteriores,
-cuantifica la asociación entre el consumo (kWh) y el costo facturado
-(miles de COP) mediante los coeficientes de Pearson y Spearman, y ajusta por
-mínimos cuadrados ordinarios el modelo de regresión lineal simple
-``costo = b0 + b1 * consumo``.
-
-El interés del ajuste no está solo en su bondad global, sino en lo que dejan
-ver sus residuos: al colorearlos por sector aparece un patrón sistemático que
-la especificación simple no puede capturar y que motiva la Fase 2.
-
-Rutas: el script se ubica en codes -> utils -> raíz del proyecto.
-Lee el CSV de ``data/dataset``, escribe las tablas en ``data/processed`` y
-las imágenes en ``public/assets/images/figures/python/regression/``.
-"""
-
 from pathlib import Path
 
 import numpy as np
@@ -46,8 +29,6 @@ SECTOR_COLORS = {"Residencial": "#a6bddb", "Comercial": "#74a9cf",
                  "Industrial": "#2b8cbe"}
 ACCENT = "#d95f02"
 
-"""Dataset: las mismas 120 observaciones de las actividades anteriores
-(semilla fija 42), de modo que el foco esté en el modelo y no en los datos."""
 dataset_path = DATA_DIR / "consumo_energia.csv"
 if not dataset_path.exists():
     raise SystemExit(
@@ -59,15 +40,6 @@ df["sector"] = pd.Categorical(df["sector"], categories=SECTOR_ORDER, ordered=Tru
 df["tarifa_cop_kwh"] = df["costo_miles_cop"] * 1000 / df["consumo_kwh"]
 n = len(df)
 
-"""1. ANÁLISIS DE CORRELACIÓN.
-
-Antes de ajustar cualquier recta conviene medir si existe asociación y de qué
-tipo. Pearson mide la componente lineal y Spearman la monótona; su cercanía
-indica que la relación no solo es creciente sino además aproximadamente
-lineal. El cálculo se repite dentro de cada sector para comprobar que la
-asociación no es un artefacto de mezclar tres poblaciones de escalas
-distintas (paradoja de Simpson).
-"""
 corr_rows = []
 for label in ["Global"] + SECTOR_ORDER:
     sub = df if label == "Global" else df[df["sector"] == label]
@@ -88,14 +60,6 @@ correlaciones.to_csv(PROCESSED_DIR / "correlaciones.csv", index=False)
 print("Correlación entre consumo (kWh) y costo (miles COP)")
 print(correlaciones.to_string(index=False))
 
-"""2. REGRESIÓN LINEAL SIMPLE POR MCO.
-
-Se estima costo = b0 + b1 * consumo. La pendiente b1 tiene lectura directa:
-es la tarifa media implícita en COP por kWh (el costo está en miles de COP,
-así que b1 * 1000 devuelve la tarifa). El intercepto b0 representa el costo
-esperado con consumo nulo, un valor sin sentido físico aquí porque cae fuera
-del recorrido observado (121,2 kWh es el mínimo).
-"""
 modelo_simple = smf.ols("costo_miles_cop ~ consumo_kwh", data=df).fit()
 print("\n" + "=" * 72)
 print(modelo_simple.summary())
@@ -120,14 +84,6 @@ ajustados = modelo_simple.fittedvalues
 rmse = float(np.sqrt(np.mean(residuos ** 2)))
 mae = float(np.mean(np.abs(residuos)))
 
-"""3. DIAGNÓSTICO DE LOS SUPUESTOS DEL MODELO.
-
-Un R2 alto no valida un modelo: los cuatro supuestos de MCO se contrastan por
-separado. Breusch-Pagan evalúa homocedasticidad (H0: varianza constante),
-Jarque-Bera la normalidad de los residuos, Durbin-Watson su independencia
-(valores próximos a 2 la respaldan) y el RESET de Ramsey la especificación
-funcional (H0: la forma lineal es adecuada).
-"""
 bp_stat, bp_p, _, _ = het_breuschpagan(residuos, modelo_simple.model.exog)
 jb_stat, jb_p, _, _ = jarque_bera(residuos)
 dw = durbin_watson(residuos)
@@ -152,8 +108,6 @@ diagnostico_simple.to_csv(PROCESSED_DIR / "diagnostico_simple.csv", index=False)
 print("\nDiagnóstico de supuestos del modelo simple")
 print(diagnostico_simple.to_string(index=False))
 
-"""El sesgo por sector es el hallazgo que abre la Fase 2: si el modelo fuera
-correcto, la media de los residuos sería nula dentro de cualquier subgrupo."""
 sesgo = (df.assign(residuo=residuos)
            .groupby("sector", observed=True)["residuo"]
            .agg(n="count", sesgo_medio="mean", desv_std="std")
@@ -165,16 +119,6 @@ print(sesgo.to_string(index=False))
 print(f"\nRMSE = {rmse:,.2f} miles COP | MAE = {mae:,.2f} miles COP")
 print(f"Tarifa implícita en la pendiente: {b1 * 1000:,.1f} COP/kWh")
 
-"""4. FIGURAS DE LA REGRESIÓN SIMPLE.
-
-Cada figura responde una pregunta: si hay relación y cuánta incertidumbre
-tiene la recta, si se cumplen los supuestos y dónde falla el modelo.
-"""
-
-"""Diagrama de dispersión con la recta ajustada, su ecuación y las dos bandas
-de incertidumbre: la estrecha acota dónde está la recta media de la población
-y la ancha dónde caerá una factura individual. El color queda reservado para
-el sector, que todavía no forma parte del modelo."""
 grid = np.linspace(df["consumo_kwh"].min(), df["consumo_kwh"].max(), 200)
 pred = modelo_simple.get_prediction(
     pd.DataFrame({"consumo_kwh": grid})).summary_frame(alpha=0.05)
@@ -201,9 +145,6 @@ fig.tight_layout()
 fig.savefig(FIGURES_DIR / "dispersion_ajuste_simple.png")
 plt.close(fig)
 
-"""Panel de diagnóstico en cuatro vistas. El color por sector convierte un
-gráfico de control rutinario en el argumento central de la actividad: los
-residuos no son ruido, están ordenados por una variable omitida."""
 fig, axes = plt.subplots(2, 2, figsize=(10.2, 6.6))
 
 ax = axes[0, 0]
@@ -254,8 +195,6 @@ fig.tight_layout()
 fig.savefig(FIGURES_DIR / "diagnostico_simple.png")
 plt.close(fig)
 
-"""Residuos por sector: el sesgo sistemático, ya sin la dispersión del
-gráfico anterior. Cada caja debería centrarse en cero y ninguna lo hace."""
 fig, ax = plt.subplots(figsize=(7.0, 3.8))
 datos = [residuos[(df["sector"] == s).to_numpy()] for s in SECTOR_ORDER]
 bp = ax.boxplot(datos, tick_labels=SECTOR_ORDER, patch_artist=True,

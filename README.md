@@ -98,7 +98,7 @@ El análisis se apoya en el conjunto de datos simulado del consumo energético m
 │       ├── python-code/              # Apéndice A: los cinco scripts de Python
 │       └── r-code/                   # Apéndice B: el script de R
 ├── utils/
-│   ├── codes/                        # Scripts completos, citados vía \lstinputlisting
+│   ├── codes/                        # Copias sin comentarios, citadas vía \lstinputlisting
 │   │   ├── python/
 │   │   │   ├── dataset.py                     # Fase 0
 │   │   │   ├── simple_regression.py           # Fase 1
@@ -127,7 +127,7 @@ El análisis se apoya en el conjunto de datos simulado del consumo energético m
 | B | Apéndice · Código en R | `regression.R` |
 | — | Referencias | 20 entradas en formato IEEE |
 
-**El cuerpo del informe no lleva listados de código.** La metodología describe cada decisión de implementación y remite a los Apéndices A y B, donde los seis scripts se reproducen íntegros y en su orden de ejecución.
+**El cuerpo del informe no lleva listados de código.** La metodología describe cada decisión de implementación y remite a los Apéndices A y B, donde los seis scripts se reproducen en su orden de ejecución, con el código sin sus comentarios: lo que estos documentan ya lo desarrollan la metodología y los resultados.
 
 ---
 
@@ -435,7 +435,7 @@ Aparece en todas las páginas, dibujada en la capa de fondo (`\AddToShipoutPictu
 
 ## 📋 Estado del Documento
 
-El informe está **terminado**: compila en 24 páginas sin desbordes de caja y sin referencias ni citas sin resolver; todas las figuras y tablas están referenciadas desde el texto.
+El informe está **terminado**: compila en 22 páginas sin desbordes de caja y sin referencias ni citas sin resolver; todas las figuras y tablas están referenciadas desde el texto.
 
 ### ✅ Completado
 
@@ -451,7 +451,7 @@ El informe está **terminado**: compila en 24 páginas sin desbordes de caja y s
 - ✅ **Apéndice B** — `regression.R`
 
 #### Infraestructura
-- ✅ 6 scripts completos en `utils/codes/`, reproducidos íntegros en los apéndices
+- ✅ 6 scripts en `utils/codes/`, reproducidos en los apéndices sin sus comentarios (copias del repositorio hermano, donde sí los conservan)
 - ✅ 16 imágenes, todas referenciadas desde el texto
 - ✅ 13 tablas con las cifras reales de la ejecución
 - ✅ Bibliografía IEEE (20 referencias citadas en `utils/references/references.bib`)
@@ -471,7 +471,7 @@ El informe está **terminado**: compila en 24 páginas sin desbordes de caja y s
 | Tamaño de página | Carta (8.5" × 11") |
 | Fuente base | 10 pt |
 | Bibliografía | IEEE |
-| Extensión | 24 páginas |
+| Extensión | 22 páginas |
 
 ---
 

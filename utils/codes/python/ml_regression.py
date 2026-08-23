@@ -1,19 +1,3 @@
-"""Actividad 4 - Fase 3: los mismos modelos con scikit-learn y validación.
-
-statsmodels responde si un coeficiente es significativo; scikit-learn responde
-si el modelo predice bien datos que nunca vio. Esta fase repite las dos
-especificaciones centrales de la Fase 2 dentro de un ``Pipeline`` y las somete
-a partición estratificada entrenamiento/prueba y a validación cruzada de diez
-pliegues.
-
-La comparación decide algo concreto: si añadir el sector, que mejoró el ajuste
-dentro de la muestra, también mejora la predicción fuera de ella.
-
-Rutas: el script se ubica en codes -> utils -> raíz del proyecto.
-Lee el CSV de ``data/dataset``, escribe las tablas en ``data/processed`` y
-las imágenes en ``public/assets/images/figures/python/regression/``.
-"""
-
 from pathlib import Path
 
 import numpy as np
@@ -54,12 +38,6 @@ df = pd.read_csv(DATA_DIR / "consumo_energia.csv")
 X = df[["consumo_kwh", "sector"]]
 y = df["costo_miles_cop"]
 
-"""1. PARTICIÓN ESTRATIFICADA.
-
-La estratificación por sector es obligatoria aquí: el sector Industrial tiene
-solo 18 clientes, y una partición aleatoria simple podría dejar el conjunto de
-prueba casi sin representación del grupo que más factura.
-"""
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.30, random_state=SEMILLA, stratify=df["sector"])
 print(f"Entrenamiento: {len(X_train)} clientes | Prueba: {len(X_test)} clientes")
@@ -68,14 +46,6 @@ print(pd.concat([
     X_test["sector"].value_counts().rename("prueba"),
 ], axis=1).loc[SECTOR_ORDER].to_string())
 
-"""2. LAS DOS ESPECIFICACIONES COMO PIPELINE.
-
-El preprocesamiento codifica el sector en variables indicadoras (descartando
-la primera para evitar la trampa de la variable ficticia), estandariza el
-consumo y genera los productos consumo x sector. Encapsularlo en un
-``Pipeline`` garantiza que el escalador y el codificador se ajusten solo con
-los datos de entrenamiento, sin filtrar información del conjunto de prueba.
-"""
 pipe_simple = Pipeline([
     ("preprocesamiento", ColumnTransformer([
         ("numerica", StandardScaler(), ["consumo_kwh"]),
@@ -99,13 +69,6 @@ modelos = {
     "MCO múltiple (consumo × sector)": pipe_multiple,
 }
 
-"""3. EVALUACIÓN: PRUEBA RETENIDA Y VALIDACIÓN CRUZADA.
-
-La partición única entrega una cifra fácil de comunicar, pero depende de qué
-36 clientes tocó el azar. La validación cruzada de diez pliegues repite el
-experimento diez veces y su desviación estándar mide justamente esa
-inestabilidad, así que ambas se reportan juntas.
-"""
 cv = KFold(n_splits=10, shuffle=True, random_state=SEMILLA)
 filas, predicciones = [], {}
 for nombre, pipe in modelos.items():
@@ -140,13 +103,6 @@ mejora = (1 - metricas.loc[metricas["modelo"] == mejor, "rmse_cv_media"].iloc[0]
 print(f"\nMenor RMSE en validación cruzada: {mejor}")
 print(f"Reducción del error frente a la especificación simple: {mejora:.1f} %")
 
-"""4. FIGURA DE VALIDACIÓN.
-
-Observado frente a predicho en el conjunto de prueba: la diagonal es la
-predicción perfecta y la distancia vertical a ella es el error de cada
-cliente. Los residuos del panel derecho comprueban que el sesgo por sector
-detectado en la Fase 1 ya no aparece sobre datos que el modelo nunca vio.
-"""
 pred_mejor = predicciones[mejor]
 sector_test = df.loc[X_test.index, "sector"]
 residuo_test = y_test - pred_mejor
