@@ -435,7 +435,7 @@ Aparece en todas las páginas, dibujada en la capa de fondo (`\AddToShipoutPictu
 
 ## 📋 Estado del Documento
 
-El informe está **terminado**: compila en 22 páginas sin desbordes de caja y sin referencias ni citas sin resolver; todas las figuras y tablas están referenciadas desde el texto.
+El informe está **terminado**: compila en 21 páginas sin desbordes de caja y sin referencias ni citas sin resolver; todas las figuras y tablas están referenciadas desde el texto.
 
 ### ✅ Completado
 
@@ -471,7 +471,7 @@ El informe está **terminado**: compila en 22 páginas sin desbordes de caja y s
 | Tamaño de página | Carta (8.5" × 11") |
 | Fuente base | 10 pt |
 | Bibliografía | IEEE |
-| Extensión | 22 páginas |
+| Extensión | 21 páginas |
 
 ---
 
