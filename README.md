@@ -2,7 +2,7 @@
     <img src="assets/images/Logo.png" width="250" alt="Logo Universidad de La Salle">
 </div>
 
-# Análisis estadístico descriptivo del consumo energético con verificación cruzada entre Python y R
+# Análisis de regresión y visualización avanzada
 
 ## 📋 Información General
 
@@ -16,11 +16,11 @@
 | **Correo** | arubiano67@unisalle.edu.co |
 | **Asignatura** | Ciencia de Datos |
 | **Docente** | Fabián Camilo Castro Riveros |
-| **Actividad** | Actividad 2 · Análisis estadístico de datos y creación de gráficos básicos |
-| **Unidad** | Unidad 2 · Principios de visualización |
+| **Actividad** | Actividad 4 · Análisis de Regresión y Visualización Avanzada |
+| **Unidad** | Unidad 2 · Herramientas de visualización avanzada |
 | **Programa** | Maestría en Inteligencia Artificial |
 | **Universidad** | Universidad de La Salle |
-| **Líneas de Trabajo** | Estadística Descriptiva y Principios de Visualización |
+| **Líneas de Trabajo** | Regresión Lineal, Diagnóstico de Supuestos y Visualización Avanzada |
 | **Año** | 2026 |
 | **Estado** | Completado |
 
@@ -28,28 +28,28 @@
 
 ## 🎯 Descripción del Proyecto
 
-La estadística descriptiva es la primera etapa de todo análisis de datos: organiza, resume y caracteriza un conjunto de observaciones mediante tres familias de instrumentos complementarios —**distribuciones de frecuencia**, **medidas de tendencia central** y **medidas de dispersión**—.
+Este repositorio contiene **el informe en LaTeX** (formato IEEE conference) del laboratorio de regresión y visualización avanzada.
 
-Este informe aplica esos tres instrumentos al consumo energético mensual (kWh) de **120 clientes** repartidos en tres sectores con escalas muy distintas, y acompaña **cada cálculo con el gráfico básico que lo representa**: histograma, polígono de frecuencias, ojiva, diagrama de barras y diagrama de caja.
+Una recta que explica el 99,7 % de la variabilidad parece un resultado difícil de mejorar. El informe muestra que ese número, por sí solo, **no dice si el modelo es correcto**: la misma regresión que alcanza un coeficiente de determinación de 0,9969 deja residuos que no son ruido, sino que se ordenan según una variable que quedó fuera del modelo. Detectar esa estructura, incorporarla y verificar que el modelo corregido cumple los supuestos que sostienen su inferencia es el recorrido completo del trabajo.
 
-El resultado se desarrolla **en paralelo en dos entornos**:
+El análisis se apoya en el conjunto de datos simulado del consumo energético mensual de **120 clientes** de una empresa distribuidora (sectores Residencial, Comercial e Industrial, semilla fija 42). Que sea simulado es una **ventaja metodológica**: se sabe de antemano que existen tres poblaciones con tarifas medias distintas, de modo que el modelo puede evaluarse por su capacidad de recuperar una estructura conocida y no solo por su ajuste.
 
-- **Python** — `pandas` + `Matplotlib` como herramienta principal, donde el cálculo y su representación conviven en el mismo script.
-- **R base** — `mean`, `median`, `var`, `sd` e `hist` como **verificación cruzada independiente**, sin dependencias externas.
+### Los tres hallazgos
 
-La comparación es directa porque `var()` y `sd()` de R son muestrales (divisor *n* − 1), exactamente como el parámetro `ddof=1` de pandas: los resultados deben coincidir **dígito a dígito**.
+> **Los coeficientes tienen nombre.** Las pendientes del modelo múltiple son las tarifas de cada sector —**791,6**, **704,8** y **671,0** COP/kWh— y reproducen con menos del 4 % de diferencia el cociente entre costo y consumo calculado sin pasar por la regresión.
 
-### El hallazgo central
+> **La mejora se sostiene fuera de la muestra.** La validación cruzada de diez pliegues reduce el error un **16,7 %** frente al modelo simple, y sobre 36 clientes nunca vistos alcanza R² = 0,9944 con un MAPE del 3,68 %.
 
-> La media global (**819,1 kWh**) duplica con creces a la mediana (**378,6 kWh**). Esa discrepancia no obedece a errores ni a valores atípicos, sino a la **coexistencia de tres poblaciones de escalas diferentes**, y solo se hace evidente cuando se leen de forma conjunta la tabla de frecuencias, la relación entre las tres medidas de tendencia central y el histograma.
+> **El descuento por escala es el hallazgo de negocio.** El sector Industrial paga **121 COP/kWh menos** que el Residencial y el Comercial 87 menos, cifras que la empresa puede contrastar contra su política tarifaria.
 
 ### Objetivos Principales
 
-- Construir la distribución de frecuencias del consumo mediante la regla de Sturges, con frecuencias absolutas, acumuladas, relativas y relativas acumuladas.
-- Calcular las medidas de tendencia central (media, mediana y moda interpolada por clase modal) por sector y a nivel global.
-- Calcular las medidas de dispersión (rango, varianza, desviación estándar, coeficiente de variación e IQR) en los mismos niveles.
-- Producir los gráficos básicos que representan cada cálculo, aplicando los principios de diseño de la Unidad 2.
-- Verificar de forma independiente todos los estadísticos con R base y replicar las figuras con su graficación nativa.
+- Cuantificar la asociación entre consumo y costo con los coeficientes de Pearson y de Spearman, global y por sector.
+- Estimar una regresión lineal simple y **someterla a las cuatro pruebas de supuestos** que sostienen su inferencia.
+- Corregir la especificación incorporando el sector y su interacción con el consumo, y seleccionar entre los tres modelos con criterios que no se dejan engañar por R².
+- Medir la capacidad predictiva sobre datos no vistos con partición estratificada y validación cruzada.
+- Construir visualizaciones que **formen parte del método** y no lo ilustren, incluidas dos piezas interactivas.
+- Verificar todo el cálculo con una implementación independiente en R.
 - Entregar el informe escrito aplicando la normativa IEEE.
 
 ---
@@ -66,189 +66,206 @@ La comparación es directa porque `var()` y `sd()` de R son muestrales (divisor 
 │       ├── Logo.png                  # Logo institucional (marca de agua)
 │       ├── author/                   # Fotografía del autor
 │       └── figures/                  # Figuras generadas por los scripts
-│           ├── python/               # Producidas por statistics.py (Matplotlib)
-│           │   ├── hist_sturges_central_tendency.png   # Histograma + media, mediana y moda
-│           │   ├── freq_polygon_ogive.png              # Polígono de frecuencias + ojiva
-│           │   ├── bar_freq_by_sector.png              # Frecuencia de clientes por sector
-│           │   ├── bar_mean_median_by_sector.png       # Media vs. mediana por sector
-│           │   └── boxplot_dispersion_by_sector.png    # Diagrama de caja con media y σ
-│           └── r/                    # Réplicas independientes de statistics.R (graficación base)
-│               └── (mismos cinco nombres de archivo)
+│           ├── python/
+│           │   ├── regression/       # Fases 1-3 (Matplotlib) — 7 figuras
+│           │   │   ├── dispersion_ajuste_simple.png    # Fig. 3  · ajuste MCO con bandas
+│           │   │   ├── diagnostico_simple.png          # Fig. 4  · panel de diagnóstico
+│           │   │   ├── residuos_por_sector.png         # Fig. 5  · sesgo por sector
+│           │   │   ├── ajuste_por_sector.png           # Fig. 6  · M3 frente a M1
+│           │   │   ├── coeficientes_ic.png             # Fig. 7  · coeficientes con IC
+│           │   │   ├── comparacion_modelos.png         # Fig. 8  · tres criterios
+│           │   │   └── real_vs_predicho.png            # Fig. 9  · prueba retenida
+│           │   ├── advanced/         # Fase 4 (seaborn) — 4 figuras
+│           │   │   ├── sns_heatmap_correlacion.png     # Fig. 1  · matriz de correlaciones
+│           │   │   ├── sns_matriz_dispersion.png       # Fig. 2  · matriz de dispersión
+│           │   │   ├── sns_lmplot_sectores.png         # Fig. 10 · una regresión por sector
+│           │   │   └── sns_residuos_lowess.png         # Fig. 11 · residuos con lowess
+│           │   └── dashboard/        # Fase 4 (Plotly) — capturas de las piezas interactivas
+│           │       ├── dashboard_regresion.png         # Fig. 12 · tablero de cuatro paneles
+│           │       └── scatter_interactivo.png         # Fig. 13 · dispersión interactiva
+│           └── r/
+│               └── regression/       # Fase 5 (ggplot2 y graficación base) — 3 figuras
+│                   ├── ggplot_ajuste_por_sector.png    # Fig. 14 · regresión por sector
+│                   ├── ggplot_residuos_por_sector.png  # Fig. 15 · sesgo verificado en R
+│                   └── base_diagnostico_m1.png         # Fig. 16 · plot(modelo) canónico
 ├── src/
 │   ├── sections/                     # Secciones del informe (en orden de compilación)
 │   │   ├── introduction/             # I. Introducción
-│   │   ├── fundamentals/             # II. Conceptos fundamentales del análisis estadístico
-│   │   ├── methodology/              # III. Metodología (incluye herramientas y entorno)
-│   │   ├── results/                  # IV. Resultados
-│   │   └── conclusions/              # V. Conclusiones
+│   │   ├── methodology/              # II. Metodología
+│   │   ├── results/                  # III. Resultados
+│   │   └── conclusions/              # IV. Conclusiones
 │   └── appendices/
-│       ├── python-code/              # Apéndice A: código completo en Python
-│       └── r-code/                   # Apéndice B: código completo en R
+│       ├── python-code/              # Apéndice A: los cinco scripts de Python
+│       └── r-code/                   # Apéndice B: el script de R
 ├── utils/
-│   ├── codes/
-│   │   └── full/                     # Scripts completos, citados vía \lstinputlisting
-│   │       ├── statistics.py                  # Anexo A · Código en Python
-│   │       └── statistics.R                   # Anexo B · Código en R
+│   ├── codes/                        # Scripts completos, citados vía \lstinputlisting
+│   │   ├── python/
+│   │   │   ├── dataset.py                     # Fase 0
+│   │   │   ├── simple_regression.py           # Fase 1
+│   │   │   ├── multiple_regression.py         # Fase 2
+│   │   │   ├── ml_regression.py               # Fase 3
+│   │   │   └── advanced_viz.py                # Fase 4
+│   │   └── r/
+│   │       └── regression.R                   # Fase 5
 │   └── references/
-│       └── references.bib            # Bibliografía IEEE (12 referencias)
+│       └── references.bib            # Bibliografía IEEE (20 referencias citadas)
 └── build/                            # Artefactos de compilación LaTeX (generado)
 ```
 
-> ℹ️ Los scripts, el dataset y las figuras se generan en el proyecto hermano [`visualizations`](../visualizations); este repositorio contiene únicamente el informe y las copias citadas desde él.
+> ℹ️ Los scripts, el dataset y las figuras se generan en el proyecto hermano [`regression-analysis-and-advanced-visualization`](../regression-analysis-and-advanced-visualization); este repositorio contiene únicamente el informe y las copias citadas desde él.
 
 ### Estructura del informe
 
 | # | Sección | Contenido |
 |---|---|---|
 | — | Resumen y palabras clave | Cifras principales del estudio |
-| I | Introducción | Las tres familias de instrumentos, propósito del laboratorio y anticipo del hallazgo central |
-| II | Conceptos fundamentales | Distribución de frecuencias, tendencia central y dispersión — **7 ecuaciones** numeradas |
-| III | Metodología | Herramientas y entorno, conjunto de datos (**Tabla I**), flujo de trabajo y decisiones de implementación en ambos entornos |
-| IV | Resultados | Distribución de frecuencias, tendencia central, dispersión y verificación cruzada — **Tablas II–V** y **Figuras 1–4** |
-| V | Conclusiones | Seis conclusiones respaldadas por las cifras de la ejecución |
-| A | Anexo · Código en Python | `statistics.py` completo |
-| B | Anexo · Código en R | `statistics.R` completo |
-| — | Referencias | 12 entradas en formato IEEE |
+| I | Introducción | El problema del R² engañoso, el conjunto de datos y anticipo de los tres hallazgos |
+| II | Metodología | Conjunto de datos (**Tabla I**), la secuencia M1→M2→M3 con las diez medidas y sus fórmulas (**Tabla II**) y las seis fases del flujo (**Tabla III**) |
+| III | Resultados | Correlación (**Tabla IV**, **Figs. 1–2**), regresión simple y su diagnóstico (**Tablas V–VII**, **Figs. 3–5**), regresión múltiple y selección (**Tablas VIII–XI**, **Figs. 6–8**), validación predictiva (**Tabla XII**, **Fig. 9**), visualización avanzada (**Figs. 10–13**) y verificación cruzada (**Tabla XIII**, **Figs. 14–16**) |
+| IV | Conclusiones | Ocho conclusiones respaldadas por las cifras de la ejecución |
+| A | Apéndice · Código en Python | `dataset.py`, `simple_regression.py`, `multiple_regression.py`, `ml_regression.py` y `advanced_viz.py` |
+| B | Apéndice · Código en R | `regression.R` |
+| — | Referencias | 20 entradas en formato IEEE |
 
-**El cuerpo del informe no lleva listados de código.** La metodología describe cada decisión de implementación y remite a los Anexos A y B, donde ambos scripts se reproducen íntegros y en su orden de ejecución, con los bloques correspondiéndose uno a uno con las subsecciones de la metodología.
+**El cuerpo del informe no lleva listados de código.** La metodología describe cada decisión de implementación y remite a los Apéndices A y B, donde los seis scripts se reproducen íntegros y en su orden de ejecución.
 
 ---
 
 ## 🧪 Metodología
 
-### Fase 1 · Conjunto de datos
+### La secuencia de tres modelos
 
-Se emplea un dataset **simulado** de consumo energético mensual de 120 clientes de una empresa distribuidora, generado con **semilla fija (42)** para que las observaciones se regeneren de forma idéntica en cada ejecución.
+Cada modelo responde a una falla diagnosticada en el anterior:
 
-| Variable | Tipo | Descripción |
+| Modelo | Especificación | Qué añade |
 |---|---|---|
-| `cliente_id` | Nominal | Identificador único (CL-001 a CL-120) |
-| `sector` | Nominal | Residencial, Comercial o Industrial |
-| `consumo_kwh` | Cuantitativa continua | Consumo mensual en kilovatios-hora |
-| `costo_miles_cop` | Cuantitativa continua | Facturación mensual en miles de COP |
+| **M1** · Simple | costo ~ consumo | Referencia; su diagnóstico motiva todo lo demás |
+| **M2** · Aditivo | costo ~ consumo + sector | Un intercepto por grupo, pendiente única |
+| **M3** · Interacción | costo ~ consumo × sector | Un intercepto **y** una pendiente por grupo |
 
-| Sector | Probabilidad | Media base (kWh) | Desviación (kWh) | Tarifa (COP/kWh) |
-|---|---|---|---|---|
-| Residencial | 0,50 | 250 | 60 | 820 |
-| Comercial | 0,30 | 900 | 220 | 710 |
-| Industrial | 0,20 | 2.500 | 600 | 640 |
+### Las medidas empleadas (Tabla II del informe)
 
-> ℹ️ El carácter simulado es una **ventaja metodológica**: al saber de antemano que existen tres poblaciones con medias separadas, es posible evaluar si cada estadístico y cada gráfico revela u oculta esa estructura.
+| Medida | Fórmula | Qué aporta |
+|---|---|---|
+| Correlación de Pearson | *r* = Σ(*xᵢ*−*x̄*)(*yᵢ*−*ȳ*) / √[Σ(*xᵢ*−*x̄*)² Σ(*yᵢ*−*ȳ*)²] | Intensidad y sentido de la asociación lineal |
+| Regresión lineal simple | *yᵢ* = *β₀* + *β₁xᵢ* + *εᵢ* | Descompone el costo en parte lineal y error |
+| Criterio de mínimos cuadrados | mín Σ(*yᵢ* − *β₀* − *β₁xᵢ*)² | Elige la recta que minimiza los residuos al cuadrado |
+| Estimadores | *β̂₁* = Σ(*xᵢ*−*x̄*)(*yᵢ*−*ȳ*)/Σ(*xᵢ*−*x̄*)²,  *β̂₀* = *ȳ* − *β̂₁x̄* | Solución cerrada, sin búsqueda numérica |
+| Coeficiente de determinación | *R²* = 1 − Σ(*yᵢ*−*ŷᵢ*)²/Σ(*yᵢ*−*ȳ*)² | Variabilidad del costo que el modelo explica |
+| Regresión con interacción | *yᵢ* = *β₀* + *β₁xᵢ* + *β₂D_C* + *β₃D_I* + *β₄xᵢD_C* + *β₅xᵢD_I* + *εᵢ* | Intercepto y pendiente propios por sector |
+| *R²* ajustado | *R²ₐⱼ* = 1 − (1−*R²*)(*n*−1)/(*n*−*k*−1) | Penaliza los parámetros que *R²* premia |
+| Criterio de Akaike | AIC = −2 ln *L* + 2*k* | Equilibra ajuste y complejidad |
+| Criterio de Schwarz | BIC = −2 ln *L* + *k* ln *n* | Igual, pero castiga más la complejidad |
+| RMSE | √[(1/*n*) Σ(*yᵢ*−*ŷᵢ*)²] | Error en las unidades del costo |
 
-### Fase 2 · Distribución de frecuencias
+Los supuestos se contrastan aparte: **RESET de Ramsey** (linealidad), **Breusch-Pagan** (homocedasticidad), **Jarque-Bera** (normalidad) y **Durbin-Watson** (independencia).
 
-El número de clases se obtiene con la **regla de Sturges**, *k* = 1 + 3,322 · log₁₀(*n*). Con *n* = 120 resultan **8 clases** de amplitud constante (457,0 kWh) sobre el recorrido de 121,2 a 3.777,1 kWh.
+### Las seis fases del flujo (Tabla III del informe)
 
-### Fase 3 · Medidas de tendencia central
+| Fase | Script | Qué produce |
+|---|---|---|
+| 0 | `dataset.py` | Conjunto de datos reproducible de 120 clientes |
+| 1 | `simple_regression.py` | Correlaciones, modelo M1, pruebas de supuestos y 3 figuras |
+| 2 | `multiple_regression.py` | Modelos M2 y M3, contraste F, tarifas por sector y 3 figuras |
+| 3 | `ml_regression.py` | Partición estratificada, validación cruzada y 1 figura |
+| 4 | `advanced_viz.py` | 4 figuras de seaborn y 2 piezas interactivas de Plotly |
+| 5 | `regression.R` | Reestimación con `lm()`, verificación cruzada y 4 figuras |
 
-La media y la mediana salen directamente de pandas. La **moda** exige tratamiento aparte: sobre una variable continua ningún valor se repite, así que se localiza la **clase modal** y se interpola dentro de ella con *M<sub>o</sub>* = *L* + *d₁*/(*d₁* + *d₂*) · *w*. El cálculo se repite por sector **recomputando sus propias clases de Sturges** — un grupo de 18 observaciones no admite las mismas ocho clases que el conjunto completo.
+> ℹ️ La **Fase 4 lee las tablas que dejó la Fase 2** en lugar de recalcularlas, de modo que las cifras de las figuras y las del texto no puedan divergir.
 
-### Fase 4 · Medidas de dispersión
-
-Rango, varianza, desviación estándar, coeficiente de variación e IQR, con `ddof=1` explícito para obtener los estimadores **muestrales**, que son justamente los que R implementa por defecto.
-
-### Fase 5 · Gráficos básicos
-
-Principios de diseño aplicados en todas las figuras: título informativo, ejes con unidades, eje de frecuencias desde cero, **cuadrícula sutil detrás de los datos**, color funcional y etiquetas de datos.
-
-### Fase 6 · Verificación cruzada en R
-
-El script de R **no reutiliza ningún resultado de Python**: lee el mismo CSV y vuelve a calcular desde cero la tabla de frecuencias y todos los estadísticos, de modo que cualquier discrepancia revelaría un error de implementación.
+Entorno: **Python 3.14** (statsmodels 0.14.6, scikit-learn 1.9.0, Matplotlib 3.11.1, seaborn 0.13.2, Plotly 6.9.0, sobre NumPy y pandas) y **R 4.6.1** con ggplot2 4.0.3, desde RStudio Desktop. El reparto entre statsmodels y scikit-learn no es arbitrario: el primero entrega errores estándar, intervalos y pruebas de supuestos; el segundo, la partición estratificada y la validación cruzada que aquel no tiene.
 
 ---
 
 ## 📊 Resultados
 
-### Distribución de frecuencias
+### Análisis de correlación
 
-Antes de leer las frecuencias conviene saber **quién ocupa cada clase**: los tres sectores cubren franjas de consumo que apenas se solapan (Residencial 121,2–424,8; Comercial 430,9–1.339,3; Industrial 1.674,0–3.777,1 kWh), así que cada clase resulta casi de un solo sector.
-
-| Clase (kWh) | Resid. | Comer. | Indus. | Clientes |
-|---|---|---|---|---|
-| [121,2 – 578,2) | 62 | 3 | – | 65 |
-| [578,2 – 1.035,2) | – | 27 | – | 27 |
-| [1.035,2 – 1.492,2) | – | 10 | – | 10 |
-| [1.492,2 – 1.949,2) | – | – | 5 | 5 |
-| [1.949,2 – 2.406,1) | – | – | 1 | 1 |
-| [2.406,1 – 2.863,1) | – | – | 6 | 6 |
-| [2.863,1 – 3.320,1) | – | – | 3 | 3 |
-| [3.320,1 – 3.777,1] | – | – | 3 | 3 |
-| **Total** | **62** | **40** | **18** | **120** |
-
-Sobre esas mismas clases se construye la distribución de frecuencias completa:
-
-| Clase (kWh) | Marca | *fᵢ* | *Fᵢ* | *hᵢ* (%) | *Hᵢ* (%) |
+| Grupo | *n* | Pearson *r* | *R²* | Spearman *ρ* | Tarifa media (COP/kWh) |
 |---|---|---|---|---|---|
-| [121,2 – 578,2) | 349,7 | **65** | 65 | **54,2** | 54,2 |
-| [578,2 – 1.035,2) | 806,7 | 27 | 92 | 22,5 | **76,7** |
-| [1.035,2 – 1.492,2) | 1.263,7 | 10 | 102 | 8,3 | 85,0 |
-| [1.492,2 – 1.949,2) | 1.720,7 | 5 | 107 | 4,2 | 89,2 |
-| [1.949,2 – 2.406,1) | 2.177,6 | **1** | 108 | **0,8** | 90,0 |
-| [2.406,1 – 2.863,1) | 2.634,6 | 6 | 114 | 5,0 | 95,0 |
-| [2.863,1 – 3.320,1) | 3.091,6 | 3 | 117 | 2,5 | 97,5 |
-| [3.320,1 – 3.777,1] | 3.548,6 | 3 | 120 | 2,5 | 100,0 |
+| Global | 120 | 0,9984 | 0,9969 | 0,9947 | 758,1 |
+| Residencial | 62 | 0,9820 | 0,9643 | 0,9671 | **821,8** |
+| Comercial | 40 | 0,9866 | 0,9733 | 0,9799 | **710,4** |
+| Industrial | 18 | 0,9937 | 0,9875 | 0,9856 | **645,0** |
 
-La primera clase concentra el **54,2 %** de los clientes y las dos primeras acumulan el **76,7 %**. El **vacío entre 1.949,2 y 2.406,1 kWh** —una sola observación— es la huella de la estructura sectorial: separa a los clientes comerciales más altos de los industriales e indica que no se trata de una única población con cola larga, sino de **grupos con escalas distintas**.
+La asociación se mantiene **dentro de cada sector**: no es una correlación inducida por mezclar tres poblaciones. La columna de la derecha adelanta el hallazgo que estructura el informe — la tarifa media **desciende con la escala del cliente**, y esa es justamente la variable que el modelo simple ignora.
 
 <div align="center">
-    <img src="assets/images/figures/python/hist_sturges_central_tendency.png" width="88%" alt="Histograma con las clases de Sturges y las tres medidas de tendencia central">
+    <img src="assets/images/figures/python/advanced/sns_heatmap_correlacion.png" width="55%" alt="Matriz de correlaciones">
 </div>
 
-<p align="center"><em>La mediana y la moda permanecen en la zona de mayor densidad; la media es arrastrada hacia la derecha hasta una región donde apenas hay observaciones.</em></p>
+<p align="center"><em>La tarifa correlaciona −0,7639 con el consumo: quien más consume paga menos por unidad.</em></p>
 
-### Medidas de tendencia central
+### Regresión simple: buen ajuste, mala especificación
 
-| Grupo | *n* | Media | Mediana | Moda interpolada |
+El modelo es *ŷ* = 50,42 + 0,6349 *x*, con ambos coeficientes significativos con enorme holgura. El diagnóstico dice otra cosa:
+
+| Prueba | Estadístico | p-valor | Supuesto | Conclusión |
 |---|---|---|---|---|
-| Residencial | 62 | 248,3 | 240,6 | 232,7 |
-| Comercial | 40 | 878,1 | 866,6 | 787,8 |
-| Industrial | 18 | 2.654,0 | 2.666,8 | 1.849,3 |
-| **Global** | **120** | **819,1** | **378,6** | **409,6** |
+| Breusch-Pagan | 23,018 | 1,6 × 10⁻⁶ | Varianza constante | **Se rechaza** |
+| Jarque-Bera | 214,134 | 3,2 × 10⁻⁴⁷ | Residuos normales | **Se rechaza** |
+| Durbin-Watson | 2,275 | — | Residuos no correlacionados | No se rechaza |
+| RESET de Ramsey | 0,896 | 0,346 | Forma lineal adecuada | No se rechaza |
 
-**Dentro de cada sector, media y mediana casi coinciden** — señal de distribuciones simétricas. **A nivel global la media duplica con creces a la mediana**, no por valores atípicos sino porque el promedio mezcla tres poblaciones de escalas distintas.
+> 💡 **La combinación es la clave.** Que RESET **no** rechace indica que la forma funcional es correcta; que Breusch-Pagan y Jarque-Bera **sí** rechacen señala, por tanto, un problema distinto: **falta una variable**.
 
-> ⚠️ **La media global no describe a ningún cliente típico.** Todo análisis operativo del consumo debe segmentarse por sector antes de promediar.
+| Sector | *n* | Residuo medio | Desviación estándar |
+|---|---|---|---|
+| Residencial | 62 | −4,39 | 13,36 |
+| Comercial | 40 | +15,45 | 28,20 |
+| Industrial | 18 | −19,23 | 57,51 |
 
-La moda de la variable nominal `sector` es **Residencial**, con 62 de los 120 clientes (52 %).
+En un modelo correctamente especificado esos tres promedios deberían ser nulos.
 
 <div align="center">
-    <img src="assets/images/figures/python/bar_mean_median_by_sector.png" width="82%" alt="Media y mediana del consumo por sector">
+    <img src="assets/images/figures/python/regression/residuos_por_sector.png" width="70%" alt="Sesgo por sector del modelo simple">
 </div>
 
-<p align="center"><em>La casi igualdad de las parejas de barras dentro de cada grupo hace visible la simetría local, pese a la asimetría global de la distribución.</em></p>
+<p align="center"><em>Ninguna de las tres cajas se centra en el residuo nulo.</em></p>
 
-### Medidas de dispersión
+### Regresión múltiple: los coeficientes tienen nombre
 
-| Grupo | Rango | Varianza | *s* | CV (%) | IQR |
+| Sector | Pendiente estimada | Tarifa implícita (COP/kWh) | Tarifa observada (COP/kWh) | Diferencia |
+|---|---|---|---|---|
+| Residencial | 0,7916 | 791,6 | 821,8 | −3,67 % |
+| Comercial | 0,7048 | 704,8 | 710,4 | −0,79 % |
+| Industrial | 0,6710 | 671,0 | 645,0 | +4,03 % |
+
+> ⚠️ **Esta correspondencia es el argumento más fuerte a favor del modelo, y ningún criterio de información puede darlo:** los coeficientes no solo ajustan bien, sino que **significan algo verificable fuera del modelo**.
+
+| Modelo | *k* | *R²* aj. | AIC | BIC | RMSE | Breusch-Pagan p | Jarque-Bera p |
+|---|---|---|---|---|---|---|---|
+| M1 · Simple | 2 | 0,9968 | 1.168,9 | 1.174,5 | 31,03 | 1,6 × 10⁻⁶ | 3,2 × 10⁻⁴⁷ |
+| M2 · Aditivo | 4 | 0,9978 | 1.126,3 | 1.137,5 | 25,55 | 7,4 × 10⁻⁴ | 1,6 × 10⁻²⁵⁴ |
+| M3 · Interacción | 6 | **0,9979** | **1.123,2** | 1.139,9 | **24,80** | 1,2 × 10⁻³ | 1,2 × 10⁻²⁴⁸ |
+
+<div align="center">
+    <img src="assets/images/figures/python/regression/ajuste_por_sector.png" width="88%" alt="El modelo con interacción frente al simple">
+</div>
+
+<p align="center"><em>En la escala del costo las tres rectas casi se superponen; traducidas a COP/kWh, la estructura aparece con nitidez.</em></p>
+
+### Validación predictiva
+
+| Estimador | *R²* prueba | RMSE prueba | MAPE prueba | *R²* val. cruzada | RMSE val. cruzada |
 |---|---|---|---|---|---|
-| Residencial | 303,6 | 3.736,3 | 61,1 | 24,6 | 69,5 |
-| Comercial | 908,4 | 42.989,5 | 207,3 | 23,6 | 255,3 |
-| Industrial | 2.103,1 | 471.785,8 | 686,9 | 25,9 | 1.322,8 |
-| **Global** | **3.655,9** | **763.564,7** | **873,8** | **106,7** | **742,0** |
+| MCO simple (solo consumo) | 0,9934 | 39,27 | 5,12 % | 0,9942 | 30,61 ± 10,01 |
+| MCO múltiple (consumo × sector) | **0,9944** | **36,26** | **3,68 %** | **0,9960** | **25,49 ± 10,53** |
 
-Tres deducciones:
-
-1. **La dispersión absoluta crece con la escala del sector** — *s* pasa de 61,1 a 686,9 kWh y la varianza amplifica esa brecha en dos órdenes de magnitud.
-2. **La dispersión relativa es homogénea** — el CV se mantiene entre 23,6 % y 25,9 % en los tres sectores: cada grupo es igualmente variable en proporción a su media.
-3. **El CV global (106,7 %) cuadruplica al de cualquier sector** — esa explosión no proviene de la dispersión interna de los grupos, sino de la **distancia entre sus centros**. Es la evidencia numérica de que el conjunto global es una mezcla de poblaciones, coherente con el vacío de la tabla de frecuencias y con la separación sin traslape de las cajas.
-
-<div align="center">
-    <img src="assets/images/figures/python/boxplot_dispersion_by_sector.png" width="82%" alt="Diagrama de caja de la dispersión del consumo por sector">
-</div>
-
-<p align="center"><em>Cajas y bigotes progresivamente más amplios, sin traslape entre sectores: la brecha de escala se aprecia de un solo vistazo.</em></p>
+El error en validación cruzada cae de 30,61 a 25,49 miles de pesos, una **reducción del 16,7 %**. La ganancia es real y no un artefacto de la complejidad añadida — algo que un *R²* creciente dentro de la muestra nunca habría podido descartar.
 
 ### Verificación cruzada Python ↔ R
 
-R recalculó de forma independiente la tabla de frecuencias completa —las mismas ocho clases— y **todos los estadísticos coinciden dígito a dígito**, incluida la moda interpolada por clase modal. La equivalencia entre `var()`/`sd()` de R y el parámetro `ddof=1` de pandas explica la coincidencia exacta de las varianzas muestrales.
+Los seis coeficientes de M3 coinciden **dígito a dígito** (diferencia máxima 0,0000). Dos diferencias de convención merecen registrarse:
+
+1. **R ordena la matriz de diseño** poniendo primero las variables continuas, mientras que `patsy` pone primero las categóricas: la comparación se empareja por nombre de término, no por posición.
+2. **El AIC de R supera al de statsmodels en exactamente 2,0 unidades**, porque R cuenta la varianza residual como un parámetro adicional. La diferencia es constante y no altera el orden de los modelos.
 
 <div align="center">
-    <img src="assets/images/figures/r/freq_polygon_ogive.png" width="92%" alt="Polígono de frecuencias y ojiva replicados en R">
+    <img src="assets/images/figures/r/regression/ggplot_residuos_por_sector.png" width="88%" alt="El sesgo por sector verificado en R">
 </div>
 
-<p align="center"><em>Réplica en R del polígono y la ojiva. La cuadrícula se traza en dos pasadas para mantenerla detrás de los datos, conservando el principio de diseño.</em></p>
-
-**El análisis descriptivo y sus principios de representación son independientes de la herramienta empleada.**
+<p align="center"><em>El rombo marca el residuo medio de cada sector: se desplaza del cero en M1 y se centra en él con la interacción.</em></p>
 
 ---
 
@@ -260,29 +277,26 @@ R recalculó de forma independiente la tabla de frecuencias completa —las mism
 - **Compilador:** `pdflatex` o `latexmk` (recomendado)
 - **Editor recomendado:** VS Code (con extensión LaTeX Workshop), TeXstudio u Overleaf
 
-Paquetes del preámbulo, todos incluidos en cualquier distribución completa:
-
 | Paquete | Para qué |
 |---|---|
 | `babel` (spanish) | Idioma, guionado y etiquetas |
-| `amsmath`, `amssymb`, `amsfonts` | Las 7 ecuaciones y `\text{}` dentro de modo matemático |
-| `graphicx` | Inclusión de las 10 imágenes |
-| `array` | Columna `p{}` con `\raggedright` en la Tabla I |
-| `listings` + `xcolor` | Resaltado de los dos scripts en los anexos |
-| `float` | Especificador `[H]` en las tablas |
-| `cuted` + `capt-of` | Entorno `strip` y `\captionof` — tres de las cuatro figuras a doble columna |
+| `amsmath`, `amssymb`, `amsfonts` | Las diez fórmulas de la Tabla II y los p-valores en notación científica |
+| `graphicx` | Inclusión de las 16 imágenes |
+| `array` | Columnas `p{}` con `\raggedright` en las Tablas I–III |
+| `listings` + `xcolor` | Resaltado de los seis scripts en los apéndices |
+| `float` | Especificador `[H]` en las tablas de una columna |
 | `tcolorbox` | Recuadros destacados — cargado de reserva |
 | `eso-pic` + `transparent` | Marca de agua institucional |
 | `hyperref` | Enlaces y anclas del PDF (**se carga de último**) |
 
 ### Para ejecutar los scripts
 
-Los scripts viven en el proyecto hermano [`visualizations`](../visualizations).
+Los scripts viven en el proyecto hermano [`regression-analysis-and-advanced-visualization`](../regression-analysis-and-advanced-visualization).
 
 | Entorno | Dependencias |
 |---|---|
-| Python | `numpy`, `pandas`, `matplotlib` |
-| R | Base — `stats` y `graphics`, sin paquetes externos |
+| Python | `numpy`, `pandas`, `statsmodels`, `scikit-learn`, `matplotlib`, `seaborn`, `plotly`, `kaleido` |
+| R | Base (`stats`, `graphics`) más `ggplot2` |
 
 ---
 
@@ -294,12 +308,17 @@ Los scripts viven en el proyecto hermano [`visualizations`](../visualizations).
 latexmk -pdf -outdir=build main.tex
 ```
 
-Resuelve referencias cruzadas y bibliografía en una sola invocación.
-
 > ⚠️ BibTeX se ejecuta con el directorio de trabajo en `build/`, así que la ruta relativa `utils/references/references.bib` no se resuelve sola. Si aparece `I couldn't open database file`, exporta `BIBINPUTS` apuntando a la raíz del proyecto antes de compilar:
 >
 > ```bash
+> # Linux / macOS
 > BIBINPUTS=".:..:$PWD:" latexmk -pdf -outdir=build main.tex
+> ```
+>
+> ```powershell
+> # Windows (PowerShell) — el separador de rutas es ';'
+> $env:BIBINPUTS = "$PWD;"
+> latexmk -pdf -outdir=build main.tex
 > ```
 
 ### Opción 2: `pdflatex` manual
@@ -321,53 +340,77 @@ latexmk -c -outdir=build
 
 ## 🎨 Configuración del Documento
 
-### Listings con resaltado para Python y R
+### Flotantes a doble columna
 
-El preámbulo de [`main.tex`](main.tex) configura un `\lstset` común con la paleta del documento, numeración de líneas y `breaklines=true`, y sobre él define **dos estilos por lenguaje**:
+Las 16 figuras se reparten entre `figure[H]` a una columna (las de proporción cercana al cuadrado, como el mapa de calor y la matriz de dispersión) y `figure*` a doble columna (las apaisadas, con proporciones de 2,5:1 a 3:1). Las tablas anchas —**II**, **V**, **VI**, **VIII**, **X**, **XI** y **XII**— usan `table*` por la misma razón.
 
-```latex
-\lstdefinestyle{python}{language=Python, morekeywords={np, plt, pd, ax, fig, Path}}
-\lstdefinestyle{rlang}{language=R, morekeywords={png, dev, par, grid, ...}}
-```
-
-Uso desde los apéndices:
+Un `figure*` solo admite la posición `t` (tope de página) o `p` (página de flotantes): **nunca `h` ni `b`**. Con los valores por defecto (`\dbltopfraction` = 0,7) las figuras altas no caben en el tope y se acumulan hasta el final del documento, así que el preámbulo amplía el espacio disponible:
 
 ```latex
-\lstinputlisting[style=python]{utils/codes/full/statistics.py}
-\lstinputlisting[style=rlang]{utils/codes/full/statistics.R}
+\renewcommand{\topfraction}{0.92}
+\renewcommand{\textfraction}{0.06}
+\renewcommand{\floatpagefraction}{0.72}
+\renewcommand{\dbltopfraction}{0.92}
+\renewcommand{\dblfloatpagefraction}{0.72}
+\setcounter{topnumber}{3}
+\setcounter{dbltopnumber}{3}
+\setcounter{totalnumber}{5}
 ```
 
-> ℹ️ **El código va íntegro al final, en los apéndices.** El cuerpo del informe queda libre de listados: la metodología describe las decisiones de implementación y remite a los Anexos A y B, donde cada script se reproduce completo y en su orden de ejecución. Así el hilo argumental —tabla, figura, interpretación— no se interrumpe cada dos párrafos con media página de código.
+> ℹ️ Con 16 figuras y 13 tablas, algunas figuras aparecen una o dos páginas después del párrafo que las cita, y varias páginas se resuelven como páginas de flotantes. Es el comportamiento esperado del mecanismo de flotantes de IEEE cuando el material gráfico es abundante; el texto sigue siendo continuo y toda figura está referenciada desde él.
 
-El bloque `literate` cubre tildes, `ñ`/`Ñ`, el símbolo de grado y **los dos caracteres matemáticos que aparecen en el código fuente**: `σ` (etiqueta del diagrama de caja) y `≈` (leyenda de la ojiva). Sin esas entradas, `inputenc` falla al procesar los `.py`.
+### Listados de código: `breakautoindent`
+
+El código de Plotly en `advanced_viz.py` tiene continuaciones con **más de 50 columnas de sangría**. Por defecto `listings` alinea el corte de una línea partida con esa sangría original (`breakautoindent=true`), y el resultado desborda la caja. Ampliar el margen derecho lo **empeora**, porque reduce el ancho útil. La solución es cortar al margen izquierdo del bloque:
+
+```latex
+\lstset{
+    breaklines=true,
+    breakatwhitespace=false,
+    breakautoindent=false,
+    breakindent=0pt,
+}
+```
+
+### Caracteres no ASCII en el código fuente
+
+El bloque `literate` cubre tildes, `ñ`/`Ñ` y **los símbolos matemáticos que aparecen en los comentarios y en las etiquetas de los gráficos**: `×`, `−` (menos tipográfico, distinto del guion ASCII), `²`, `Δ`, `√`, `ŷ`, `·`, `—`, `–` y `¿`. Sin esas entradas, `inputenc` falla al procesar los `.py` y el `.R`.
+
+```latex
+literate=
+    {×}{{$\times$}}1 {−}{{$-$}}1 {²}{{$^{2}$}}1
+    {Δ}{{$\Delta$}}1 {√}{{$\surd$}}1 {ŷ}{{$\hat{y}$}}1
+    ...
+```
+
+### Tablas anchas: `\tabcolsep`
+
+Las Tablas **II** (fórmulas) y **VIII** (coeficientes de M3) son las más anchas del informe y desbordaban la caja a doble columna. En lugar de reducir el cuerpo de letra, que rompería la uniformidad tipográfica, se estrecha la separación entre columnas dentro del entorno:
+
+```latex
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{|>{\raggedright\arraybackslash}p{3.3cm}|c|>{\raggedright\arraybackslash}p{5.2cm}|}
+```
+
+`\arraybackslash` es obligatorio: `\raggedright` redefine `\\`, y sin restaurarlo el salto de fila deja de funcionar dentro de esa columna.
 
 ### Símbolo de porcentaje dentro de ecuaciones
 
-`babel` con opción `spanish` redefine `\%` mediante `\es@sppercent`, que inspecciona `\lastskip` para decidir el espaciado. En modo matemático el último *skip* es un `muskip`, lo que provoca el error `Incompatible glue units`:
+`babel` con opción `spanish` redefine `\%` mediante `\es@sppercent`, que inspecciona `\lastskip`. En modo matemático el último *skip* es un `muskip`, lo que provoca `Incompatible glue units`:
 
 ```latex
-% ✗ falla:  CV = \frac{s}{\bar{x}} \times 100\,\%
+% ✗ falla:  100\,\%
 % ✓ correcto:
-CV = \frac{s}{\bar{x}} \times 100\,\text{\%}
+100\,\text{\%}
 ```
 
-Envolverlo en `\text{}` (de `amsmath`) devuelve el comando a modo texto, donde `\lastskip` es una *glue* normal. En modo texto corriente, `50\,\%` funciona sin problema.
+### Cursivas dentro de los pies de tabla
 
-### Tablas con columnas de ancho fijo
-
-La columna *Descripción* de la Tabla I mide 3,1 cm. A ese ancho el justificado por defecto de `p{}` no encuentra puntos de corte razonables y LaTeX emite `Underfull \hbox (badness 10000)` en casi todas las filas, además de dejar huecos visibles entre palabras. La solución es alinear a la izquierda con el especificador de columna del paquete `array`:
-
-```latex
-\usepackage{array}
-...
-\begin{tabular}{|l|l|>{\raggedright\arraybackslash}p{3.1cm}|}
-```
-
-`\arraybackslash` es obligatorio: `\raggedright` redefine `\\`, y sin restaurarlo el salto de fila de la tabla deja de funcionar dentro de esa columna.
+IEEEtran compone los pies de tabla en **versalitas**, y la familia Times no tiene forma versalita-cursiva: un `\textit{}` dentro de un `\caption` de tabla dispara `Font shape OT1/ptm/m/scit undefined`. Los nombres de librerías van sin cursiva en esos pies.
 
 ### Etiquetas en español
 
-`babel` con opción `spanish` reasigna `\tablename` a *Cuadro* al iniciar el documento, por lo que un `\renewcommand` en el preámbulo **no basta**: la redefinición debe inyectarse dentro de `\captionsspanish`.
+`babel` reasigna `\tablename` a *Cuadro* al iniciar el documento, por lo que un `\renewcommand` en el preámbulo **no basta**: debe inyectarse dentro de `\captionsspanish`.
 
 ```latex
 \addto\captionsspanish{%
@@ -376,133 +419,42 @@ La columna *Descripción* de la Tabla I mide 3,1 cm. A ese ancho el justificado 
 }
 ```
 
-| Comando original | Etiqueta personalizada |
-|---|---|
-| `\tablename` | `Tabla` (en vez del default español `Cuadro`) |
-| `\lstlistingname` | `Código` (en vez de `Listing`) |
-| `\refname` | `Referencias` |
-
 ### Marca de agua institucional
 
-Aparece en **todas las páginas**, dibujada en la capa de fondo (`\AddToShipoutPictureBG` de `eso-pic`), por lo que queda por detrás del texto y de las figuras. Está controlada por el flag `\ifshowwatermark` definido en [`main.tex`](main.tex); basta cambiar `\showwatermarktrue` por `\showwatermarkfalse` para desactivarla sin tocar nada más.
-
-```latex
-\newif\ifshowwatermark
-\showwatermarktrue
-\AddToShipoutPictureBG{%
-    \ifshowwatermark
-        \AtPageCenter{%
-            \makebox(0,0){%
-                \transparent{0.18}%
-                \includegraphics[width=1.0\textwidth]{assets/images/Logo}%
-            }%
-        }%
-    \fi
-}
-```
-
-Parámetros ajustables: `\transparent{0.18}` (opacidad) y `width=...` del `\includegraphics` (tamaño). Los bloques de código tienen fondo opaco propio, así que recortan la marca en esas zonas.
-
-### Orden de carga de paquetes
-
-`hyperref` se carga **de último** en el preámbulo. Cargado antes que `float` y `capt-of`, duplica el ancla PDF de los floats y pdfTeX emite `destination with the same identifier` en cada compilación.
-
-### Figuras Python + R en bloques a doble columna
-
-Cada figura del informe presenta **la versión de Matplotlib junto a su réplica independiente en R** bajo un mismo pie, de modo que ambas comparten número y el lector las compara sin saltar de página. Tres de las cuatro figuras se maquetan con el entorno `strip` de `cuted`, que inserta un bloque **a doble columna en su posición literal, sin flotar**:
-
-```latex
-\clearpage
-
-\begin{strip}
-    \centering
-    \includegraphics[width=0.86\linewidth]{assets/images/figures/python/freq_polygon_ogive.png}
-
-    \vspace{6pt}
-
-    \includegraphics[width=0.86\linewidth]{assets/images/figures/r/freq_polygon_ogive.png}
-
-    \vspace{4pt}
-
-    \captionof{figure}{...en Matplotlib (arriba) y su réplica en R (abajo)}
-    \label{polygon_ogive}
-\end{strip}
-```
-
-En `strip`, `\linewidth` es el **ancho de texto completo**, no el de columna, y el pie se escribe con `\captionof{figure}{...}` (de `capt-of`) porque el entorno no es un flotante y `\caption` no funcionaría allí.
-
-| Figura | Entorno | Disposición | Nota |
-|---|---|---|---|
-| `hist_sturges` | `strip` | Python izquierda · R derecha | Cada panel a `0.49\textwidth` dentro de un `minipage` |
-| `polygon_ogive` | `strip` + `\clearpage` | Python arriba · R abajo | Paneles de 2,65:1, ilegibles a una sola columna |
-| `bar_sector` | `strip` + `\clearpage` | Rejilla 2×2 | Fusiona frecuencia por sector (izquierda) y media/mediana (derecha) en **una sola figura** |
-| `boxplot_dispersion` | `figure[!htbp]` | Python arriba · R abajo | Única figura que cabe holgada en una columna |
-
-Tres advertencias sobre `strip`, aprendidas a golpes:
-
-> ⚠️ **No se parte entre páginas.** Si el bloque no cabe en lo que queda, se corta en silencio contra el borde inferior. Por eso las figuras altas llevan un `\clearpage` **inmediatamente antes**.
-
-> ⚠️ **Se traga los `\write` pendientes de la página.** Todo `\label` que quede *encima* del `strip` en la misma página desaparece del `.aux` y su `\ref` queda sin resolver — le ocurrió a `central_tendency`, cuya Tabla IV precedía al bloque. La solución es abrir la página con el `strip` (`\clearpage` delante, texto explicativo debajo), de forma que no haya material previo que perder.
-
-> ⚠️ **Exige revisión visual tras cada edición grande**, porque no flota: se queda exactamente donde está en el `.tex`, sin reacomodarse como haría un `figure*`.
-
-> ℹ️ La alternativa estándar es `figure*[t]`, el flotante de doble columna de IEEE, que no sufre ninguno de los dos primeros problemas. Se descartó porque sube al tope de la página **siguiente** y las figuras terminaban a dos páginas del párrafo que las comenta.
-
-### Autor repetido en la bibliografía
-
-Las referencias [5] y [8] son material de la asignatura y comparten autor. Por defecto `IEEEtran.bst` sustituye el nombre repetido por una raya (`——`) en la segunda entrada. Para imprimir el nombre completo en ambas se usa la entrada de control del propio estilo, declarada en [`references.bib`](utils/references/references.bib):
-
-```bibtex
-@IEEEtranBSTCTL{IEEEtran:BSTcontrol,
-  CTLdash_repeated_names = "no",
-}
-```
-
-y activada al inicio de [`main.tex`](main.tex):
-
-```latex
-\bstctlcite{IEEEtran:BSTcontrol}
-```
-
-`\bstctlcite` es una cita que no imprime nada: la entrada de control no aparece en la lista de referencias ni consume número. Debe ejecutarse antes de la primera cita real del documento.
+Aparece en todas las páginas, dibujada en la capa de fondo (`\AddToShipoutPictureBG` de `eso-pic`), por detrás del texto y de las figuras. La controla el flag `\ifshowwatermark`; basta cambiar `\showwatermarktrue` por `\showwatermarkfalse` para desactivarla.
 
 ### Convención de etiquetas (`\label`)
 
-Nombres descriptivos en `snake_case`, sin prefijo de tipo:
-
 | Elemento | Ejemplos |
 |---|---|
-| Tablas | `dataset_variables`, `class_sector`, `freq_table`, `central_tendency`, `dispersion` |
-| Figuras | `hist_sturges`, `polygon_ogive`, `bar_sector`, `boxplot_dispersion` |
-| Ecuaciones | `sturges`, `moda_interpolada`, `rango`, `varianza`, `desviacion`, `cv`, `iqr` |
+| Tablas | `dataset_variables`, `measures`, `workflow`, `correlations`, `coef_m1`, `diagnostics_m1`, `sector_bias`, `coef_m3`, `anova`, `tariffs`, `model_comparison`, `ml_validation`, `cross_check` |
+| Figuras | `heatmap`, `scatter_matrix`, `fit_m1`, `diag_panel`, `bias_boxplot`, `fit_m3`, `coef_plot`, `criteria`, `holdout`, `lmplot`, `lowess`, `dashboard`, `scatter_plotly`, `ggplot_fit`, `ggplot_bias`, `base_diag` |
 | Apéndices | `anexo_python`, `anexo_r` |
 
 ---
 
 ## 📋 Estado del Documento
 
-El informe está **terminado**: compila en 11 páginas sin desbordes de caja y sin referencias ni citas sin resolver; todas las figuras, tablas y ecuaciones están referenciadas desde el texto.
+El informe está **terminado**: compila en 24 páginas sin desbordes de caja y sin referencias ni citas sin resolver; todas las figuras y tablas están referenciadas desde el texto.
 
 ### ✅ Completado
 
 #### Secciones
 - ✅ **Resumen** — con las cifras principales del estudio
-- ✅ **Introducción** — las tres familias de instrumentos, propósito del laboratorio y anticipo del hallazgo central
-- ✅ **Conceptos fundamentales** — distribución de frecuencias con la regla de Sturges, medidas de tendencia central con la moda interpolada y medidas de dispersión
-- ✅ **Metodología** — herramientas y entorno de trabajo, conjunto de datos, flujo de trabajo y reproducibilidad, y las decisiones de implementación de cada familia de medidas en Python y en R, con remisión a los anexos
-- ✅ **Resultados** — distribución de frecuencias, tendencia central, dispersión y verificación cruzada
-- ✅ **Conclusiones** — seis conclusiones respaldadas por las cifras de la ejecución
+- ✅ **Introducción** — el problema del *R²* engañoso y anticipo de los tres hallazgos
+- ✅ **Metodología** — conjunto de datos, la secuencia M1→M2→M3, las diez medidas con sus fórmulas y las seis fases del flujo
+- ✅ **Resultados** — correlación, regresión simple y diagnóstico, regresión múltiple y selección, validación predictiva, visualización avanzada y verificación cruzada
+- ✅ **Conclusiones** — ocho conclusiones respaldadas por las cifras de la ejecución
 
 #### Apéndices
-- ✅ **Anexo A** — código completo en Python (`statistics.py`), en su orden de ejecución
-- ✅ **Anexo B** — código completo en R (`statistics.R`), con los mismos bloques que el Anexo A
+- ✅ **Apéndice A** — los cinco scripts de Python, en su orden de ejecución
+- ✅ **Apéndice B** — `regression.R`
 
 #### Infraestructura
-- ✅ 2 scripts completos en `utils/codes/full/`, reproducidos íntegros en los apéndices (el cuerpo del informe no lleva listados)
-- ✅ 10 imágenes (5 gráficos × 2 entornos) repartidas en 4 figuras, todas referenciadas desde el texto
-- ✅ 5 tablas con las cifras reales de la ejecución
-- ✅ 7 ecuaciones numeradas y referenciadas desde el texto
-- ✅ Bibliografía IEEE (12 referencias en `utils/references/references.bib`)
+- ✅ 6 scripts completos en `utils/codes/`, reproducidos íntegros en los apéndices
+- ✅ 16 imágenes, todas referenciadas desde el texto
+- ✅ 13 tablas con las cifras reales de la ejecución
+- ✅ Bibliografía IEEE (20 referencias citadas en `utils/references/references.bib`)
 - ✅ Etiquetas en español (Tabla, Código) vía `\captionsspanish`
 - ✅ Marca de agua institucional en todas las páginas, con flag de activación
 - ✅ Resaltado de sintaxis diferenciado para Python y R
@@ -519,24 +471,25 @@ El informe está **terminado**: compila en 11 páginas sin desbordes de caja y s
 | Tamaño de página | Carta (8.5" × 11") |
 | Fuente base | 10 pt |
 | Bibliografía | IEEE |
-| Extensión | 11 páginas |
+| Extensión | 24 páginas |
 
 ---
 
 ## 🔑 Palabras Clave
 
-`Coeficiente de Variación` · `Diagrama de Caja` · `Distribución de Frecuencias` · `Estadística Descriptiva` · `Histograma` · `Matplotlib` · `Medidas de Dispersión` · `Medidas de Tendencia Central` · `Ojiva` · `pandas` · `Principios de Visualización` · `R` · `Regla de Sturges`
+`Criterios de Información` · `Diagnóstico de Supuestos` · `ggplot2` · `Plotly` · `Regresión Lineal Múltiple` · `scikit-learn` · `seaborn` · `statsmodels` · `Validación Cruzada` · `Visualización Avanzada`
 
 ---
 
 ## 🔗 Recursos
 
-- [Proyecto hermano `visualizations` — scripts, dataset y figuras](../visualizations)
-- [Documentación de Matplotlib](https://matplotlib.org/stable/)
-- [Documentación de pandas](https://pandas.pydata.org/docs/)
-- [Documentación de NumPy](https://numpy.org/doc/stable/)
+- [Proyecto hermano `regression-analysis-and-advanced-visualization` — scripts, dataset y figuras](../regression-analysis-and-advanced-visualization)
+- [Documentación de statsmodels](https://www.statsmodels.org/stable/)
+- [Documentación de scikit-learn](https://scikit-learn.org/stable/)
+- [Documentación de seaborn](https://seaborn.pydata.org/)
+- [Documentación de Plotly](https://plotly.com/python/)
+- [Documentación de ggplot2](https://ggplot2.tidyverse.org/)
 - [The R Project for Statistical Computing](https://www.R-project.org/)
-- [Data Science: A First Introduction with Python](https://python.datasciencebook.ca/)
 - [Documentación LaTeX](https://www.latex-project.org/)
 - [Paquete listings](https://www.ctan.org/pkg/listings)
 
