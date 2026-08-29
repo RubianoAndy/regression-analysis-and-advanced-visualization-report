@@ -11,8 +11,19 @@
 \usepackage{tcolorbox}
 \usepackage{eso-pic}
 \usepackage{transparent}
+% capt-of, y no caption: solo define \captionof delegando en el \caption de la
+% clase, de modo que el formato de título de IEEEtran queda intacto. El paquete
+% caption completo lo sustituye por el suyo y además avisa de que no reconoce
+% IEEEtran ni puede fijar el ancla de hyperref fuera de un flotante.
+\usepackage{capt-of}   % \captionof, para titular una tabla fuera de un flotante
+\usepackage{cuted}     % entorno strip: material a ancho completo, en su sitio exacto
 \usepackage{hyperref}  % debe cargarse de último para no duplicar anclas de floats
 
+
+% cuted reserva \stripsep de aire a cada lado del bloque a ancho completo. Con
+% el valor por omisión (15pt) la Tabla II no cabe junto con el resto de la
+% página y cuted avisa de que el argumento de \twocolumn es demasiado alto.
+\stripsep 8pt plus 2pt minus 2pt
 \pagestyle{plain}
 
 % Los flotantes a doble columna (figure* y table*) de este informe son grandes:

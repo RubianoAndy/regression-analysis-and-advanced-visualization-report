@@ -31,58 +31,48 @@
             \end{center}
         \end{table}
 
-        La variable derivada \texttt{tarifa\_cop\_kwh} cumple un papel especial en el
-        análisis, ya que se calcula directamente del cociente entre el costo y el
-        consumo, sin intervención de ningún modelo, y por eso sirve como patrón
-        externo contra el cual contrastar las pendientes estimadas por la regresión.
-
-        \vspace{10pt}
-
-        Que el conjunto sea simulado es una ventaja metodológica y no una
-        limitación, puesto que se sabe de antemano que existen tres poblaciones con
-        tarifas medias distintas, de modo que el modelo puede evaluarse por su
-        capacidad de recuperar una estructura conocida y no solo por su ajuste.
+        La variable derivada \texttt{tarifa\_cop\_kwh} cumple un papel fundamental en 
+        el análisis, ya que se obtiene directamente del cociente entre el costo y el
+        consumo sin intervención de ningún modelo, utilizándose como referencia para 
+        contrastar las tarifas estimadas mediante las pendientes de la regresión.
 
     \subsection{Modelos y medidas empleadas}
-        El análisis se organiza como una secuencia de tres modelos de complejidad
-        creciente, en la que cada uno responde a una falla diagnosticada en el
-        anterior \cite{montgomery2021regression}, \cite{wooldridge2020econometrics}:
+        El análisis comprende tres modelos de complejidad creciente, donde cada uno 
+        aborda una limitación identificada:
 
         \vspace{10pt}
 
         \begin{itemize}
-            \item \textbf{M1, regresión simple}. El costo se explica solo por el
-            consumo. Sirve de referencia y su diagnóstico es el que motiva todo lo
-            demás.
+            \item \textbf{M1, regresión simple}: utiliza únicamente el consumo para explicar
+            el costo y establece el modelo de referencia para el análisis posterior.
 
-            \item \textbf{M2, regresión múltiple aditiva}. Se añade el sector como
-            variable indicadora, lo que permite un intercepto distinto por grupo
-            pero conserva una única pendiente.
+            \item \textbf{M2, regresión múltiple aditiva}: incorpora el sector como variable
+            indicadora, permitiendo que cada grupo tenga un intercepto diferente, pero
+            manteniendo una pendiente común.
 
-            \item \textbf{M3, regresión múltiple con interacción}. Se añaden los
-            productos entre consumo y sector, de modo que cada grupo obtiene su
-            propia pendiente.
+            \item \textbf{M3, regresión múltiple con interacción}: incorpora la interacción
+            entre consumo y sector, permitiendo estimar una pendiente específica para cada
+            grupo y representar de forma más precisa sus diferencias tarifarias.
         \end{itemize}
 
         \vspace{10pt}
 
-        Los tres se comparan con criterios que no se dejan engañar por el
+        Los tres modelos se comparan con criterios que no se dejan engañar por el
         coeficiente de determinación, porque este crece siempre que se añaden
         regresores, es decir, el coeficiente ajustado, los criterios de información
         de Akaike \cite{akaike1974new} y de Schwarz \cite{schwarz1978estimating}, el
-        error cuadrático medio en las unidades originales y las pruebas de supuestos.
-        Después, las mismas especificaciones se someten a validación cruzada con
+        error cuadrático medio en las unidades originales y las pruebas de supuestos,
+        después, las mismas especificaciones se someten a validación cruzada con
         \textit{scikit-learn} para medir su capacidad predictiva sobre datos no
         vistos \cite{hastie2009elements}, \cite{james2023islp}. La Tabla
         \ref{measures} reúne las medidas empleadas junto con su expresión formal.
 
-        \begin{table*}[!t]
+        \begin{strip}
             \centering
-            \caption{Medidas y fórmulas empleadas en el análisis}
+            \captionof{table}{Medidas y fórmulas empleadas en el análisis}
+            \label{measures}
             \begin{center}
-                % La columna de fórmulas es la más ancha del informe: se estrecha
-                % la separación entre columnas y las dos columnas de texto para que
-                % la tabla quepa exacta en el ancho a doble columna.
+                \footnotesize
                 \setlength{\tabcolsep}{4pt}
                 \begin{tabular}{|>{\raggedright\arraybackslash}p{3.3cm}|c|
                                 >{\raggedright\arraybackslash}p{5.2cm}|}
@@ -145,9 +135,8 @@
                     no técnico \\
                     \hline
                 \end{tabular}
-                \label{measures}
             \end{center}
-        \end{table*}
+        \end{strip}
 
         En la tabla, $n$ es el número de observaciones, $k$ el número de parámetros
         del modelo, $\hat{y}$ el valor ajustado, $\bar{y}$ la media de la variable
@@ -156,14 +145,13 @@
         linealidad, la de Breusch-Pagan para la homocedasticidad
         \cite{breusch1979simple}, la de Jarque-Bera para la normalidad de los
         residuos y el estadístico de Durbin-Watson para su independencia
-        \cite{triola2018estadistica}, \cite{wooldridge2020econometrics}.
+        \cite{wooldridge2020econometrics}, \cite{triola2018estadistica}.
 
     \subsection{Flujo de trabajo y reproducibilidad}
-        El laboratorio se ejecuta en seis fases encadenadas, repartidas entre Python
-        y R, resumidas en la Tabla \ref{workflow}. La Fase 0 genera el conjunto de
-        datos; la Fase 4 lee las tablas que dejó la Fase 2 en lugar de recalcularlas,
-        de modo que las cifras de las figuras y las del texto no puedan divergir; y
-        la Fase 5 cierra el circuito comparando contra las estimaciones de Python.
+        Los datos se generan en Python y las tablas resultantes se reutilizan en 
+        R para mantener consistencia entre las figuras y el texto, los resultados 
+        se contrastan con las estimaciones obtenidas en Python, el flujo de trabjo 
+        se resume en la Tabla \ref{workflow}:
 
         \begin{table}[H]
             \centering
@@ -196,27 +184,17 @@
             \end{center}
         \end{table}
 
-        El entorno es Python 3.14 con \textit{statsmodels} 0.14.6
-        \cite{seabold2010statsmodels}, \textit{scikit-learn} 1.9.0
-        \cite{pedregosa2011scikit}, \textit{Matplotlib} 3.11.1
-        \cite{hunter2007matplotlib}, \textit{seaborn} 0.13.2 \cite{waskom2021seaborn}
-        y \textit{Plotly} 6.9.0 \cite{plotly2015collaborative}, sobre NumPy
-        \cite{harris2020numpy} y \textit{pandas} \cite{mckinney2010data}, y R 4.6.1
-        \cite{rcore2026r}, \cite{fox2019companion} con \textit{ggplot2} 4.0.3
-        \cite{wickham2016ggplot2}, editado desde RStudio Desktop
-        \cite{posit2026rstudio}.
-
-        \vspace{10pt}
-
-        El reparto entre ambas librerías de Python no es arbitrario, dado que
-        \textit{statsmodels} entrega los errores estándar, los intervalos y las
-        pruebas de supuestos que sostienen la interpretación de los coeficientes,
-        mientras que \textit{scikit-learn} aporta la partición estratificada y la
-        validación cruzada que aquella no tiene; R cumple el papel de control,
-        reestimando los mismos modelos de forma independiente. La reproducibilidad
-        descansa en cuatro decisiones, la semilla fija en la generación de datos y en
-        todas las particiones (\texttt{random\_state = 42}), las versiones ancladas
-        en \textit{requirements.txt}, las rutas resueltas desde la ubicación del
-        script en ambos lenguajes y el encapsulamiento del preprocesamiento en un
-        \texttt{Pipeline}, que garantiza que el escalado se ajuste únicamente con los
-        datos de entrenamiento.
+        El entorno es Python 3.14 con \textit{statsmodels},
+        \textit{scikit-learn}, \textit{Matplotlib}, \textit{seaborn} y
+        \textit{Plotly}, sobre NumPy y \textit{pandas} y R 4.6.1 con
+        \textit{ggplot2}. El reparto entre las librerías de Python no 
+        es arbitrario, dado que \textit{statsmodels} entrega los errores 
+        estándar, intervalos y pruebas de supuestos para la interpretación 
+        de coeficientes, mientras que \textit{scikit-learn} aporta la 
+        partición estratificada y validación cruzada, R cumple el papel 
+        de control, reestimando los mismos modelos de forma independiente y
+        la reproducibilidad descansa en la semilla fija en la generación de
+        datos y en todas las particiones (\texttt{random\_state = 42}), con 
+        encapsulamiento del preprocesamiento en un \texttt{Pipeline}, que 
+        garantiza que el escalado se ajuste únicamente con los datos de 
+        entrenamiento.
