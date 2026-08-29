@@ -133,26 +133,21 @@
     \thispagestyle{plain}
 
     \begin{abstract}
-        Una recta que explica el 99,7\% de la variabilidad parece un resultado
-        difícil de mejorar, pero este informe muestra que ese número, por sí solo,
-        no dice si el modelo es correcto. Sobre el consumo energético mensual de 120
-        clientes de los sectores residencial, comercial e industrial se estima una
-        regresión simple que alcanza un coeficiente de determinación de 0,9969 y aun
-        así rechaza la homocedasticidad y la normalidad de sus residuos, que no son
-        ruido sino que se ordenan por sector, con medias de $-4{,}4$, $+15{,}5$ y
-        $-19{,}2$ miles de pesos. Que la prueba RESET no rechace señala que el
-        problema no es la forma funcional sino una variable omitida, por lo que se
-        incorpora el sector y su interacción con el consumo. Las pendientes del
-        modelo resultante tienen nombre propio, pues son las tarifas de cada sector
-        (791,6, 704,8 y 671,0 pesos por kilovatio hora) y reproducen con menos del
-        4\% de diferencia el cociente entre costo y consumo calculado sin
-        intervención del modelo. La mejora se sostiene fuera de la muestra, ya que la
-        validación cruzada de diez pliegues reduce el error un 16,7\% y sobre 36
-        clientes no vistos alcanza un coeficiente de determinación de 0,9944 con un
-        error porcentual absoluto medio del 3,68\%. La verificación cruzada en R
-        reproduce los seis coeficientes dígito a dígito, y el descuento por escala
-        queda cuantificado en 121 pesos por kilovatio hora entre el sector
-        industrial y el residencial.
+        Este documento tiene como objetivo evaluar si un modelo de regresión 
+        con un ajuste elevado describe adecuadamente el consumo energético y 
+        en caso contrario, determinar qué corrección requiere, para ello, se 
+        analiza el consumo mensual de 120 clientes de los sectores residencial, 
+        comercial e industrial en Python, con verificación de los coeficientes 
+        en R, mediante el ajuste de un modelo simple, el diagnóstico de sus 
+        supuestos y la especificación de un modelo múltiple con variables 
+        categóricas e interacciones. Los resultados muestran que el modelo 
+        simple, pese a un coeficiente de determinación de 0,9969, incumple 
+        los supuestos de homocedasticidad y normalidad, con errores agrupados 
+        por sector. Al incorporar el sector, cada pendiente corresponde a la 
+        tarifa sectorial (791,6, 704,8 y 671,0 pesos por kilovatio hora) y 
+        el error porcentual absoluto medio sobre 36 clientes no utilizados 
+        en el ajuste es del 3,68\%. Se concluye que la bondad de ajuste no 
+        basta como criterio de validación.
     \end{abstract}
 
     \vspace{10pt}
@@ -174,5 +169,4 @@
 
     \bibliographystyle{IEEEtran}
     \bibliography{utils/references/references.bib}
-
 \end{document}
