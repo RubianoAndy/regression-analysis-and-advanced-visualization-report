@@ -175,9 +175,20 @@ Entorno: **Python 3.14** (statsmodels 0.14.6, scikit-learn 1.9.0, Matplotlib 3.1
 | Antigüedad | −0,1946 | 0,017 | Débil y negativa |
 | Habitaciones | 0,0807 | **0,326** | **No detectable** |
 
+| | |
+|---|---|
+| ![Matriz de correlaciones](assets/images/figures/python/advanced/sns_heatmap_correlacion.png) | ![Matriz de dispersión](assets/images/figures/python/advanced/sns_matriz_dispersion.png) |
+| **Figura 1 · Mapa de calor** (`seaborn`) — la antigüedad es la única variable que empuja el precio hacia abajo, y las cuatro características son prácticamente independientes entre sí | **Figura 2 · Matriz de dispersión** (`seaborn`) — el precio se ordena en bandas superpuestas según el estrato: para una misma área, el estrato superior queda por encima |
+
 ### Regresión simple (Tabla V)
 
 **precio = 81,09 + 3,845 · área**, con R² = 0,6043. El área explica el 60,4 % de la variabilidad y deja sin explicar el 39,6 % restante; el error medio absoluto es de 66,7 millones de pesos.
+
+<div align="center">
+    <img src="assets/images/figures/python/regression/ajuste_simple.png" width="760" alt="Ajuste por mínimos cuadrados sobre el área">
+</div>
+
+**Figura 3 · Ajuste por mínimos cuadrados** (`Matplotlib`) — la banda naranja es el intervalo de confianza al 95 % de la recta. La dispersión vertical de los puntos alrededor de ella es, visualmente, lo que las tres variables omitidas tendrán que explicar.
 
 ### Regresión múltiple (Tabla VI)
 
@@ -191,12 +202,24 @@ Entorno: **Python 3.14** (statsmodels 0.14.6, scikit-learn 1.9.0, Matplotlib 3.1
 
 Las cuatro variables son significativas al 5 %, **incluida la que la correlación había descartado**.
 
+<div align="center">
+    <img src="assets/images/figures/python/regression/efecto_variables.png" width="820" alt="Efecto de cada variable con intervalo de confianza">
+</div>
+
+**Figura 4 · Efecto de cada variable** (`Matplotlib`) — ningún intervalo de confianza contiene al cero. Expresados en metros cuadrados equivalentes: una habitación vale 4,2 m², un nivel de estrato vale 22,4 m² y cada década de antigüedad cuesta 6,5 m².
+
 ### Comparación de modelos (Tabla VII)
 
 | Modelo | Regresores | R² | R² ajustado | RMSE | MAE | AIC |
 |---|---|---|---|---|---|---|
 | Simple | 1 | 0,6043 | 0,6016 | 80,60 | 66,72 | 1 746,5 |
 | **Múltiple** | 4 | **0,8960** | **0,8932** | **41,32** | **33,07** | **1 552,1** |
+
+<div align="center">
+    <img src="assets/images/figures/python/regression/comparacion_residuos.png" width="900" alt="Errores de ambos modelos en la misma escala">
+</div>
+
+**Figura 5 · Errores en la misma escala** (`Matplotlib`) — a la izquierda el modelo simple, con errores que llegan a ±250 millones; a la derecha el múltiple, con la nube visiblemente más estrecha. Ajustar la escala de cada panel a sus propios datos habría hecho parecer equivalentes dos situaciones que no lo son.
 
 ### Validación predictiva (Tabla VIII)
 
@@ -207,9 +230,46 @@ Las cuatro variables son significativas al 5 %, **incluida la que la correlació
 
 La brecha entre entrenamiento y prueba es de **−0,0021**: no hay sobreajuste. El modelo múltiple gana en los cinco pliegues y es cerca de **cuatro veces más estable** que el simple.
 
+<div align="center">
+    <img src="assets/images/figures/python/regression/validacion_sklearn.png" width="900" alt="Validación con scikit-learn">
+</div>
+
+**Figura 6 · Validación** (`scikit-learn` + `Matplotlib`) — a la izquierda, el precio real frente al predicho sobre los 45 apartamentos de prueba, contra la diagonal de predicción perfecta; a la derecha, el R² pliegue a pliegue, que muestra que la ventaja del modelo múltiple no fue suerte de una partición.
+
+### Visualización avanzada (Figuras 7 a 9)
+
+<div align="center">
+    <img src="assets/images/figures/python/advanced/sns_ajuste_por_estrato.png" width="900" alt="Una regresión por estrato con seaborn">
+</div>
+
+**Figura 7 · `lmplot` por estrato** (`seaborn`) — tres rectas casi paralelas. Es el supuesto del modelo múltiple hecho gráfico: el estrato **desplaza** el precio hacia arriba sin cambiar cuánto vale el metro cuadrado dentro de cada nivel.
+
+<div align="center">
+    <img src="assets/images/figures/python/dashboard/dashboard.png" width="960" alt="Tablero interactivo de Plotly">
+</div>
+
+**Figura 8 · Tablero interactivo** (`Plotly`) — cuatro paneles y un menú desplegable que filtra por estrato: el ajuste con la ficha de cada apartamento al pasar el cursor, el precio promedio por estrato (359,3 · 447,4 · 517,9 millones), el precio real frente al estimado y el efecto de cada variable. El HTML navegable vive en el proyecto hermano: [`dashboard.html`](../regression-analysis-and-advanced-visualization/public/assets/images/figures/python/dashboard/dashboard.html).
+
+<div align="center">
+    <img src="assets/images/figures/python/dashboard/dispersion_interactiva.png" width="900" alt="Dispersión interactiva de Plotly">
+</div>
+
+**Figura 9 · Dispersión explorable** (`Plotly`) — codifica cuatro variables a la vez: área en el eje horizontal, precio en el vertical, estrato en el color y habitaciones en el tamaño del punto, con la línea de tendencia MCO. Versión navegable: [`dispersion_interactiva.html`](../regression-analysis-and-advanced-visualization/public/assets/images/figures/python/dashboard/dispersion_interactiva.html).
+
 ### Verificación cruzada Python ↔ R (Tabla IX)
 
 `lm()` reproduce los cinco coeficientes con **diferencia máxima 0,000000**. El contraste F entre los dos modelos arroja **F = 135,63** con p < 2,2 × 10⁻¹⁶.
+
+| | |
+|---|---|
+| ![Ajuste simple en ggplot2](assets/images/figures/r/ggplot_ajuste_simple.png) | ![Real frente a estimado en ggplot2](assets/images/figures/r/ggplot_real_vs_estimado.png) |
+| **Figura 10 · `geom_smooth(method = "lm")`** — la gramática de gráficos declara el ajuste como una capa más, con su banda de confianza incluida | **Figura 12 · Precio real frente al estimado** — la diagonal es la predicción perfecta; el error típico del modelo es de 42,0 millones |
+
+<div align="center">
+    <img src="assets/images/figures/r/ggplot_facetas_estrato.png" width="900" alt="Una regresión por estrato en ggplot2">
+</div>
+
+**Figura 11 · `facet_wrap` por estrato** (`ggplot2`) — la misma idea del `lmplot` de seaborn resuelta con la gramática de ggplot2: un panel por estrato, misma pendiente, distinta altura.
 
 ---
 
