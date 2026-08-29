@@ -197,14 +197,10 @@
             \end{center}
         \end{table}
 
-        El entorno es Python 3.14 con \textit{statsmodels}, \textit{scikit-learn}, 
-        \textit{Matplotlib}, \textit{seaborn} y \textit{Plotly}, sobre NumPy y 
-        \textit{pandas} junto con R 4.6.1 y \textit{ggplot2}. El reparto entre las 
-        librerías de Python no es arbitrario, dado que \textit{statsmodels} entrega 
-        los errores estándar, los estadísticos $t$ y los intervalos de confianza 
-        necesarios para interpretar los coeficientes, mientras que \textit{scikit-learn} 
-        aporta la partición y la validación cruzada, y R cumple el papel de control 
-        al reestimar los mismos modelos de forma independiente. La reproducibilidad 
-        descansa en la semilla fija empleada tanto en la generación de los datos 
-        como en todas las particiones (\texttt{random\_state = 42}), de modo que las 
-        cifras de este informe se obtienen idénticas en cualquier ejecución.
+        El entorno utiliza Python 3.14 con \textit{statsmodels}, \textit{scikit-learn}, 
+        \textit{Matplotlib}, \textit{seaborn}, \textit{Plotly}, NumPy y \textit{pandas}, 
+        junto con R 4.6.1 y \textit{ggplot2}. \textit{statsmodels} se emplea para el 
+        análisis estadístico, \textit{scikit-learn} para la partición y validación y R 
+        para verificar los resultados de forma independiente. La reproducibilidad se 
+        garantiza mediante una semilla fija (\texttt{random\_state = 42}) en la 
+        generación de datos y las particiones.

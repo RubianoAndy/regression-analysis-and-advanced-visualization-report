@@ -1,8 +1,8 @@
 \section{Resultados}
     \subsection{Análisis de correlación}
-        El primer paso mide la asociación de cada característica con el precio sin
-        controlar por ninguna otra, que es lo que hace el coeficiente de Pearson.
-        La Tabla \ref{correlations} recoge el resultado ordenado por magnitud.
+        Se mide la asociación de cada característica con el precio sin controlar 
+        a través del coeficiente de Pearson. La Tabla \ref{correlations} recoge 
+        el resultado ordenado por magnitud.
 
         \begin{table}[H]
             \centering
@@ -26,14 +26,11 @@
             \end{center}
         \end{table}
 
-        La conclusión aparente es que el área domina el precio, que el estrato
-        aporta de forma moderada, que la antigüedad apenas influye y que el número
-        de habitaciones es irrelevante, dado que su p-valor de 0,326 no permite
-        rechazar la hipótesis de ausencia de asociación. Esa última conclusión
-        resultará falsa, y la razón es que la correlación compara apartamentos
-        cualesquiera, entre los cuales hay unidades pequeñas de tres habitaciones
-        y unidades amplias de dos, de modo que la variación del área enmascara por
-        completo el efecto de las habitaciones.
+        La tabla muestra que el área es la principal variable asociada al precio, 
+        seguida por el estrato, mientras que la antigüedad tiene una influencia 
+        reducida. Las habitaciones parecen irrelevantes ($p=0,326$), pero esta 
+        conclusión resulta engañosa, pues la variación del área puede ocultar 
+        su efecto al comparar apartamentos de distintos tamaños.
 
         \begin{figure}[H]
             \centering
@@ -41,14 +38,6 @@
             \caption{Matriz de correlaciones entre las variables del modelo,
             construida con \textit{seaborn}}
             \label{heatmap}
-        \end{figure}
-
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=\linewidth]{assets/images/figures/python/advanced/sns_matriz_dispersion.png}
-            \caption{Matriz de dispersión coloreada por estrato, con las
-            densidades en la diagonal}
-            \label{scatter_matrix}
         \end{figure}
 
         El mapa de calor de la Figura \ref{heatmap} confirma que la antigüedad es
@@ -61,15 +50,24 @@
         área los apartamentos de estrato superior se sitúan de forma sistemática
         por encima.
 
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\linewidth]{assets/images/figures/python/advanced/sns_matriz_dispersion.png}
+            \caption{Matriz de dispersión coloreada por estrato, con las
+            densidades en la diagonal}
+            \label{scatter_matrix}
+        \end{figure}
+
     \subsection{Regresión lineal simple}
         El modelo estimado por mínimos cuadrados sobre el área es
         $\hat{y} = 81{,}09 + 3{,}845\,x$, con ambos coeficientes significativos.
         La Tabla \ref{coef_simple} recoge la estimación completa.
 
-        \begin{table*}[!t]
+        \begin{strip}
             \centering
-            \caption{Coeficientes del modelo simple con intervalos de confianza al
-            95\%}
+            \captionof{table}{Coeficientes del modelo simple con intervalos de
+            confianza al 95\%}
+            \label{coef_simple}
             \begin{center}
                 \begin{tabular}{|l|c|c|c|c|c|}
                     \hline
@@ -84,9 +82,8 @@
                     $1{,}4 \times 10^{-31}$ & [3,34 ; 4,35] \\
                     \hline
                 \end{tabular}
-                \label{coef_simple}
             \end{center}
-        \end{table*}
+        \end{strip}
 
         La pendiente admite lectura directa, ya que cada metro cuadrado adicional
         se asocia con 3,845 millones de pesos más en el precio. El intercepto, en
