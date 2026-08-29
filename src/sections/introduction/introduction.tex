@@ -1,47 +1,36 @@
 \section{Introducción}
     El costo que una empresa distribuidora factura a un cliente está estrechamente
-    relacionado con la cantidad de energía consumida. Esta relación puede producir
-    un ajuste lineal muy elevado, sin embargo, un coeficiente de determinación de 
-    0,9969 no garantiza por sí solo que el modelo sea adecuado, en este caso, el 
-    análisis de los residuos revela una estructura asociada a una variable que no 
-    fue considerada inicialmente: el sector al que pertenece cada cliente, factor 
-    que determina la tarifa aplicada, puesto que identificar esta estructura,
-    incorporarla al modelo y verificar el cumplimiento de los supuestos necesarios
-    para su inferencia constituye el proceso central del análisis de regresión y 
-    representa el enfoque desarrollado en este trabajo \cite{montgomery2021regression}, 
-    \cite{wooldridge2020econometrics}, \cite{castro2026avanzada}.
+    relacionado con la energía consumida, lo que puede generar un ajuste lineal
+    aparentemente suficiente para describir los datos, sin embargo, un coeficiente
+    de determinación de 0,9969 no garantiza por sí solo la validez del modelo, ya
+    que el análisis de los residuos revela una estructura asociada al sector al que
+    pertenece cada cliente, variable que determina la tarifa aplicada. Identificar
+    esta estructura, incorporarla al modelo y verificar el cumplimiento de sus
+    supuestos constituye el eje del análisis de regresión desarrollado en este
+    trabajo \cite{montgomery2021regression}, \cite{wooldridge2020econometrics}.
 
     \vspace{10pt}
 
-    El análisis se basa en un conjunto de datos simulado correspondiente al consumo
-    energético mensual de 120 clientes de una empresa distribuidora, clasificados
-    en los sectores Residencial, Comercial e Industrial. El carácter simulado del
-    dataset representa una ventaja metodológica, ya que permite trabajar con una
-    estructura conocida de antemano, en la que los tres sectores presentan tarifas
-    medias diferentes, de esta manera, los modelos pueden evaluarse no solo por su
-    capacidad de ajuste, sino también por su capacidad para identificar y representar
-    correctamente dicha estructura.
+    El análisis utiliza un conjunto de datos simulado correspondiente al consumo
+    energético mensual de 120 clientes, clasificados en los sectores Residencial,
+    Comercial e Industrial. Esta estructura conocida permite evaluar los modelos
+    no solo por su capacidad de ajuste, sino también por su capacidad para
+    representar las diferencias tarifarias entre sectores. El informe presenta la
+    metodología, los modelos y métricas empleadas, así como los resultados del
+    análisis de correlación, diagnóstico, regresión múltiple y validación
+    predictiva, además, los cálculos se replican de forma independiente en Python
+    y R, y los scripts completos se incluyen en los Apéndices
+    \ref{anexo_python} y \ref{anexo_r} para garantizar la reproducibilidad
+    \cite{castro2026avanzada}.
 
     \vspace{10pt}
 
-    El informe se organiza en dos capítulos. El primero presenta la metodología,
-    incluyendo el conjunto de datos, los modelos estimados, las métricas utilizadas
-    para su comparación y el flujo de trabajo reproducible. El segundo presenta los
-    resultados, desde el análisis de correlación y el diagnóstico del modelo simple
-    hasta la especificación múltiple, la validación predictiva y la verificación
-    cruzada entre Python y R. Los seis scripts utilizados para el análisis se incluyen 
-    en los Apéndices \ref{anexo_python} y \ref{anexo_r}, permitiendo rastrear cada 
-    resultado hasta el código que lo genera.
-
-    \vspace{10pt}
-
-    Tres hallazgos principales anticipan los resultados. En primer lugar, las
-    pendientes del modelo múltiple representan las tarifas estimadas para cada
-    sector, 791,6, 704,8 y 671,0 pesos por kilovatio hora, con diferencias inferiores
-    al 4\% respecto a los cocientes de costo y consumo calculados directamente.
-    En segundo lugar, el modelo múltiple presenta un mejor desempeño predictivo,
-    reduciendo en un 16,7\% el error respecto al modelo simple mediante validación
-    cruzada de diez pliegues. Finalmente, el sector Industrial presenta una tarifa
-    estimada 121 pesos por kilovatio hora inferior a la del sector Residencial,
-    evidenciando un efecto asociado a la escala de consumo que puede ser contrastado
-    con la política tarifaria de la empresa.
+    Los resultados muestran que las pendientes del modelo múltiple representan las
+    tarifas estimadas para los sectores Residencial, Comercial e Industrial, 791,6, 
+    704,8 y 671,0 pesos por kilovatio hora, respectivamente, con diferencias 
+    inferiores al 4\% respecto a los cocientes calculados directamente, asimismo,
+    la validación cruzada de diez pliegues evidencia una reducción del error del
+    16,7\% frente al modelo simple. Finalmente, el sector Industrial presenta una
+    tarifa estimada 121 pesos por kilovatio hora inferior a la del sector
+    Residencial, lo que evidencia el efecto del sector sobre la relación entre
+    consumo y costo.
