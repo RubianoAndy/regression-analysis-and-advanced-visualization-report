@@ -1,39 +1,27 @@
 \section{Introducción}
-    El precio de un apartamento usado depende de un conjunto reducido de
-    características que cualquier avalúo revisa en primer lugar, es decir, el área
-    construida, el número de habitaciones, la antigüedad de la edificación y el
-    estrato socioeconómico. Determinar cuánto aporta cada una de ellas al precio
-    final y con qué precisión puede estimarse ese precio a partir únicamente de la
-    ficha técnica constituye un problema clásico de regresión lineal
-    \cite{montgomery2021regression}, \cite{wooldridge2020econometrics}, cuyo
-    interés no es solo predictivo, ya que los coeficientes estimados se traducen
-    de forma directa en criterios de decisión para compradores, vendedores y
-    avaluadores.
+    El precio de un apartamento usado depende de características como el área
+    construida, el número de habitaciones, la antigüedad y el estrato
+    socioeconómico y determinar cuánto aporta cada una y con qué precisión puede
+    estimarse el precio a partir de la ficha técnica constituye un problema
+    clásico de regresión lineal con aplicaciones para compradores, vendedores 
+    y avaluadores \cite{montgomery2021regression}, \cite{wooldridge2020econometrics}, 
+    \cite{castro2026avanzada}.
 
     \vspace{10pt}
 
-    El análisis emplea un conjunto de datos simulado de 150 apartamentos de
-    Bogotá, generado con una semilla fija de modo que cualquier ejecución
-    reproduzca las mismas observaciones. Esta estructura conocida permite evaluar
-    los modelos no solo por su capacidad de ajuste, sino también por su capacidad
-    para recuperar los efectos que realmente generaron los datos. El informe
-    presenta la metodología, los modelos y las medidas empleadas, así como los
-    resultados del análisis de correlación, de la regresión simple, de la
-    regresión múltiple, de la validación sobre datos no utilizados en el ajuste y
-    de la visualización avanzada, además, los cálculos se replican de forma
-    independiente en Python y en R, y los guiones completos se incluyen en los
-    Apéndices \ref{anexo_python} y \ref{anexo_r} para garantizar la
-    reproducibilidad \cite{castro2026avanzada}.
+    El análisis emplea un dataset simulado de 150 apartamentos de Bogotá,
+    generado con una semilla fija para garantizar la reproducibilidad, se
+    comparan modelos de regresión, uno simple y posteriormente uno múltiple 
+    mediante medidas de ajuste, validación sobre datos no utilizados y 
+    verificación independiente en R. Los cálculos y guiones completos se 
+    incluyen en los Apéndices \ref{anexo_python} y \ref{anexo_r}.
 
     \vspace{10pt}
 
-    El resultado central del trabajo es una advertencia metodológica de alcance
-    general, dado que el número de habitaciones no muestra ninguna asociación con
-    el precio cuando se mide de forma aislada, con un coeficiente de correlación
-    de 0,0807 y un p-valor de 0,326, y aun así resulta altamente significativo en
-    el modelo múltiple, con un efecto estimado de 16,0 millones de pesos por
-    habitación adicional. Descartar una variable por su correlación bivariada
-    habría eliminado del modelo un predictor real, lo que ilustra por qué la
-    regresión múltiple, que aísla el efecto de cada variable manteniendo
-    constantes las demás, no es un refinamiento opcional del análisis sino su
-    herramienta central.
+    El resultado central evidencia que el número de habitaciones no presenta
+    asociación significativa con el precio de forma aislada ($r=0,0807$,
+    $p=0,326$), pero sí en el modelo múltiple, donde su efecto estimado es de
+    16,0 millones de pesos por habitación adicional, demostrando que la
+    correlación bivariada puede ocultar relaciones relevantes y resaltando la
+    importancia de la regresión múltiple para aislar el efecto de cada
+    característica.

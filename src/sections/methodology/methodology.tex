@@ -37,12 +37,12 @@
         \end{table}
 
         El precio promedio observado es de 431,3 millones de pesos con una
-        desviación estándar de 128,6 millones, y el recorrido va de 141,5 a 663,9
-        millones. El estrato se trata como variable ordinal y no como categórica,
-        puesto que sus tres niveles son consecutivos y su efecto sobre el precio
-        se supone constante entre niveles, lo que evita introducir variables
-        indicadoras y mantiene el modelo en su forma más simple, con cuatro
-        regresores numéricos.
+        desviación estándar de 128,6 millones, y el recorrido va de 141,5 a 
+        663,9 millones. El estrato se trata como variable ordinal y no como 
+        categórica, puesto que sus tres niveles son consecutivos y su efecto 
+        sobre el precio se supone constante entre niveles evitando introducir 
+        mantiendo el modelo en su forma más simple, con cuatro regresores 
+        numéricos.
 
     \subsection{Modelos y medidas empleadas}
         El análisis compara dos modelos, donde el segundo amplía al primero:
@@ -50,15 +50,14 @@
         \vspace{10pt}
 
         \begin{itemize}
-            \item \textbf{Modelo simple}: explica el precio únicamente a partir del
-            área construida, que es la variable con mayor correlación con la
-            respuesta, y establece la referencia contra la cual se mide cualquier
+            \item \textbf{Modelo simple}: explica el precio a partir del área 
+            construida, que es la variable con mayor correlación con la
+            respuesta y establece la referencia contra la cual se mide cualquier
             mejora posterior.
 
-            \item \textbf{Modelo múltiple}: incorpora además el número de
-            habitaciones, la antigüedad y el estrato, de modo que cada coeficiente
-            cuantifica el efecto propio de una variable manteniendo constantes las
-            demás.
+            \item \textbf{Modelo múltiple}: incorpora el número de habitaciones, 
+            la antigüedad y el estrato, de modo que cada coeficiente cuantifica 
+            el efecto propio de una variable manteniendo constantes las demás.
         \end{itemize}
 
         \vspace{10pt}
@@ -157,16 +156,13 @@
         log-verosimilitud \cite{akaike1974new}, \cite{triola2018estadistica}.
 
     \subsection{Validación sobre datos no utilizados en el ajuste}
-        Un coeficiente de determinación alto calculado sobre las mismas
-        observaciones con las que se estimó el modelo no prueba capacidad
-        predictiva, por lo que la comparación entre los dos modelos se repite con
-        \textit{scikit-learn} bajo dos esquemas complementarios
-        \cite{pedregosa2011scikit}. El primero aparta el 30\% de los apartamentos
-        antes de ajustar nada, de modo que las 45 observaciones retenidas midan el
-        error sobre datos que el modelo nunca vio. El segundo aplica validación
-        cruzada de cinco pliegues sobre el conjunto completo, lo que repite el
-        experimento con cinco particiones distintas y permite valorar, además del
-        promedio, la estabilidad del resultado a través de su desviación estándar.
+        Un coeficiente de determinación alto sobre las mismas observaciones de 
+        ajuste no garantiza capacidad predictiva, por lo que la comparación se 
+        repite con \textit{*scikit-learn*} mediante dos esquemas, el primero 
+        reserva el 30\% de los apartamentos (45 observaciones) para evaluar el 
+        error sobre datos no vistos y wl segundo aplica validación cruzada de 
+        cinco pliegues sobre el conjunto completo, permitiendo evaluar tanto el 
+        error promedio como su estabilidad.
 
     \subsection{Flujo de trabajo y reproducibilidad}
         El trabajo se organiza en cinco fases secuenciales, una por guion, donde la
@@ -177,9 +173,9 @@
             \centering
             \caption{Fases del flujo de trabajo}
             \begin{center}
-                \begin{tabular}{|c|l|>{\raggedright\arraybackslash}p{3.1cm}|}
+                \begin{tabular}{|c|l|>{\raggedright\arraybackslash}p{3.7cm}|}
                     \hline
-                    \textbf{Fase} & \textbf{Guion} & \textbf{Qué produce} \\
+                    \textbf{Fase} & \textbf{Guion} & \textbf{¿Qué produce?} \\
                     \hline
                     1 & \textit{dataset.py} & Conjunto de datos reproducible de 150
                     apartamentos \\
@@ -201,19 +197,14 @@
             \end{center}
         \end{table}
 
-        El entorno es Python 3.14 con \textit{statsmodels}
-        \cite{seabold2010statsmodels}, \textit{scikit-learn}, \textit{Matplotlib}
-        \cite{hunter2007matplotlib}, \textit{seaborn} \cite{waskom2021seaborn} y
-        \textit{Plotly} \cite{plotly2015collaborative}, sobre NumPy
-        \cite{harris2020numpy} y \textit{pandas} \cite{mckinney2010data}, junto con
-        R 4.6.1 \cite{rcore2026r} y \textit{ggplot2} \cite{wickham2016ggplot2}. El
-        reparto entre las librerías de Python no es arbitrario, dado que
-        \textit{statsmodels} entrega los errores estándar, los estadísticos $t$ y
-        los intervalos de confianza necesarios para interpretar los coeficientes,
-        mientras que \textit{scikit-learn} aporta la partición y la validación
-        cruzada, y R cumple el papel de control al reestimar los mismos modelos de
-        forma independiente \cite{fox2019companion}, \cite{posit2026rstudio}. La
-        reproducibilidad descansa en la semilla fija empleada tanto en la
-        generación de los datos como en todas las particiones
-        (\texttt{random\_state = 42}), de modo que las cifras de este informe se
-        obtienen idénticas en cualquier ejecución.
+        El entorno es Python 3.14 con \textit{statsmodels}, \textit{scikit-learn}, 
+        \textit{Matplotlib}, \textit{seaborn} y \textit{Plotly}, sobre NumPy y 
+        \textit{pandas} junto con R 4.6.1 y \textit{ggplot2}. El reparto entre las 
+        librerías de Python no es arbitrario, dado que \textit{statsmodels} entrega 
+        los errores estándar, los estadísticos $t$ y los intervalos de confianza 
+        necesarios para interpretar los coeficientes, mientras que \textit{scikit-learn} 
+        aporta la partición y la validación cruzada, y R cumple el papel de control 
+        al reestimar los mismos modelos de forma independiente. La reproducibilidad 
+        descansa en la semilla fija empleada tanto en la generación de los datos 
+        como en todas las particiones (\texttt{random\_state = 42}), de modo que las 
+        cifras de este informe se obtienen idénticas en cualquier ejecución.
