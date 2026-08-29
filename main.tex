@@ -145,26 +145,16 @@
     \thispagestyle{plain}
 
     \begin{abstract}
-        Este documento tiene como objetivo determinar qué características
-        explican el precio de un apartamento usado y con qué precisión puede
-        estimarse ese precio a partir de la ficha técnica del inmueble, para
-        ello se analiza un conjunto de 150 apartamentos de Bogotá descritos por
-        área, número de habitaciones, antigüedad y estrato, ajustando en Python
-        una regresión lineal simple sobre el área y una regresión lineal
-        múltiple sobre las cuatro variables, con validación sobre datos no
-        utilizados en el ajuste y verificación independiente de los
-        coeficientes en R. Los resultados muestran que el número de
-        habitaciones no presenta asociación detectable con el precio cuando se
-        mide de forma aislada, con un coeficiente de correlación de 0,0807 y un
-        p-valor de 0,326, y sin embargo resulta altamente significativo al
-        controlar por las demás variables, con un efecto de 16,0 millones de
-        pesos por habitación y un p-valor de $9{,}2 \times 10^{-6}$. El modelo
-        múltiple eleva el coeficiente de determinación de 0,6043 a 0,8960 y
-        reduce a la mitad el error medio de estimación, de 66,7 a 33,1 millones
-        de pesos, comportamiento que se mantiene sobre 45 apartamentos no
-        utilizados en el ajuste. Se concluye que la correlación bivariada es
-        insuficiente para descartar una variable y que solo el modelo múltiple
-        permite cuantificar el efecto propio de cada característica.
+        Este documento analiza las características de 150 apartamentos mediante 
+        regresiones lineales simple y múltiple, con validación sobre datos no 
+        utilizados en el ajuste y verificación en R. Los resultados muestran 
+        que las habitaciones no presentan asociación significativa de forma 
+        aislada ($r=0,0807$, $p=0, 326$), pero sí al controlar las demás 
+        variables, con un efecto de 16,0 millones de pesos por habitación 
+        ($p=9{,}2\times10^{-6}$). El modelo múltiple mejora el $R^2$ de 0,6043 
+        a 0,8960 y reduce el error de 66,7 a 33,1 millones de pesos. Se concluye 
+        que la correlación bivariada es insuficiente para evaluar el efecto 
+        de una variable.
     \end{abstract}
 
     \vspace{10pt}
