@@ -1,40 +1,39 @@
 \section{Resultados}
     \subsection{Análisis de correlación}
-        La asociación entre el consumo y el costo facturado es prácticamente
-        perfecta, y lo decisivo es que se mantiene dentro de cada sector, es decir,
-        no se trata de una correlación inducida por mezclar tres poblaciones de
-        escalas distintas. La cercanía entre los coeficientes de Pearson y de
-        Spearman confirma además que la relación no solo es monótona sino
-        aproximadamente lineal.
+        El primer paso mide la asociación de cada característica con el precio sin
+        controlar por ninguna otra, que es lo que hace el coeficiente de Pearson.
+        La Tabla \ref{correlations} recoge el resultado ordenado por magnitud.
 
         \begin{table}[H]
             \centering
-            \caption{Correlación entre consumo y costo, global y por sector}
+            \caption{Correlación de cada variable con el precio}
             \begin{center}
-                \begin{tabular}{|l|c|c|c|c|c|}
+                \begin{tabular}{|l|c|c|l|}
                     \hline
-                    \textbf{Grupo} & $\mathbf{n}$ & \textbf{Pearson} $\mathbf{r}$ &
-                    $\mathbf{R^{2}}$ & \textbf{Spearman} $\boldsymbol{\rho}$ &
-                    \textbf{Tarifa} \\
+                    \textbf{Variable} & \textbf{Pearson} $\mathbf{r}$ &
+                    \textbf{p-valor} & \textbf{Lectura} \\
                     \hline
-                    Global      & 120 & 0,9984 & 0,9969 & 0,9947 & 758,1 \\
+                    Área & 0,7774 & $1{,}4 \times 10^{-31}$ & Fuerte y positiva \\
                     \hline
-                    Residencial & 62  & 0,9820 & 0,9643 & 0,9671 & 821,8 \\
+                    Estrato & 0,4872 & $2{,}6 \times 10^{-10}$ & Moderada \\
                     \hline
-                    Comercial   & 40  & 0,9866 & 0,9733 & 0,9799 & 710,4 \\
+                    Antigüedad & $-0{,}1946$ & 0,017 & Débil y negativa \\
                     \hline
-                    Industrial  & 18  & 0,9937 & 0,9875 & 0,9856 & 645,0 \\
+                    Habitaciones & 0,0807 & 0,326 & No detectable \\
                     \hline
                 \end{tabular}
                 \label{correlations}
             \end{center}
         \end{table}
 
-        La columna de la derecha, que recoge la tarifa media en pesos por kilovatio
-        hora, adelanta el hallazgo que estructura todo el informe, ya que la tarifa
-        media no es la misma en los tres sectores, sino que desciende de 821,8 a
-        645,0 a medida que crece la escala del cliente. Esa diferencia es la variable
-        que el modelo simple ignora.
+        La conclusión aparente es que el área domina el precio, que el estrato
+        aporta de forma moderada, que la antigüedad apenas influye y que el número
+        de habitaciones es irrelevante, dado que su p-valor de 0,326 no permite
+        rechazar la hipótesis de ausencia de asociación. Esa última conclusión
+        resultará falsa, y la razón es que la correlación compara apartamentos
+        cualesquiera, entre los cuales hay unidades pequeñas de tres habitaciones
+        y unidades amplias de dos, de modo que la variación del área enmascara por
+        completo el efecto de las habitaciones.
 
         \begin{figure}[H]
             \centering
@@ -47,27 +46,29 @@
         \begin{figure}[H]
             \centering
             \includegraphics[width=\linewidth]{assets/images/figures/python/advanced/sns_matriz_dispersion.png}
-            \caption{Matriz de dispersión por sector con las densidades en la
-            diagonal}
+            \caption{Matriz de dispersión coloreada por estrato, con las
+            densidades en la diagonal}
             \label{scatter_matrix}
         \end{figure}
 
-        El mapa de calor de la Figura \ref{heatmap} cuantifica lo que la matriz de
-        dispersión de la Figura \ref{scatter_matrix} muestra, dado que la tarifa
-        correlaciona $-0{,}7639$ con el consumo, es decir, quien más consume paga
-        menos por unidad. Y la matriz de dispersión revela una segunda característica
-        de los datos que tendrá consecuencias, puesto que los tres sectores ocupan
-        regiones casi disjuntas en cualquiera de los planos, sin solapamiento
-        apreciable entre sus recorridos de consumo.
+        El mapa de calor de la Figura \ref{heatmap} confirma que la antigüedad es
+        la única variable que empuja el precio hacia abajo y que las cuatro
+        características son prácticamente independientes entre sí, lo que resulta
+        conveniente porque elimina la colinealidad como fuente de ambigüedad en la
+        interpretación de los coeficientes. La matriz de dispersión de la Figura
+        \ref{scatter_matrix} añade una segunda observación, dado que el precio se
+        ordena en bandas superpuestas según el estrato, es decir, para una misma
+        área los apartamentos de estrato superior se sitúan de forma sistemática
+        por encima.
 
-    \subsection{Regresión lineal simple y su diagnóstico}
-        El modelo estimado por mínimos cuadrados es
-        $\hat{y} = 50{,}42 + 0{,}6349\,x$, con ambos coeficientes significativos con
-        enorme holgura. La Tabla \ref{coef_m1} recoge la estimación completa.
+    \subsection{Regresión lineal simple}
+        El modelo estimado por mínimos cuadrados sobre el área es
+        $\hat{y} = 81{,}09 + 3{,}845\,x$, con ambos coeficientes significativos.
+        La Tabla \ref{coef_simple} recoge la estimación completa.
 
         \begin{table*}[!t]
             \centering
-            \caption{Coeficientes del modelo simple M1 con intervalos de confianza al
+            \caption{Coeficientes del modelo simple con intervalos de confianza al
             95\%}
             \begin{center}
                 \begin{tabular}{|l|c|c|c|c|c|}
@@ -76,509 +77,342 @@
                     \textbf{Error estándar} & $\mathbf{t}$ & \textbf{p-valor} &
                     \textbf{IC 95\%} \\
                     \hline
-                    Intercepto & 50,4228 & 3,9229 & 12,85 &
-                    $3{,}5 \times 10^{-24}$ & [42,65 ; 58,19] \\
+                    Intercepto & 81,085 & 24,220 & 3,35 &
+                    $1{,}0 \times 10^{-3}$ & [33,22 ; 128,95] \\
                     \hline
-                    Consumo (kWh) & 0,6349 & 0,0033 & 193,40 &
-                    $1{,}7 \times 10^{-149}$ & [0,6283 ; 0,6414] \\
+                    Área (m\textsuperscript{2}) & 3,845 & 0,256 & 15,03 &
+                    $1{,}4 \times 10^{-31}$ & [3,34 ; 4,35] \\
                     \hline
                 \end{tabular}
-                \label{coef_m1}
+                \label{coef_simple}
             \end{center}
         \end{table*}
 
-        La pendiente admite lectura directa, ya que como el costo está en miles de
-        pesos, 0,6349 equivale a una tarifa media de 634,9 pesos por kilovatio hora.
-        El intercepto, en cambio, es un artificio, puesto que predice un costo de
-        50.400 pesos para un consumo nulo, un punto que queda muy lejos del recorrido
-        observado, dado que el consumo mínimo es de 121,2 kWh, y que por tanto no
-        debe interpretarse como un cargo fijo.
+        La pendiente admite lectura directa, ya que cada metro cuadrado adicional
+        se asocia con 3,845 millones de pesos más en el precio. El intercepto, en
+        cambio, es un artificio, puesto que predice el precio de un apartamento de
+        área nula, un punto que queda muy lejos del recorrido observado, cuyo
+        mínimo es de 45,7 metros cuadrados, y que por tanto no debe interpretarse
+        como un valor de base.
 
         \begin{figure}[H]
             \centering
-            \includegraphics[width=\linewidth]{assets/images/figures/python/regression/dispersion_ajuste_simple.png}
-            \caption{Ajuste por mínimos cuadrados, con el intervalo de confianza de
-            la recta media y el intervalo de predicción individual}
-            \label{fit_m1}
+            \includegraphics[width=\linewidth]{assets/images/figures/python/regression/ajuste_simple.png}
+            \caption{Ajuste por mínimos cuadrados sobre el área, con su intervalo
+            de confianza al 95\%}
+            \label{fit_simple}
         \end{figure}
 
-        La Figura \ref{fit_m1} separa dos preguntas que suelen confundirse, dado que
-        la banda estrecha acota dónde está la recta media de la población y se
-        angosta en el centro de los datos, mientras que la banda ancha acota dónde
-        caerá la factura de un cliente concreto e incorpora, además de la
-        incertidumbre de la recta, la variabilidad individual. Predecir un caso
-        siempre es más incierto que estimar un promedio.
+        El coeficiente de determinación es 0,6043, es decir, el área explica el
+        60,4\% de la variabilidad del precio y deja sin explicar el 39,6\%
+        restante. La Figura \ref{fit_simple} hace visible ese resto, dado que la
+        dispersión vertical de los puntos alrededor de la recta es precisamente lo
+        que las tres variables omitidas tendrán que dar cuenta. El error medio
+        absoluto del modelo es de 66,7 millones de pesos por apartamento, una
+        magnitud demasiado grande para sostener un avalúo.
 
-        \vspace{10pt}
-
-        Hasta aquí el modelo parece inmejorable. El diagnóstico de supuestos,
-        recogido en la Tabla \ref{diagnostics_m1}, dice otra cosa.
+    \subsection{Regresión lineal múltiple}
+        Al incorporar el número de habitaciones, la antigüedad y el estrato, las
+        cuatro variables resultan significativas al 5\%, incluida aquella que la
+        correlación había descartado. La Tabla \ref{coef_multiple} recoge la
+        estimación.
 
         \begin{table*}[!t]
             \centering
-            \caption{Diagnóstico de los supuestos del modelo simple M1}
+            \caption{Coeficientes del modelo múltiple con intervalos de confianza
+            al 95\%}
             \begin{center}
-                \begin{tabular}{|l|c|c|l|l|}
-                    \hline
-                    \textbf{Prueba} & \textbf{Estadístico} & \textbf{p-valor} &
-                    \textbf{Supuesto evaluado} & \textbf{Conclusión} \\
-                    \hline
-                    Breusch-Pagan & 23,018 & $1{,}6 \times 10^{-6}$ &
-                    Varianza constante & Se rechaza \\
-                    \hline
-                    Jarque-Bera & 214,134 & $3{,}2 \times 10^{-47}$ &
-                    Residuos normales & Se rechaza \\
-                    \hline
-                    Durbin-Watson & 2,275 & --- &
-                    Residuos no correlacionados & No se rechaza \\
-                    \hline
-                    RESET de Ramsey & 0,896 & 0,346 &
-                    Forma lineal adecuada & No se rechaza \\
-                    \hline
-                \end{tabular}
-                \label{diagnostics_m1}
-            \end{center}
-        \end{table*}
-
-        La combinación de resultados es informativa por sí misma. Que la prueba RESET
-        no rechace indica que la forma funcional es correcta, es decir, que la
-        relación entre consumo y costo sí es lineal. Que Breusch-Pagan y Jarque-Bera
-        rechacen con esa contundencia señala, por tanto, un problema distinto del de
-        la forma, esto es, falta una variable.
-
-        \begin{figure*}[!tp]
-            \centering
-            \includegraphics[width=0.72\linewidth]{assets/images/figures/python/regression/diagnostico_simple.png}
-            \caption{Panel de diagnóstico del modelo simple; el color por sector
-            convierte un control rutinario en el hallazgo central del análisis}
-            \label{diag_panel}
-        \end{figure*}
-
-        El primer panel de la Figura \ref{diag_panel} identifica al culpable, puesto
-        que los residuos no se distribuyen de forma aleatoria alrededor del cero,
-        sino que se agrupan por sector, con los clientes comerciales sistemáticamente
-        por encima de la recta y los industriales por debajo. La Tabla
-        \ref{sector_bias} pone número a esa observación, y en un modelo correctamente
-        especificado esos tres promedios deberían ser nulos.
-
-        \begin{table}[H]
-            \centering
-            \caption{Residuo medio del modelo simple dentro de cada sector (miles de
-            COP)}
-            \begin{center}
-                \begin{tabular}{|l|c|c|c|}
-                    \hline
-                    \textbf{Sector} & $\mathbf{n}$ & \textbf{Residuo medio} &
-                    \textbf{Desviación estándar} \\
-                    \hline
-                    Residencial & 62 & $-4{,}39$   & 13,36 \\
-                    \hline
-                    Comercial   & 40 & $+15{,}45$  & 28,20 \\
-                    \hline
-                    Industrial  & 18 & $-19{,}23$  & 57,51 \\
-                    \hline
-                \end{tabular}
-                \label{sector_bias}
-            \end{center}
-        \end{table}
-
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=\linewidth]{assets/images/figures/python/regression/residuos_por_sector.png}
-            \caption{Sesgo sistemático del modelo simple: ninguna de las tres cajas
-            se centra en el residuo nulo}
-            \label{bias_boxplot}
-        \end{figure}
-
-        La conclusión de esta sección es que un coeficiente de determinación de
-        0,9969 puede acompañar a un modelo mal especificado. Lo que detecta el
-        problema no es la bondad del ajuste, sino el diagnóstico.
-
-    \subsection{Regresión múltiple y selección del modelo}
-        Incorporar el sector como variable indicadora y su interacción con el consumo
-        permite que cada grupo tenga su propio intercepto y su propia pendiente. La
-        Tabla \ref{coef_m3} recoge la estimación del modelo M3, tomando el sector
-        Residencial como categoría de referencia.
-
-        \begin{table*}[!t]
-            \centering
-            \caption{Coeficientes del modelo múltiple M3 con interacción}
-            \begin{center}
-                % Los nombres de los términos son largos: se estrecha la separación
-                % entre columnas para que la tabla quepa a doble columna.
-                \setlength{\tabcolsep}{4pt}
                 \begin{tabular}{|l|c|c|c|c|c|}
                     \hline
                     \textbf{Término} & \textbf{Coeficiente} &
                     \textbf{Error estándar} & $\mathbf{t}$ & \textbf{p-valor} &
                     \textbf{IC 95\%} \\
                     \hline
-                    Intercepto (Residencial) & 7,1067 & 13,6264 & 0,52 & 0,603 &
-                    [$-19{,}89$ ; 34,10] \\
+                    Intercepto & $-237{,}026$ & 24,137 & $-9{,}82$ &
+                    $9{,}2 \times 10^{-18}$ & [$-284{,}73$ ; $-189{,}32$] \\
                     \hline
-                    Sector Comercial & $-2{,}6594$ & 22,3549 & $-0{,}12$ & 0,906 &
-                    [$-46{,}94$ ; 41,63] \\
+                    Área (por m\textsuperscript{2}) & $+3{,}797$ & 0,133 & 28,51 &
+                    $2{,}5 \times 10^{-61}$ & [3,53 ; 4,06] \\
                     \hline
-                    Sector Industrial & $-71{,}9656$ & 28,1145 & $-2{,}56$ & 0,012 &
-                    [$-127{,}66$ ; $-16{,}27$] \\
+                    Habitaciones (por unidad) & $+16{,}010$ & 3,482 & 4,60 &
+                    $9{,}2 \times 10^{-6}$ & [9,13 ; 22,89] \\
                     \hline
-                    Consumo (pendiente Residencial) & 0,7916 & 0,0533 & 14,85 &
-                    $2{,}0 \times 10^{-28}$ & [0,6860 ; 0,8972] \\
+                    Antigüedad (por año) & $-2{,}475$ & 0,359 & $-6{,}90$ &
+                    $1{,}5 \times 10^{-10}$ & [$-3{,}18$ ; $-1{,}77$] \\
                     \hline
-                    Consumo $\times$ Comercial & $-0{,}0868$ & 0,0568 & $-1{,}53$ &
-                    0,129 & [$-0{,}1994$ ; 0,0257] \\
-                    \hline
-                    Consumo $\times$ Industrial & $-0{,}1206$ & 0,0541 & $-2{,}23$ &
-                    0,028 & [$-0{,}2277$ ; $-0{,}0135$] \\
+                    Estrato (por nivel) & $+85{,}185$ & 4,440 & 19,18 &
+                    $1{,}3 \times 10^{-41}$ & [76,41 ; 93,96] \\
                     \hline
                 \end{tabular}
-                \label{coef_m3}
+                \label{coef_multiple}
             \end{center}
         \end{table*}
 
-        Dos lecturas importan aquí. La primera es que el intercepto deja de ser
-        significativo ($p = 0{,}603$), puesto que al modelar cada sector por separado
-        desaparece el cargo fijo espurio que el modelo simple había inventado, y el
-        ajuste pasa esencialmente por el origen, como corresponde a una factura
-        proporcional al consumo. La segunda es que el término de interacción del
-        sector Industrial sí es significativo, lo que confirma que la pendiente, es
-        decir, la tarifa, cambia entre grupos.
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\linewidth]{assets/images/figures/python/regression/efecto_variables.png}
+            \caption{Efecto de cada variable sobre el precio con su intervalo de
+            confianza al 95\%}
+            \label{effects}
+        \end{figure}
+
+        El hallazgo central del trabajo está en la fila de las habitaciones,
+        puesto que el p-valor pasa de 0,326 en la Tabla \ref{correlations} a
+        $9{,}2 \times 10^{-6}$ en la Tabla \ref{coef_multiple}. No cambiaron los
+        datos, cambió la pregunta, ya que la correlación pregunta si los
+        apartamentos con más habitaciones son más caros, a lo que la respuesta es
+        que no necesariamente, mientras que la regresión múltiple pregunta si,
+        entre dos apartamentos de la misma área, antigüedad y estrato, vale más el
+        que tiene una habitación adicional, a lo que la respuesta es que sí, 16,0
+        millones de pesos más. Descartar una variable por su correlación
+        bivariada, práctica frecuente en la selección preliminar de predictores,
+        habría eliminado del modelo un efecto real.
 
         \vspace{10pt}
 
-        El contraste F entre los tres modelos anidados, presentado en la Tabla
-        \ref{anova}, confirma que cada término añadido compensa los grados de
-        libertad que gasta.
+        La Figura \ref{effects} muestra los cuatro efectos con sus intervalos de
+        confianza, ninguno de los cuales contiene al cero. Expresados en metros
+        cuadrados equivalentes, es decir, dividiendo cada coeficiente por el valor
+        estimado del metro cuadrado, los efectos se vuelven directamente
+        comparables entre sí:
 
-        \begin{table}[H]
-            \centering
-            \caption{Contraste F entre los modelos anidados M1, M2 y M3}
-            \begin{center}
-                \begin{tabular}{|l|c|c|c|c|}
-                    \hline
-                    \textbf{Modelo} & \textbf{gl res.} & \textbf{SC residual} &
-                    $\mathbf{F}$ & \textbf{p-valor} \\
-                    \hline
-                    M1 · Simple      & 118 & 115.535,5 & ---    & ---   \\
-                    \hline
-                    M2 · Aditivo     & 116 & 78.342,8  & 28,714 &
-                    $8{,}0 \times 10^{-11}$ \\
-                    \hline
-                    M3 · Interacción & 114 & 73.831,0  & 3,483  & 0,034 \\
-                    \hline
-                \end{tabular}
-                \label{anova}
-            \end{center}
-        \end{table}
+        \vspace{10pt}
 
-        \begin{figure*}[!tp]
-            \centering
-            \includegraphics[width=0.9\linewidth]{assets/images/figures/python/regression/ajuste_por_sector.png}
-            \caption{El modelo con interacción frente al simple; el panel derecho
-            traduce las pendientes a la magnitud que separa a los sectores}
-            \label{fit_m3}
-        \end{figure*}
+        \begin{itemize}
+            \item Una habitación adicional vale 16,0 millones de pesos, el
+            equivalente a 4,2 metros cuadrados.
 
-        En la escala del costo las tres rectas casi se superponen, porque el consumo
-        domina cualquier otro efecto. El panel derecho de la Figura \ref{fit_m3} las
-        traduce a pesos por kilovatio hora y ahí la estructura aparece con nitidez,
-        junto con la validación externa del modelo, dado que las pendientes estimadas
-        reproducen la tarifa observada, calculada directamente del cociente entre
-        costo y consumo, como detalla la Tabla \ref{tariffs}.
+            \item Subir un nivel de estrato vale 85,2 millones, tanto como 22,4
+            metros cuadrados adicionales.
+
+            \item Cada año de antigüedad resta 2,48 millones, de modo que una
+            década de uso cuesta 24,8 millones, equivalentes a 6,5 metros
+            cuadrados.
+        \end{itemize}
+
+        \vspace{10pt}
+
+        Estas equivalencias constituyen el producto accionable del análisis,
+        puesto que permiten a un comprador o a un avaluador decidir, por ejemplo,
+        si conviene un apartamento más amplio en estrato inferior o uno más
+        pequeño en estrato superior, sobre una base cuantitativa y no sobre una
+        impresión.
+
+    \subsection{Comparación de los dos modelos}
+        La Tabla \ref{model_comparison} contrasta ambas especificaciones bajo
+        todas las medidas descritas en la metodología.
 
         \begin{table*}[!t]
             \centering
-            \caption{Pendientes estimadas frente a la tarifa media observada por
-            sector}
+            \caption{Comparación entre el modelo simple y el modelo múltiple}
             \begin{center}
-                \begin{tabular}{|l|c|c|c|c|}
+                \begin{tabular}{|l|c|c|c|c|c|c|}
                     \hline
-                    \textbf{Sector} & \textbf{Pendiente estimada} &
-                    \textbf{Tarifa implícita (COP/kWh)} &
-                    \textbf{Tarifa observada (COP/kWh)} & \textbf{Diferencia} \\
+                    \textbf{Modelo} & \textbf{Regresores} & $\mathbf{R^{2}}$ &
+                    $\mathbf{R^{2}_{aj}}$ & \textbf{RMSE} & \textbf{MAE} &
+                    \textbf{AIC} \\
                     \hline
-                    Residencial & 0,7916 & 791,6 & 821,8 & $-3{,}67$\% \\
+                    Simple & 1 & 0,6043 & 0,6016 & 80,60 & 66,72 & 1.746,5 \\
                     \hline
-                    Comercial   & 0,7048 & 704,8 & 710,4 & $-0{,}79$\% \\
-                    \hline
-                    Industrial  & 0,6710 & 671,0 & 645,0 & $+4{,}03$\% \\
-                    \hline
-                \end{tabular}
-                \label{tariffs}
-            \end{center}
-        \end{table*}
-
-        Esta correspondencia es el argumento más fuerte a favor del modelo, y ningún
-        criterio de información puede darlo, puesto que los coeficientes no solo
-        ajustan bien, sino que significan algo verificable fuera del modelo. El
-        descuento por escala queda cuantificado en 121 pesos por kilovatio hora entre
-        el sector Industrial y el Residencial, y en 87 entre el Comercial y el
-        Residencial.
-
-        \begin{figure*}[!tp]
-            \centering
-            \includegraphics[width=0.9\linewidth]{assets/images/figures/python/regression/coeficientes_ic.png}
-            \caption{Coeficientes del modelo M3 con sus intervalos de confianza al
-            95\%, separados por escala}
-            \label{coef_plot}
-        \end{figure*}
-
-        El gráfico de coeficientes de la Figura \ref{coef_plot} traduce la tabla a
-        una lectura visual, dado que un término es significativo cuando su intervalo
-        no cruza la línea del cero. Tres lo consiguen, la pendiente del sector
-        Residencial, el intercepto del Industrial y su término de interacción,
-        mientras que los términos del sector Comercial no alcanzan la significancia,
-        algo coherente con una diferencia de tarifa mucho menor frente a la categoría
-        de referencia.
-
-        \begin{table*}[!t]
-            \centering
-            \caption{Comparación de los tres modelos}
-            \begin{center}
-                \begin{tabular}{|l|c|c|c|c|c|c|c|}
-                    \hline
-                    \textbf{Modelo} & $\mathbf{k}$ & $\mathbf{R^{2}}$ \textbf{aj.} &
-                    \textbf{AIC} & \textbf{BIC} & \textbf{RMSE} &
-                    \textbf{Breusch-Pagan p} & \textbf{Jarque-Bera p} \\
-                    \hline
-                    M1 · Simple & 2 & 0,9968 & 1.168,9 & 1.174,5 & 31,03 &
-                    $1{,}6 \times 10^{-6}$ & $3{,}2 \times 10^{-47}$ \\
-                    \hline
-                    M2 · Aditivo & 4 & 0,9978 & 1.126,3 & 1.137,5 & 25,55 &
-                    $7{,}4 \times 10^{-4}$ & $1{,}6 \times 10^{-254}$ \\
-                    \hline
-                    M3 · Interacción & 6 & 0,9979 & 1.123,2 & 1.139,9 & 24,80 &
-                    $1{,}2 \times 10^{-3}$ & $1{,}2 \times 10^{-248}$ \\
+                    Múltiple & 4 & 0,8960 & 0,8932 & 41,32 & 33,07 & 1.552,1 \\
                     \hline
                 \end{tabular}
                 \label{model_comparison}
             \end{center}
         \end{table*}
 
-        La comparación de la Tabla \ref{model_comparison} confirma la jerarquía, ya
-        que cada término añadido mejora el ajuste una vez descontada la complejidad,
-        y M3 gana en coeficiente ajustado, en el criterio de Akaike y en error
-        cuadrático medio. Queda, eso sí, una limitación que conviene reconocer antes
-        de interpretar nada, y es que los tres modelos siguen rechazando la
-        homocedasticidad y la normalidad de los residuos, porque el error crece con
-        el tamaño de la factura. Los coeficientes se mantienen insesgados y su
-        lectura como tarifas es válida, pero los intervalos de predicción de los
-        clientes más grandes deben leerse con cautela.
+        Las cuatro medidas apuntan en la misma dirección. El coeficiente de
+        determinación sube 29,2 puntos porcentuales y su versión ajustada lo hace
+        en la misma magnitud, lo que descarta que la mejora sea el efecto mecánico
+        de haber añadido regresores, dado que el coeficiente ajustado habría
+        penalizado términos inútiles. El error medio absoluto cae de 66,7 a 33,1
+        millones de pesos, es decir, se reduce a la mitad, y el criterio de Akaike
+        desciende 194,4 unidades, una diferencia que en la escala habitual de este
+        criterio resulta concluyente.
 
-        \begin{figure*}[!tp]
+        \begin{figure}[H]
             \centering
-            \includegraphics[width=0.95\linewidth]{assets/images/figures/python/regression/comparacion_modelos.png}
-            \caption{Los tres modelos bajo tres criterios de selección, todos
-            expresados en magnitudes con cero natural}
-            \label{criteria}
-        \end{figure*}
+            \includegraphics[width=\linewidth]{assets/images/figures/python/regression/comparacion_residuos.png}
+            \caption{Errores de estimación de ambos modelos representados en la
+            misma escala}
+            \label{residuals_comparison}
+        \end{figure}
 
-        Los tres paneles de la Figura \ref{criteria} evitan deliberadamente graficar
-        el coeficiente de determinación con el eje truncado, que es la forma habitual
-        de exagerar diferencias en la cuarta cifra decimal. En su lugar muestran la
-        varianza no explicada, la distancia al mejor criterio bayesiano y el error en
-        las unidades del problema, tres magnitudes en las que el cero significa algo.
+        La Figura \ref{residuals_comparison} representa los errores de los dos
+        modelos con idéntico eje vertical, que es la forma honesta de comparar,
+        ya que ajustar la escala de cada panel a sus propios datos haría parecer
+        equivalentes dos situaciones que no lo son. En el panel izquierdo los
+        errores del modelo simple alcanzan los 250 millones de pesos, mientras que
+        en el derecho la nube del modelo múltiple es visiblemente más estrecha y
+        se mantiene centrada en cero a lo largo de todo el recorrido de precios.
 
-    \subsection{Validación predictiva con \textit{scikit-learn}}
-        Los criterios anteriores se calculan sobre los mismos datos que sirvieron
-        para ajustar. Para medir la capacidad de predecir observaciones nuevas se
-        reserva un 30\% de los clientes, con estratificación por sector, obligatoria
-        aquí porque con solo 18 clientes industriales una partición aleatoria simple
-        podría dejar el conjunto de prueba sin representación del grupo que más
-        factura, y se complementa con validación cruzada de diez pliegues
-        \cite{hastie2009elements}, \cite{james2023islp}. Las dos especificaciones
-        centrales, la simple y la múltiple con interacción, se someten al mismo
-        procedimiento dentro de un \texttt{Pipeline} que impide filtrar información
-        del conjunto de prueba.
+    \subsection{Validación sobre datos no utilizados en el ajuste}
+        La Tabla \ref{ml_validation} recoge el desempeño de ambos modelos bajo los
+        dos esquemas de validación descritos en la metodología.
 
         \begin{table*}[!t]
             \centering
-            \caption{Desempeño de las dos especificaciones en prueba retenida y
-            validación cruzada}
+            \caption{Desempeño sobre datos no utilizados en el ajuste}
             \begin{center}
                 \begin{tabular}{|l|c|c|c|c|c|}
                     \hline
-                    \textbf{Estimador} & $\mathbf{R^{2}}$ \textbf{prueba} &
-                    \textbf{RMSE prueba} & \textbf{MAPE prueba} &
-                    $\mathbf{R^{2}}$ \textbf{val. cruzada} &
-                    \textbf{RMSE val. cruzada} \\
+                    \textbf{Modelo} & $\mathbf{R^{2}}$ \textbf{entren.} &
+                    $\mathbf{R^{2}}$ \textbf{prueba} & \textbf{RMSE prueba} &
+                    \textbf{MAE prueba} & $\mathbf{R^{2}}$ \textbf{validación
+                    cruzada} \\
                     \hline
-                    MCO simple (solo consumo) & 0,9934 & 39,27 & 5,12\% & 0,9942 &
-                    $30{,}61 \pm 10{,}01$ \\
+                    Simple & 0,6135 & 0,5744 & 88,15 & 75,29 &
+                    $0{,}6041 \pm 0{,}0620$ \\
                     \hline
-                    MCO múltiple (consumo $\times$ sector) & 0,9944 & 36,26 & 3,68\% &
-                    0,9960 & $25{,}49 \pm 10{,}53$ \\
+                    Múltiple & 0,8934 & 0,8955 & 43,69 & 34,75 &
+                    $0{,}8888 \pm 0{,}0162$ \\
                     \hline
                 \end{tabular}
                 \label{ml_validation}
             \end{center}
         \end{table*}
 
-        El resultado de la Tabla \ref{ml_validation} es la pieza que faltaba, porque
-        añadir el sector no solo mejoraba el ajuste dentro de la muestra, donde un
-        coeficiente de determinación creciente nunca puede descartar por sí solo el
-        sobreajuste, sino que también mejora la predicción fuera de ella, dado que el
-        error cuadrático medio en validación cruzada cae de 30,61 a 25,49 miles de
-        pesos, una reducción del 16,7\%. La ganancia es, por tanto, real y no un
-        artefacto de la complejidad añadida.
-
-        \begin{figure*}[!tp]
+        \begin{figure}[H]
             \centering
-            \includegraphics[width=0.9\linewidth]{assets/images/figures/python/regression/real_vs_predicho.png}
-            \caption{Validación del modelo múltiple sobre el conjunto de prueba
-            retenido}
-            \label{holdout}
-        \end{figure*}
+            \includegraphics[width=\linewidth]{assets/images/figures/python/regression/validacion_sklearn.png}
+            \caption{Validación con \textit{scikit-learn}, con el precio real
+            frente al predicho y el coeficiente de determinación por pliegue}
+            \label{validation_fig}
+        \end{figure}
 
-        Sobre los 36 clientes que el modelo nunca vio, el coeficiente de
-        determinación es 0,9944 y el error porcentual absoluto medio, 3,68\%. Los
-        residuos de prueba ya no muestran el sesgo por sector que delataba a M1,
-        puesto que el panel derecho de la Figura \ref{holdout} los reparte alrededor
-        del cero sin que ningún grupo quede sistemáticamente por encima o por debajo.
-        Para la empresa, esa cifra significa que la factura de un cliente nuevo puede
-        anticiparse con un error medio inferior al 4\%.
+        La tabla admite tres lecturas. La primera es que no hay sobreajuste,
+        puesto que la diferencia entre el coeficiente de determinación de
+        entrenamiento y el de prueba del modelo múltiple es de $-0{,}0021$, es
+        decir, el modelo se comporta igual de bien dentro y fuera de la muestra, lo
+        que resulta esperable en una especificación con solo cuatro regresores y
+        150 observaciones. La segunda es que la ventaja es consistente, dado que
+        el modelo múltiple gana en los cinco pliegues de la validación cruzada,
+        como muestra el panel derecho de la Figura \ref{validation_fig}, y lo hace
+        con una desviación estándar de 0,0162 frente a 0,0620 del modelo simple,
+        es decir, resulta además cerca de cuatro veces más estable. La tercera es
+        que el error alcanzado es utilizable, ya que sobre los 45 apartamentos de
+        prueba el modelo se equivoca en promedio 34,8 millones de pesos, un 8,1\%
+        del precio medio del conjunto.
 
-    \subsection{Visualización avanzada y tablero interactivo}
-        Las visualizaciones de esta sección no ilustran el análisis, sino que forman
-        parte de él \cite{castro2026avanzada}, dado que el sesgo por sector se
-        descubrió coloreando un gráfico de residuos, y el suavizado local lo confirmó
-        sin suponer ninguna forma funcional.
+    \subsection{Visualización avanzada}
+        La Figura \ref{lmplot} traduce a imagen el supuesto que sostiene el modelo
+        múltiple, dado que al ajustar una regresión independiente dentro de cada
+        estrato las tres rectas resultan aproximadamente paralelas, es decir, el
+        estrato desplaza el precio hacia arriba sin alterar el valor del metro
+        cuadrado dentro de cada nivel. Esa es exactamente la hipótesis que
+        justifica tratar el estrato como un término aditivo y no como una
+        interacción con el área.
 
-        \begin{figure*}[!tp]
+        \begin{figure}[H]
             \centering
-            \includegraphics[width=0.9\linewidth]{assets/images/figures/python/advanced/sns_lmplot_sectores.png}
-            \caption{Una regresión independiente por sector con su banda de
-            confianza, construida con \texttt{lmplot} de \textit{seaborn}}
+            \includegraphics[width=\linewidth]{assets/images/figures/python/advanced/sns_ajuste_por_estrato.png}
+            \caption{Regresión independiente dentro de cada estrato, construida
+            con la función \texttt{lmplot} de \textit{seaborn}}
             \label{lmplot}
-        \end{figure*}
+        \end{figure}
 
-        Separar los sectores en facetas con ejes libres, como hace la Figura
-        \ref{lmplot}, permite ver la relación dentro de cada grupo sin que la escala
-        del sector Industrial aplaste a los otros dos. Las pendientes anotadas en
-        cada panel coinciden con las del modelo M3, porque un modelo con interacción
-        completa equivale a estimar una regresión separada por grupo.
-
-        \begin{figure*}[!tp]
+        \begin{figure*}[!t]
             \centering
-            \includegraphics[width=0.9\linewidth]{assets/images/figures/python/advanced/sns_residuos_lowess.png}
-            \caption{Residuos de M1 y M3 con suavizado local, construidos con
-            \texttt{residplot} de \textit{seaborn}}
-            \label{lowess}
-        \end{figure*}
-
-        La curva \textit{lowess} de la Figura \ref{lowess} no supone ninguna forma
-        funcional, sino que se limita a promediar localmente los residuos. Si el
-        modelo capturó toda la estructura, esa curva debe ser plana, y aquí se desvía
-        visiblemente en M1 y se aplana en M3. Es la confirmación no paramétrica del
-        diagnóstico que las pruebas formales habían señalado.
-
-        \begin{figure*}[!tp]
-            \centering
-            \includegraphics[width=0.72\linewidth]{assets/images/figures/python/dashboard/dashboard_regresion.png}
-            \caption{Tablero interactivo de cuatro paneles con filtro por sector,
-            construido con \textit{Plotly}}
+            \includegraphics[width=0.92\textwidth]{assets/images/figures/python/dashboard/dashboard.png}
+            \caption{Tablero interactivo de \textit{Plotly}, con el ajuste, el
+            precio promedio por estrato, la comparación entre precio real y
+            estimado y el efecto de cada variable}
             \label{dashboard}
         \end{figure*}
 
-        El tablero de la Figura \ref{dashboard} reúne en una sola página las cuatro
-        preguntas del análisis, es decir, cómo ajusta el modelo, qué queda en los
-        residuos, cuál de las especificaciones gana y qué coeficientes son distintos
-        de cero. Los botones superiores filtran los paneles por sector y la
-        información emergente identifica a cada cliente, de modo que un lector que no
-        ejecuta código puede recorrer el mismo razonamiento que produjo el informe.
+        El tablero de la Figura \ref{dashboard} reúne el análisis completo en una
+        sola página navegable. Su primer panel muestra el precio frente al área
+        con la ficha de cada apartamento accesible al pasar el cursor, el segundo
+        recoge el precio promedio por estrato, con 359,3, 447,4 y 517,9 millones
+        de pesos para los estratos 3, 4 y 5, el tercero contrasta el precio real
+        con el estimado por el modelo frente a la diagonal de predicción perfecta,
+        y el cuarto resume el efecto de cada variable. Un menú desplegable filtra
+        los paneles por estrato sin necesidad de regenerar nada, lo que convierte
+        una figura estática en una herramienta de exploración.
 
-        \begin{figure*}[!tp]
+        \begin{figure}[H]
             \centering
-            \includegraphics[width=0.72\linewidth]{assets/images/figures/python/dashboard/scatter_interactivo.png}
-            \caption{Dispersión interactiva con tendencia por sector, construida con
-            \textit{Plotly}}
+            \includegraphics[width=\linewidth]{assets/images/figures/python/dashboard/dispersion_interactiva.png}
+            \caption{Dispersión interactiva con línea de tendencia, color por
+            estrato y tamaño proporcional al número de habitaciones}
             \label{scatter_plotly}
-        \end{figure*}
+        \end{figure}
 
-        La dispersión interactiva de la Figura \ref{scatter_plotly} aporta lo que una
-        figura estática no puede dar, puesto que al posar el cursor sobre un punto
-        aparecen el identificador del cliente y sus cifras exactas, y la leyenda
-        permite aislar un sector con un solo clic. Junto con el tablero, constituye el
-        entregable navegable que acompaña al repositorio y que permite a un lector sin
-        formación técnica recorrer el mismo razonamiento del informe.
+        La Figura \ref{scatter_plotly} codifica cuatro variables a la vez, es
+        decir, el área en el eje horizontal, el precio en el vertical, el estrato
+        en el color y el número de habitaciones en el tamaño del punto, y añade la
+        línea de tendencia estimada por mínimos cuadrados. En su versión
+        interactiva permite ampliar cualquier región e identificar apartamentos
+        concretos, una capacidad que ninguna imagen fija ofrece y que resulta
+        especialmente útil para revisar los casos que el modelo estima peor.
 
-    \subsection{Verificación cruzada entre Python y R}
-        La función \texttt{lm()} de R reestimó de forma independiente los tres
-        modelos. Los seis coeficientes del modelo con interacción coinciden con los
-        de \textit{statsmodels} en todas las cifras reportadas, lo que era esperable
-        porque ambos resuelven el mismo sistema de ecuaciones normales, pero que
-        conviene verificar antes que suponer.
+    \subsection{Verificación independiente en R}
+        La función \texttt{lm()} reestima los mismos modelos sobre el mismo archivo
+        de datos, sin reutilizar ningún valor calculado en Python. La Tabla
+        \ref{cross_check} compara los coeficientes.
 
         \begin{table}[H]
             \centering
-            \caption{Verificación cruzada de los coeficientes del modelo M3}
+            \caption{Verificación cruzada de los coeficientes del modelo múltiple}
             \begin{center}
                 \begin{tabular}{|l|c|c|c|}
                     \hline
                     \textbf{Término} & \textbf{Python} & \textbf{R} &
-                    \textbf{Dif. abs.} \\
+                    \textbf{Diferencia} \\
                     \hline
-                    Intercepto (Residencial) & 7,1067 & 7,1067 & 0,0000 \\
+                    Intercepto & $-237{,}026$ & $-237{,}026$ & 0,000000 \\
                     \hline
-                    Sector Comercial & $-2{,}6594$ & $-2{,}6594$ & 0,0000 \\
+                    Área & 3,797 & 3,797 & 0,000000 \\
                     \hline
-                    Sector Industrial & $-71{,}9656$ & $-71{,}9656$ & 0,0000 \\
+                    Habitaciones & 16,010 & 16,010 & 0,000000 \\
                     \hline
-                    Pendiente Residencial & 0,7916 & 0,7916 & 0,0000 \\
+                    Antigüedad & $-2{,}475$ & $-2{,}475$ & 0,000000 \\
                     \hline
-                    Consumo $\times$ Comercial & $-0{,}0868$ & $-0{,}0868$ &
-                    0,0000 \\
-                    \hline
-                    Consumo $\times$ Industrial & $-0{,}1206$ & $-0{,}1206$ &
-                    0,0000 \\
+                    Estrato & 85,185 & 85,185 & 0,000000 \\
                     \hline
                 \end{tabular}
                 \label{cross_check}
             \end{center}
         \end{table}
 
-        Dos diferencias de convención aparecieron en el camino y merecen registrarse.
-        La primera es que R ordena la matriz de diseño poniendo primero las variables
-        continuas mientras que \textit{patsy} pone primero las categóricas, de modo
-        que la comparación debe emparejarse por nombre de término y no por posición.
-        La segunda es que el criterio de Akaike de R supera al de
-        \textit{statsmodels} en exactamente 2,0 unidades, porque R cuenta la varianza
-        residual como un parámetro adicional; la diferencia es constante y no altera
-        el orden de los modelos.
+        La coincidencia es exacta hasta el redondeo aplicado, lo que descarta que
+        el resultado dependa de la herramienta empleada. El contraste F entre los
+        dos modelos, calculado con la función \texttt{anova()}, arroja un
+        estadístico de 135,63 con un p-valor inferior a $2{,}2 \times 10^{-16}$,
+        es decir, las tres variables añadidas justifican con holgura los grados de
+        libertad que consumen. El error típico del modelo múltiple es de 42,0
+        millones de pesos.
 
-        \begin{figure*}[!tp]
+        \begin{figure}[H]
             \centering
-            \includegraphics[width=0.9\linewidth]{assets/images/figures/r/regression/ggplot_ajuste_por_sector.png}
-            \caption{Una regresión por sector construida con \textit{ggplot2}, donde
-            el ajuste es una capa más del gráfico}
+            \includegraphics[width=\linewidth]{assets/images/figures/r/ggplot_ajuste_simple.png}
+            \caption{Ajuste simple reestimado en R y representado con
+            \textit{ggplot2}}
             \label{ggplot_fit}
-        \end{figure*}
+        \end{figure}
 
-        \begin{figure*}[!tp]
+        \begin{figure*}[!t]
             \centering
-            \includegraphics[width=0.85\linewidth]{assets/images/figures/r/regression/ggplot_residuos_por_sector.png}
-            \caption{El sesgo por sector desaparece al incluir la interacción,
-            verificado en R}
-            \label{ggplot_bias}
+            \includegraphics[width=0.92\textwidth]{assets/images/figures/r/ggplot_facetas_estrato.png}
+            \caption{Una regresión por estrato en paneles independientes,
+            construida con \texttt{facet\_wrap} de \textit{ggplot2}}
+            \label{ggplot_facets}
         \end{figure*}
 
-        La réplica en R del hallazgo central, recogida en las Figuras
-        \ref{ggplot_fit} y \ref{ggplot_bias}, descarta que se trate de un artefacto
-        de una librería, dado que el residuo medio de cada sector, marcado con un
-        rombo, se desplaza del cero en el modelo simple y se centra en él cuando entra
-        la interacción.
-
-        \begin{figure*}[!tp]
+        \begin{figure}[H]
             \centering
-            \includegraphics[width=0.72\linewidth]{assets/images/figures/r/regression/base_diagnostico_m1.png}
-            \caption{Diagnóstico canónico del modelo simple obtenido con
-            \texttt{plot(modelo)} de la graficación base de R}
-            \label{base_diag}
-        \end{figure*}
+            \includegraphics[width=\linewidth]{assets/images/figures/r/ggplot_real_vs_estimado.png}
+            \caption{Precio real frente al estimado por el modelo múltiple en R}
+            \label{ggplot_pred}
+        \end{figure}
 
-        La Figura \ref{base_diag} ilustra una diferencia práctica entre los dos
-        ecosistemas, puesto que R entrega las cuatro vistas del diagnóstico, incluida
-        la de residuos frente a apalancamiento con las curvas de Cook y las
-        observaciones influyentes etiquetadas, en una sola llamada, mientras que en
-        Python hubo que construirlas panel a panel. A cambio, Python ofrece el
-        andamiaje de validación que R no tiene en su instalación base.
+        Las Figuras \ref{ggplot_fit}, \ref{ggplot_facets} y \ref{ggplot_pred}
+        reproducen con la gramática de gráficos de \textit{ggplot2} las mismas
+        vistas construidas en Python. La primera declara el ajuste como una capa
+        más mediante \texttt{geom\_smooth}, que internamente invoca la misma
+        función \texttt{lm()}, de modo que la recta dibujada coincide con la
+        estimada. La segunda separa los estratos en paneles independientes y
+        confirma el paralelismo observado en la Figura \ref{lmplot}. La tercera
+        contrasta el precio real con el estimado y cierra el circuito de
+        verificación al reproducir el mismo comportamiento que la Figura
+        \ref{validation_fig} obtuvo en Python.

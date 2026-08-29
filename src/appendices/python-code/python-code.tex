@@ -1,54 +1,45 @@
 \section{Código en Python}
     \label{anexo_python}
-    Las fases 0 a 4 de la Tabla \ref{workflow} se implementan en Python y se
+    Las fases 1 a 4 de la Tabla \ref{workflow} se implementan en Python y se
     reproducen completas a continuación, en su orden de ejecución.
 
     \subsection{\textit{dataset.py}}
-        Regenera el conjunto de datos con la semilla fija 42 y añade la variable
-        derivada \texttt{tarifa\_cop\_kwh} de la Tabla \ref{dataset_variables}, que
-        después sirve como patrón externo contra el cual contrastar las pendientes
-        estimadas.
+        Genera el conjunto de datos de la Tabla \ref{dataset_variables} con la
+        semilla fija 42. Las cuatro características se sortean de forma
+        independiente y el precio se construye a partir de ellas más un término
+        aleatorio, de modo que exista una relación real que la regresión deba
+        recuperar.
 
         \vspace{10pt}
 
         \lstinputlisting[style=python]{utils/codes/python/dataset.py}
 
-    \subsection{\textit{simple\_regression.py}}
-        Calcula las correlaciones de la Tabla \ref{correlations}, estima el modelo M1
-        de la Tabla \ref{coef_m1}, aplica las cuatro pruebas de supuestos de la Tabla
-        \ref{diagnostics_m1}, cuantifica el sesgo por sector de la Tabla
-        \ref{sector_bias} y produce las Figuras \ref{fit_m1}, \ref{diag_panel} y
-        \ref{bias_boxplot}.
+    \subsection{\textit{regression.py}}
+        Calcula las correlaciones de la Tabla \ref{correlations}, estima el modelo
+        simple de la Tabla \ref{coef_simple} y el modelo múltiple de la Tabla
+        \ref{coef_multiple}, los compara en la Tabla \ref{model_comparison} y
+        produce las Figuras \ref{fit_simple}, \ref{residuals_comparison} y
+        \ref{effects} con \textit{Matplotlib}.
 
         \vspace{10pt}
 
-        \lstinputlisting[style=python]{utils/codes/python/simple_regression.py}
+        \lstinputlisting[style=python]{utils/codes/python/regression.py}
 
-    \subsection{\textit{multiple\_regression.py}}
-        Estima los modelos M2 y M3, ejecuta el contraste F de la Tabla \ref{anova},
-        traduce las pendientes a las tarifas de la Tabla \ref{tariffs}, compara los
-        tres modelos en la Tabla \ref{model_comparison} y genera las Figuras
-        \ref{fit_m3}, \ref{coef_plot} y \ref{criteria}.
-
-        \vspace{10pt}
-
-        \lstinputlisting[style=python]{utils/codes/python/multiple_regression.py}
-
-    \subsection{\textit{ml\_regression.py}}
-        Construye la partición estratificada y la validación cruzada de diez pliegues
-        dentro de un \texttt{Pipeline}, produciendo la Tabla \ref{ml_validation} y la
-        Figura \ref{holdout}.
+    \subsection{\textit{validation.py}}
+        Construye la partición 70/30 y la validación cruzada de cinco pliegues con
+        \textit{scikit-learn}, produciendo la Tabla \ref{ml_validation} y la Figura
+        \ref{validation_fig}.
 
         \vspace{10pt}
 
-        \lstinputlisting[style=python]{utils/codes/python/ml_regression.py}
+        \lstinputlisting[style=python]{utils/codes/python/validation.py}
 
-    \subsection{\textit{advanced\_viz.py}}
-        Lee las tablas que dejó la fase 2 en lugar de recalcularlas y construye las
-        cuatro figuras de \textit{seaborn} (\ref{heatmap}, \ref{scatter_matrix},
-        \ref{lmplot} y \ref{lowess}) y las dos piezas interactivas de \textit{Plotly}
-        (\ref{dashboard} y \ref{scatter_plotly}).
+    \subsection{\textit{visualization.py}}
+        Construye las tres figuras estáticas de \textit{seaborn} (\ref{heatmap},
+        \ref{scatter_matrix} y \ref{lmplot}) y las dos piezas interactivas de
+        \textit{Plotly} (\ref{dashboard} y \ref{scatter_plotly}), reutilizando los
+        coeficientes que dejó la fase 2 en lugar de recalcularlos.
 
         \vspace{10pt}
 
-        \lstinputlisting[style=python]{utils/codes/python/advanced_viz.py}
+        \lstinputlisting[style=python]{utils/codes/python/visualization.py}

@@ -1,18 +1,16 @@
 \section{Código en R}
     \label{anexo_r}
-    La fase 5 de la Tabla \ref{workflow} se implementa en R. El script no reutiliza
-    ningún valor calculado en Python, únicamente lee el mismo archivo CSV, de modo
-    que la comparación entre ambas implementaciones es directa.
+    La fase 5 de la Tabla \ref{workflow} se implementa en R. El guion no reutiliza
+    ningún valor calculado en Python, únicamente lee el mismo archivo de datos, de
+    modo que la comparación entre ambas implementaciones es directa.
 
     \vspace{10pt}
 
-    \textit{regression.R} reestima con \texttt{lm()} los tres modelos que la fase 2
-    ajustó con \textit{statsmodels}, contrasta los modelos anidados con
-    \texttt{anova()}, compara coeficiente a coeficiente contra las tablas que escribió
-    Python para producir la Tabla \ref{cross_check}, y reparte a propósito sus cuatro
-    figuras entre los dos sistemas gráficos de R, con \textit{ggplot2} para las vistas
-    del ajuste (Figuras \ref{ggplot_fit} y \ref{ggplot_bias}) y la graficación base
-    para el diagnóstico canónico de la Figura \ref{base_diag}.
+    \textit{regression.R} reestima con \texttt{lm()} los dos modelos que la fase 2
+    ajustó con \textit{statsmodels}, los contrasta con \texttt{anova()}, compara
+    coeficiente a coeficiente contra la tabla que escribió Python para producir la
+    Tabla \ref{cross_check}, y construye con \textit{ggplot2} las Figuras
+    \ref{ggplot_fit}, \ref{ggplot_facets} y \ref{ggplot_pred}.
 
     \vspace{10pt}
 

@@ -81,6 +81,7 @@
         {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
         {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
         {ñ}{{\~n}}1 {Ñ}{{\~N}}1
+        {ü}{{\"u}}1 {Ü}{{\"U}}1
         {°}{{\textdegree}}1
         {σ}{{$\sigma$}}1
         {≈}{{$\approx$}}1
@@ -126,8 +127,8 @@
     \bstctlcite{IEEEtran:BSTcontrol}
 
     \title{
-        Análisis de regresión y visualización avanzada del consumo energético:
-        del diagnóstico de supuestos a la validación predictiva
+        Análisis de regresión y visualización avanzada del precio de la vivienda
+        usada: de la correlación simple al modelo múltiple
     }
 
     \author{\IEEEauthorblockN{
@@ -144,29 +145,35 @@
     \thispagestyle{plain}
 
     \begin{abstract}
-        Este documento tiene como objetivo evaluar si un modelo de regresión 
-        con un ajuste elevado describe adecuadamente el consumo energético y 
-        en caso contrario, determinar qué corrección requiere, para ello, se 
-        analiza el consumo mensual de 120 clientes de los sectores residencial, 
-        comercial e industrial en Python, con verificación de los coeficientes 
-        en R, mediante el ajuste de un modelo simple, el diagnóstico de sus 
-        supuestos y la especificación de un modelo múltiple con variables 
-        categóricas e interacciones. Los resultados muestran que el modelo 
-        simple, pese a un coeficiente de determinación de 0,9969, incumple 
-        los supuestos de homocedasticidad y normalidad, con errores agrupados 
-        por sector. Al incorporar el sector, cada pendiente corresponde a la 
-        tarifa sectorial (791,6, 704,8 y 671,0 pesos por kilovatio hora) y 
-        el error porcentual absoluto medio sobre 36 clientes no utilizados 
-        en el ajuste es del 3,68\%. Se concluye que la bondad de ajuste no 
-        basta como criterio de validación.
+        Este documento tiene como objetivo determinar qué características
+        explican el precio de un apartamento usado y con qué precisión puede
+        estimarse ese precio a partir de la ficha técnica del inmueble, para
+        ello se analiza un conjunto de 150 apartamentos de Bogotá descritos por
+        área, número de habitaciones, antigüedad y estrato, ajustando en Python
+        una regresión lineal simple sobre el área y una regresión lineal
+        múltiple sobre las cuatro variables, con validación sobre datos no
+        utilizados en el ajuste y verificación independiente de los
+        coeficientes en R. Los resultados muestran que el número de
+        habitaciones no presenta asociación detectable con el precio cuando se
+        mide de forma aislada, con un coeficiente de correlación de 0,0807 y un
+        p-valor de 0,326, y sin embargo resulta altamente significativo al
+        controlar por las demás variables, con un efecto de 16,0 millones de
+        pesos por habitación y un p-valor de $9{,}2 \times 10^{-6}$. El modelo
+        múltiple eleva el coeficiente de determinación de 0,6043 a 0,8960 y
+        reduce a la mitad el error medio de estimación, de 66,7 a 33,1 millones
+        de pesos, comportamiento que se mantiene sobre 45 apartamentos no
+        utilizados en el ajuste. Se concluye que la correlación bivariada es
+        insuficiente para descartar una variable y que solo el modelo múltiple
+        permite cuantificar el efecto propio de cada característica.
     \end{abstract}
 
     \vspace{10pt}
 
     \begin{IEEEkeywords}
-        Criterios de información, diagnóstico de supuestos, ggplot2, Plotly,
-        regresión lineal múltiple, scikit-learn, seaborn, statsmodels, validación
-        cruzada, visualización avanzada.
+        Coeficiente de determinación, ggplot2, Matplotlib, Plotly, regresión
+        lineal múltiple, regresión lineal simple, scikit-learn, seaborn,
+        statsmodels, tablero interactivo, validación cruzada, visualización
+        avanzada.
     \end{IEEEkeywords}
 
     \input{src/sections/introduction/introduction.tex}

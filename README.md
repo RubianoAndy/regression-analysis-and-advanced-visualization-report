@@ -20,7 +20,7 @@
 | **Unidad** | Unidad 2 · Herramientas de visualización avanzada |
 | **Programa** | Maestría en Inteligencia Artificial |
 | **Universidad** | Universidad de La Salle |
-| **Líneas de Trabajo** | Regresión Lineal, Diagnóstico de Supuestos y Visualización Avanzada |
+| **Líneas de Trabajo** | Regresión Lineal Simple y Múltiple, Validación Predictiva y Visualización Avanzada |
 | **Año** | 2026 |
 | **Estado** | Completado |
 
@@ -30,25 +30,23 @@
 
 Este repositorio contiene **el informe en LaTeX** (formato IEEE conference) del laboratorio de regresión y visualización avanzada.
 
-Una recta que explica el 99,7 % de la variabilidad parece un resultado difícil de mejorar. El informe muestra que ese número, por sí solo, **no dice si el modelo es correcto**: la misma regresión que alcanza un coeficiente de determinación de 0,9969 deja residuos que no son ruido, sino que se ordenan según una variable que quedó fuera del modelo. Detectar esa estructura, incorporarla y verificar que el modelo corregido cumple los supuestos que sostienen su inferencia es el recorrido completo del trabajo.
+El informe responde una sola pregunta: **¿qué determina el precio de un apartamento usado y con cuánta precisión se puede estimar?** El análisis parte de 150 apartamentos de Bogotá descritos por cuatro características —área, habitaciones, antigüedad y estrato—, ajusta primero una regresión simple sobre el área y después una regresión múltiple sobre las cuatro variables, valida el resultado sobre datos no vistos y lo verifica de forma independiente en R.
 
-El análisis se apoya en el conjunto de datos simulado del consumo energético mensual de **120 clientes** de una empresa distribuidora (sectores Residencial, Comercial e Industrial, semilla fija 42). Que sea simulado es una **ventaja metodológica**: se sabe de antemano que existen tres poblaciones con tarifas medias distintas, de modo que el modelo puede evaluarse por su capacidad de recuperar una estructura conocida y no solo por su ajuste.
+### El hallazgo central
 
-### Los tres hallazgos
+> **La correlación bivariada puede esconder un efecto real.** El número de habitaciones no muestra asociación con el precio al medirse de forma aislada (r = 0,0807; p = 0,326) y sin embargo resulta altamente significativo en el modelo múltiple (+16,0 millones de pesos por habitación; p = 9,2 × 10⁻⁶). No cambian los datos, cambia la pregunta: comparar apartamentos *cualesquiera* no es lo mismo que comparar apartamentos *equivalentes*.
 
-> **Los coeficientes tienen nombre.** Las pendientes del modelo múltiple son las tarifas de cada sector —**791,6**, **704,8** y **671,0** COP/kWh— y reproducen con menos del 4 % de diferencia el cociente entre costo y consumo calculado sin pasar por la regresión.
+> **El modelo múltiple reduce el error a la mitad.** El coeficiente de determinación pasa de 0,6043 a 0,8960 y el error medio de estimación baja de 66,7 a 33,1 millones de pesos.
 
-> **La mejora se sostiene fuera de la muestra.** La validación cruzada de diez pliegues reduce el error un **16,7 %** frente al modelo simple, y sobre 36 clientes nunca vistos alcanza R² = 0,9944 con un MAPE del 3,68 %.
-
-> **El descuento por escala es el hallazgo de negocio.** El sector Industrial paga **121 COP/kWh menos** que el Residencial y el Comercial 87 menos, cifras que la empresa puede contrastar contra su política tarifaria.
+> **Los coeficientes son accionables.** Traducidos a metros cuadrados equivalentes: una habitación vale 4,2 m², un nivel de estrato vale 22,4 m² y cada década de antigüedad cuesta 6,5 m².
 
 ### Objetivos Principales
 
-- Cuantificar la asociación entre consumo y costo con los coeficientes de Pearson y de Spearman, global y por sector.
-- Estimar una regresión lineal simple y **someterla a las cuatro pruebas de supuestos** que sostienen su inferencia.
-- Corregir la especificación incorporando el sector y su interacción con el consumo, y seleccionar entre los tres modelos con criterios que no se dejan engañar por R².
-- Medir la capacidad predictiva sobre datos no vistos con partición estratificada y validación cruzada.
-- Construir visualizaciones que **formen parte del método** y no lo ilustren, incluidas dos piezas interactivas.
+- Medir la asociación de cada característica con el precio y ajustar la regresión lineal simple con `statsmodels`.
+- Estimar la regresión múltiple e interpretar cada coeficiente **manteniendo constantes las demás variables**.
+- Comparar ambos modelos con R², R² ajustado, RMSE, MAE y el criterio de Akaike.
+- Validar la capacidad predictiva sobre datos no vistos con `scikit-learn` (partición 70/30 y validación cruzada de 5 pliegues).
+- Construir visualizaciones que **formen parte del argumento** y no lo ilustren, incluidas dos piezas interactivas.
 - Verificar todo el cálculo con una implementación independiente en R.
 - Entregar el informe escrito aplicando la normativa IEEE.
 
@@ -67,27 +65,22 @@ El análisis se apoya en el conjunto de datos simulado del consumo energético m
 │       ├── author/                   # Fotografía del autor
 │       └── figures/                  # Figuras generadas por los scripts
 │           ├── python/
-│           │   ├── regression/       # Fases 1-3 (Matplotlib) — 7 figuras
-│           │   │   ├── dispersion_ajuste_simple.png    # Fig. 3  · ajuste MCO con bandas
-│           │   │   ├── diagnostico_simple.png          # Fig. 4  · panel de diagnóstico
-│           │   │   ├── residuos_por_sector.png         # Fig. 5  · sesgo por sector
-│           │   │   ├── ajuste_por_sector.png           # Fig. 6  · M3 frente a M1
-│           │   │   ├── coeficientes_ic.png             # Fig. 7  · coeficientes con IC
-│           │   │   ├── comparacion_modelos.png         # Fig. 8  · tres criterios
-│           │   │   └── real_vs_predicho.png            # Fig. 9  · prueba retenida
-│           │   ├── advanced/         # Fase 4 (seaborn) — 4 figuras
-│           │   │   ├── sns_heatmap_correlacion.png     # Fig. 1  · matriz de correlaciones
-│           │   │   ├── sns_matriz_dispersion.png       # Fig. 2  · matriz de dispersión
-│           │   │   ├── sns_lmplot_sectores.png         # Fig. 10 · una regresión por sector
-│           │   │   └── sns_residuos_lowess.png         # Fig. 11 · residuos con lowess
+│           │   ├── regression/       # Fases 2-3 (Matplotlib) — 4 figuras
+│           │   │   ├── ajuste_simple.png              # Fig. 3  · recta MCO con banda de confianza
+│           │   │   ├── efecto_variables.png           # Fig. 4  · coeficientes con IC 95 %
+│           │   │   ├── comparacion_residuos.png       # Fig. 5  · errores en la misma escala
+│           │   │   └── validacion_sklearn.png         # Fig. 6  · prueba retenida y pliegues
+│           │   ├── advanced/         # Fase 4 (seaborn) — 3 figuras
+│           │   │   ├── sns_heatmap_correlacion.png    # Fig. 1  · matriz de correlaciones
+│           │   │   ├── sns_matriz_dispersion.png      # Fig. 2  · matriz de dispersión
+│           │   │   └── sns_ajuste_por_estrato.png     # Fig. 7  · una regresión por estrato
 │           │   └── dashboard/        # Fase 4 (Plotly) — capturas de las piezas interactivas
-│           │       ├── dashboard_regresion.png         # Fig. 12 · tablero de cuatro paneles
-│           │       └── scatter_interactivo.png         # Fig. 13 · dispersión interactiva
-│           └── r/
-│               └── regression/       # Fase 5 (ggplot2 y graficación base) — 3 figuras
-│                   ├── ggplot_ajuste_por_sector.png    # Fig. 14 · regresión por sector
-│                   ├── ggplot_residuos_por_sector.png  # Fig. 15 · sesgo verificado en R
-│                   └── base_diagnostico_m1.png         # Fig. 16 · plot(modelo) canónico
+│           │       ├── dashboard.png                  # Fig. 8  · tablero de cuatro paneles
+│           │       └── dispersion_interactiva.png     # Fig. 9  · dispersión explorable
+│           └── r/                    # Fase 5 (ggplot2) — 3 figuras
+│               ├── ggplot_ajuste_simple.png           # Fig. 10 · ajuste simple en R
+│               ├── ggplot_facetas_estrato.png         # Fig. 11 · un panel por estrato
+│               └── ggplot_real_vs_estimado.png        # Fig. 12 · real frente a estimado
 ├── src/
 │   ├── sections/                     # Secciones del informe (en orden de compilación)
 │   │   ├── introduction/             # I. Introducción
@@ -95,20 +88,19 @@ El análisis se apoya en el conjunto de datos simulado del consumo energético m
 │   │   ├── results/                  # III. Resultados
 │   │   └── conclusions/              # IV. Conclusiones
 │   └── appendices/
-│       ├── python-code/              # Apéndice A: los cinco scripts de Python
+│       ├── python-code/              # Apéndice A: los cuatro scripts de Python
 │       └── r-code/                   # Apéndice B: el script de R
 ├── utils/
-│   ├── codes/                        # Copias sin comentarios, citadas vía \lstinputlisting
+│   ├── codes/                        # Copias citadas vía \lstinputlisting
 │   │   ├── python/
-│   │   │   ├── dataset.py                     # Fase 0
-│   │   │   ├── simple_regression.py           # Fase 1
-│   │   │   ├── multiple_regression.py         # Fase 2
-│   │   │   ├── ml_regression.py               # Fase 3
-│   │   │   └── advanced_viz.py                # Fase 4
+│   │   │   ├── dataset.py                     # Fase 1
+│   │   │   ├── regression.py                  # Fase 2
+│   │   │   ├── validation.py                  # Fase 3
+│   │   │   └── visualization.py               # Fase 4
 │   │   └── r/
 │   │       └── regression.R                   # Fase 5
 │   └── references/
-│       └── references.bib            # Bibliografía IEEE (20 referencias citadas)
+│       └── references.bib            # Bibliografía IEEE (18 referencias citadas)
 └── build/                            # Artefactos de compilación LaTeX (generado)
 ```
 
@@ -119,153 +111,105 @@ El análisis se apoya en el conjunto de datos simulado del consumo energético m
 | # | Sección | Contenido |
 |---|---|---|
 | — | Resumen y palabras clave | Cifras principales del estudio |
-| I | Introducción | El problema del R² engañoso, el conjunto de datos y anticipo de los tres hallazgos |
-| II | Metodología | Conjunto de datos (**Tabla I**), la secuencia M1→M2→M3 con las diez medidas y sus fórmulas (**Tabla II**) y las seis fases del flujo (**Tabla III**) |
-| III | Resultados | Correlación (**Tabla IV**, **Figs. 1–2**), regresión simple y su diagnóstico (**Tablas V–VII**, **Figs. 3–5**), regresión múltiple y selección (**Tablas VIII–XI**, **Figs. 6–8**), validación predictiva (**Tabla XII**, **Fig. 9**), visualización avanzada (**Figs. 10–13**) y verificación cruzada (**Tabla XIII**, **Figs. 14–16**) |
-| IV | Conclusiones | Ocho conclusiones respaldadas por las cifras de la ejecución |
-| A | Apéndice · Código en Python | `dataset.py`, `simple_regression.py`, `multiple_regression.py`, `ml_regression.py` y `advanced_viz.py` |
+| I | Introducción | El problema de la correlación bivariada, el conjunto de datos y anticipo del hallazgo central |
+| II | Metodología | Conjunto de datos (**Tabla I**), los dos modelos con las once medidas y sus fórmulas (**Tabla II**), los esquemas de validación y las cinco fases del flujo (**Tabla III**) |
+| III | Resultados | Correlación (**Tabla IV**, **Figs. 1–2**), regresión simple (**Tabla V**, **Fig. 3**), regresión múltiple (**Tabla VI**, **Fig. 4**), comparación de modelos (**Tabla VII**, **Fig. 5**), validación (**Tabla VIII**, **Fig. 6**), visualización avanzada (**Figs. 7–9**) y verificación en R (**Tabla IX**, **Figs. 10–12**) |
+| IV | Conclusiones | Siete conclusiones respaldadas por las cifras de la ejecución |
+| A | Apéndice · Código en Python | `dataset.py`, `regression.py`, `validation.py` y `visualization.py` |
 | B | Apéndice · Código en R | `regression.R` |
-| — | Referencias | 20 entradas en formato IEEE |
+| — | Referencias | 18 entradas en formato IEEE |
 
-**El cuerpo del informe no lleva listados de código.** La metodología describe cada decisión de implementación y remite a los Apéndices A y B, donde los seis scripts se reproducen en su orden de ejecución, con el código sin sus comentarios: lo que estos documentan ya lo desarrollan la metodología y los resultados.
+**El cuerpo del informe no lleva listados de código.** La metodología describe cada decisión de implementación y remite a los Apéndices A y B, donde los cinco scripts se reproducen en su orden de ejecución.
 
 ---
 
 ## 🧪 Metodología
 
-### La secuencia de tres modelos
-
-Cada modelo responde a una falla diagnosticada en el anterior:
+### Los dos modelos
 
 | Modelo | Especificación | Qué añade |
 |---|---|---|
-| **M1** · Simple | costo ~ consumo | Referencia; su diagnóstico motiva todo lo demás |
-| **M2** · Aditivo | costo ~ consumo + sector | Un intercepto por grupo, pendiente única |
-| **M3** · Interacción | costo ~ consumo × sector | Un intercepto **y** una pendiente por grupo |
+| **Simple** | precio ~ área | Referencia; usa la variable más correlacionada con la respuesta |
+| **Múltiple** | precio ~ área + habitaciones + antigüedad + estrato | Aísla el efecto propio de cada característica |
+
+El estrato se trata como **variable ordinal** y no como categórica, porque sus tres niveles son consecutivos y su efecto sobre el precio se supone constante entre niveles. Esto evita las variables indicadoras y mantiene el modelo en su forma más simple: cuatro regresores numéricos, sin interacciones.
 
 ### Las medidas empleadas (Tabla II del informe)
 
 | Medida | Fórmula | Qué aporta |
 |---|---|---|
-| Correlación de Pearson | *r* = Σ(*xᵢ*−*x̄*)(*yᵢ*−*ȳ*) / √[Σ(*xᵢ*−*x̄*)² Σ(*yᵢ*−*ȳ*)²] | Intensidad y sentido de la asociación lineal |
-| Regresión lineal simple | *yᵢ* = *β₀* + *β₁xᵢ* + *εᵢ* | Descompone el costo en parte lineal y error |
+| Correlación de Pearson | *r* = Σ(*xᵢ*−*x̄*)(*yᵢ*−*ȳ*) / √[Σ(*xᵢ*−*x̄*)² Σ(*yᵢ*−*ȳ*)²] | Asociación lineal entre dos variables, **sin controlar por ninguna otra** |
+| Regresión lineal simple | *yᵢ* = *β₀* + *β₁xᵢ* + *εᵢ* | Descompone el precio en parte lineal y error |
 | Criterio de mínimos cuadrados | mín Σ(*yᵢ* − *β₀* − *β₁xᵢ*)² | Elige la recta que minimiza los residuos al cuadrado |
 | Estimadores | *β̂₁* = Σ(*xᵢ*−*x̄*)(*yᵢ*−*ȳ*)/Σ(*xᵢ*−*x̄*)²,  *β̂₀* = *ȳ* − *β̂₁x̄* | Solución cerrada, sin búsqueda numérica |
-| Coeficiente de determinación | *R²* = 1 − Σ(*yᵢ*−*ŷᵢ*)²/Σ(*yᵢ*−*ȳ*)² | Variabilidad del costo que el modelo explica |
-| Regresión con interacción | *yᵢ* = *β₀* + *β₁xᵢ* + *β₂D_C* + *β₃D_I* + *β₄xᵢD_C* + *β₅xᵢD_I* + *εᵢ* | Intercepto y pendiente propios por sector |
+| Regresión lineal múltiple | *yᵢ* = *β₀* + *β₁x₁ᵢ* + *β₂x₂ᵢ* + *β₃x₃ᵢ* + *β₄x₄ᵢ* + *εᵢ* | Cada *βⱼ* mide su variable manteniendo constantes las demás |
+| Coeficiente de determinación | *R²* = 1 − Σ(*yᵢ*−*ŷᵢ*)²/Σ(*yᵢ*−*ȳ*)² | Variabilidad del precio que el modelo explica |
 | *R²* ajustado | *R²ₐⱼ* = 1 − (1−*R²*)(*n*−1)/(*n*−*k*−1) | Penaliza los parámetros que *R²* premia |
+| Estadístico *t* e IC | *tⱼ* = *β̂ⱼ*/*ee*(*β̂ⱼ*),  *β̂ⱼ* ± *t*·*ee*(*β̂ⱼ*) | Un coeficiente es significativo si su IC no contiene al cero |
+| RMSE | √[(1/*n*) Σ(*yᵢ*−*ŷᵢ*)²] | Error medio en millones de pesos |
+| MAE | (1/*n*) Σ\|*yᵢ*−*ŷᵢ*\| | Igual, sin penalizar de más los errores grandes |
 | Criterio de Akaike | AIC = −2 ln *L* + 2*k* | Equilibra ajuste y complejidad |
-| Criterio de Schwarz | BIC = −2 ln *L* + *k* ln *n* | Igual, pero castiga más la complejidad |
-| RMSE | √[(1/*n*) Σ(*yᵢ*−*ŷᵢ*)²] | Error en las unidades del costo |
 
-Los supuestos se contrastan aparte: **RESET de Ramsey** (linealidad), **Breusch-Pagan** (homocedasticidad), **Jarque-Bera** (normalidad) y **Durbin-Watson** (independencia).
-
-### Las seis fases del flujo (Tabla III del informe)
+### Las cinco fases del flujo (Tabla III del informe)
 
 | Fase | Script | Qué produce |
 |---|---|---|
-| 0 | `dataset.py` | Conjunto de datos reproducible de 120 clientes |
-| 1 | `simple_regression.py` | Correlaciones, modelo M1, pruebas de supuestos y 3 figuras |
-| 2 | `multiple_regression.py` | Modelos M2 y M3, contraste F, tarifas por sector y 3 figuras |
-| 3 | `ml_regression.py` | Partición estratificada, validación cruzada y 1 figura |
-| 4 | `advanced_viz.py` | 4 figuras de seaborn y 2 piezas interactivas de Plotly |
-| 5 | `regression.R` | Reestimación con `lm()`, verificación cruzada y 4 figuras |
+| 1 | `dataset.py` | Conjunto de datos reproducible de 150 apartamentos |
+| 2 | `regression.py` | Correlaciones, modelo simple, modelo múltiple, comparación y 3 figuras |
+| 3 | `validation.py` | Partición 70/30, validación cruzada de 5 pliegues y 1 figura |
+| 4 | `visualization.py` | 3 figuras de seaborn y 2 piezas interactivas de Plotly |
+| 5 | `regression.R` | Reestimación con `lm()`, verificación cruzada y 3 figuras |
 
-> ℹ️ La **Fase 4 lee las tablas que dejó la Fase 2** en lugar de recalcularlas, de modo que las cifras de las figuras y las del texto no puedan divergir.
-
-Entorno: **Python 3.14** (statsmodels 0.14.6, scikit-learn 1.9.0, Matplotlib 3.11.1, seaborn 0.13.2, Plotly 6.9.0, sobre NumPy y pandas) y **R 4.6.1** con ggplot2 4.0.3, desde RStudio Desktop. El reparto entre statsmodels y scikit-learn no es arbitrario: el primero entrega errores estándar, intervalos y pruebas de supuestos; el segundo, la partición estratificada y la validación cruzada que aquel no tiene.
+Entorno: **Python 3.14** (statsmodels 0.14.6, scikit-learn 1.9.0, Matplotlib 3.11.1, seaborn 0.13.2, Plotly 6.9.0, sobre NumPy y pandas) y **R 4.6.1** con ggplot2. El reparto entre statsmodels y scikit-learn no es arbitrario: el primero entrega errores estándar, estadísticos *t* e intervalos de confianza; el segundo, la partición y la validación cruzada que aquel no tiene.
 
 ---
 
 ## 📊 Resultados
 
-### Análisis de correlación
+### Análisis de correlación (Tabla IV)
 
-| Grupo | *n* | Pearson *r* | *R²* | Spearman *ρ* | Tarifa media (COP/kWh) |
-|---|---|---|---|---|---|
-| Global | 120 | 0,9984 | 0,9969 | 0,9947 | 758,1 |
-| Residencial | 62 | 0,9820 | 0,9643 | 0,9671 | **821,8** |
-| Comercial | 40 | 0,9866 | 0,9733 | 0,9799 | **710,4** |
-| Industrial | 18 | 0,9937 | 0,9875 | 0,9856 | **645,0** |
-
-La asociación se mantiene **dentro de cada sector**: no es una correlación inducida por mezclar tres poblaciones. La columna de la derecha adelanta el hallazgo que estructura el informe — la tarifa media **desciende con la escala del cliente**, y esa es justamente la variable que el modelo simple ignora.
-
-<div align="center">
-    <img src="assets/images/figures/python/advanced/sns_heatmap_correlacion.png" width="55%" alt="Matriz de correlaciones">
-</div>
-
-<p align="center"><em>La tarifa correlaciona −0,7639 con el consumo: quien más consume paga menos por unidad.</em></p>
-
-### Regresión simple: buen ajuste, mala especificación
-
-El modelo es *ŷ* = 50,42 + 0,6349 *x*, con ambos coeficientes significativos con enorme holgura. El diagnóstico dice otra cosa:
-
-| Prueba | Estadístico | p-valor | Supuesto | Conclusión |
-|---|---|---|---|---|
-| Breusch-Pagan | 23,018 | 1,6 × 10⁻⁶ | Varianza constante | **Se rechaza** |
-| Jarque-Bera | 214,134 | 3,2 × 10⁻⁴⁷ | Residuos normales | **Se rechaza** |
-| Durbin-Watson | 2,275 | — | Residuos no correlacionados | No se rechaza |
-| RESET de Ramsey | 0,896 | 0,346 | Forma lineal adecuada | No se rechaza |
-
-> 💡 **La combinación es la clave.** Que RESET **no** rechace indica que la forma funcional es correcta; que Breusch-Pagan y Jarque-Bera **sí** rechacen señala, por tanto, un problema distinto: **falta una variable**.
-
-| Sector | *n* | Residuo medio | Desviación estándar |
+| Variable | Pearson *r* | p-valor | Lectura |
 |---|---|---|---|
-| Residencial | 62 | −4,39 | 13,36 |
-| Comercial | 40 | +15,45 | 28,20 |
-| Industrial | 18 | −19,23 | 57,51 |
+| **Área** | **0,7774** | 1,4 × 10⁻³¹ | Fuerte y positiva |
+| Estrato | 0,4872 | 2,6 × 10⁻¹⁰ | Moderada |
+| Antigüedad | −0,1946 | 0,017 | Débil y negativa |
+| Habitaciones | 0,0807 | **0,326** | **No detectable** |
 
-En un modelo correctamente especificado esos tres promedios deberían ser nulos.
+### Regresión simple (Tabla V)
 
-<div align="center">
-    <img src="assets/images/figures/python/regression/residuos_por_sector.png" width="70%" alt="Sesgo por sector del modelo simple">
-</div>
+**precio = 81,09 + 3,845 · área**, con R² = 0,6043. El área explica el 60,4 % de la variabilidad y deja sin explicar el 39,6 % restante; el error medio absoluto es de 66,7 millones de pesos.
 
-<p align="center"><em>Ninguna de las tres cajas se centra en el residuo nulo.</em></p>
+### Regresión múltiple (Tabla VI)
 
-### Regresión múltiple: los coeficientes tienen nombre
-
-| Sector | Pendiente estimada | Tarifa implícita (COP/kWh) | Tarifa observada (COP/kWh) | Diferencia |
+| Término | Coeficiente | Error estándar | *t* | p-valor |
 |---|---|---|---|---|
-| Residencial | 0,7916 | 791,6 | 821,8 | −3,67 % |
-| Comercial | 0,7048 | 704,8 | 710,4 | −0,79 % |
-| Industrial | 0,6710 | 671,0 | 645,0 | +4,03 % |
+| Intercepto | −237,026 | 24,137 | −9,82 | 9,2 × 10⁻¹⁸ |
+| **Área** (por m²) | **+3,797** | 0,133 | 28,51 | 2,5 × 10⁻⁶¹ |
+| **Habitaciones** (por unidad) | **+16,010** | 3,482 | 4,60 | 9,2 × 10⁻⁶ |
+| **Antigüedad** (por año) | **−2,475** | 0,359 | −6,90 | 1,5 × 10⁻¹⁰ |
+| **Estrato** (por nivel) | **+85,185** | 4,440 | 19,18 | 1,3 × 10⁻⁴¹ |
 
-> ⚠️ **Esta correspondencia es el argumento más fuerte a favor del modelo, y ningún criterio de información puede darlo:** los coeficientes no solo ajustan bien, sino que **significan algo verificable fuera del modelo**.
+Las cuatro variables son significativas al 5 %, **incluida la que la correlación había descartado**.
 
-| Modelo | *k* | *R²* aj. | AIC | BIC | RMSE | Breusch-Pagan p | Jarque-Bera p |
-|---|---|---|---|---|---|---|---|
-| M1 · Simple | 2 | 0,9968 | 1.168,9 | 1.174,5 | 31,03 | 1,6 × 10⁻⁶ | 3,2 × 10⁻⁴⁷ |
-| M2 · Aditivo | 4 | 0,9978 | 1.126,3 | 1.137,5 | 25,55 | 7,4 × 10⁻⁴ | 1,6 × 10⁻²⁵⁴ |
-| M3 · Interacción | 6 | **0,9979** | **1.123,2** | 1.139,9 | **24,80** | 1,2 × 10⁻³ | 1,2 × 10⁻²⁴⁸ |
+### Comparación de modelos (Tabla VII)
 
-<div align="center">
-    <img src="assets/images/figures/python/regression/ajuste_por_sector.png" width="88%" alt="El modelo con interacción frente al simple">
-</div>
+| Modelo | Regresores | R² | R² ajustado | RMSE | MAE | AIC |
+|---|---|---|---|---|---|---|
+| Simple | 1 | 0,6043 | 0,6016 | 80,60 | 66,72 | 1 746,5 |
+| **Múltiple** | 4 | **0,8960** | **0,8932** | **41,32** | **33,07** | **1 552,1** |
 
-<p align="center"><em>En la escala del costo las tres rectas casi se superponen; traducidas a COP/kWh, la estructura aparece con nitidez.</em></p>
+### Validación predictiva (Tabla VIII)
 
-### Validación predictiva
-
-| Estimador | *R²* prueba | RMSE prueba | MAPE prueba | *R²* val. cruzada | RMSE val. cruzada |
+| Modelo | R² entrenamiento | R² prueba | RMSE prueba | MAE prueba | R² validación cruzada |
 |---|---|---|---|---|---|
-| MCO simple (solo consumo) | 0,9934 | 39,27 | 5,12 % | 0,9942 | 30,61 ± 10,01 |
-| MCO múltiple (consumo × sector) | **0,9944** | **36,26** | **3,68 %** | **0,9960** | **25,49 ± 10,53** |
+| Simple | 0,6135 | 0,5744 | 88,15 | 75,29 | 0,6041 ± 0,0620 |
+| **Múltiple** | 0,8934 | **0,8955** | **43,69** | **34,75** | **0,8888 ± 0,0162** |
 
-El error en validación cruzada cae de 30,61 a 25,49 miles de pesos, una **reducción del 16,7 %**. La ganancia es real y no un artefacto de la complejidad añadida — algo que un *R²* creciente dentro de la muestra nunca habría podido descartar.
+La brecha entre entrenamiento y prueba es de **−0,0021**: no hay sobreajuste. El modelo múltiple gana en los cinco pliegues y es cerca de **cuatro veces más estable** que el simple.
 
-### Verificación cruzada Python ↔ R
+### Verificación cruzada Python ↔ R (Tabla IX)
 
-Los seis coeficientes de M3 coinciden **dígito a dígito** (diferencia máxima 0,0000). Dos diferencias de convención merecen registrarse:
-
-1. **R ordena la matriz de diseño** poniendo primero las variables continuas, mientras que `patsy` pone primero las categóricas: la comparación se empareja por nombre de término, no por posición.
-2. **El AIC de R supera al de statsmodels en exactamente 2,0 unidades**, porque R cuenta la varianza residual como un parámetro adicional. La diferencia es constante y no altera el orden de los modelos.
-
-<div align="center">
-    <img src="assets/images/figures/r/regression/ggplot_residuos_por_sector.png" width="88%" alt="El sesgo por sector verificado en R">
-</div>
-
-<p align="center"><em>El rombo marca el residuo medio de cada sector: se desplaza del cero en M1 y se centra en él con la interacción.</em></p>
+`lm()` reproduce los cinco coeficientes con **diferencia máxima 0,000000**. El contraste F entre los dos modelos arroja **F = 135,63** con p < 2,2 × 10⁻¹⁶.
 
 ---
 
@@ -273,30 +217,16 @@ Los seis coeficientes de M3 coinciden **dígito a dígito** (diferencia máxima 
 
 ### Para compilar el documento LaTeX
 
-- **Distribución LaTeX:** TeX Live, MiKTeX o MacTeX (LaTeX 2024+)
-- **Compilador:** `pdflatex` o `latexmk` (recomendado)
-- **Editor recomendado:** VS Code (con extensión LaTeX Workshop), TeXstudio u Overleaf
-
-| Paquete | Para qué |
-|---|---|
-| `babel` (spanish) | Idioma, guionado y etiquetas |
-| `amsmath`, `amssymb`, `amsfonts` | Las diez fórmulas de la Tabla II y los p-valores en notación científica |
-| `graphicx` | Inclusión de las 16 imágenes |
-| `array` | Columnas `p{}` con `\raggedright` en las Tablas I–III |
-| `listings` + `xcolor` | Resaltado de los seis scripts en los apéndices |
-| `float` | Especificador `[H]` en las tablas de una columna |
-| `tcolorbox` | Recuadros destacados — cargado de reserva |
-| `eso-pic` + `transparent` | Marca de agua institucional |
-| `hyperref` | Enlaces y anclas del PDF (**se carga de último**) |
+- Distribución **MiKTeX** (Windows) o **TeX Live** (Linux/macOS) con `pdflatex` y `bibtex`.
+- Paquetes: `IEEEtran` (incluido en el repositorio), `babel` con opción `spanish`, `amsmath`, `graphicx`, `array`, `listings`, `xcolor`, `float`, `tcolorbox`, `eso-pic`, `transparent`, `capt-of`, `cuted` y `hyperref`.
+- Recomendado: `latexmk` para automatizar los pases de compilación y de bibliografía.
 
 ### Para ejecutar los scripts
 
-Los scripts viven en el proyecto hermano [`regression-analysis-and-advanced-visualization`](../regression-analysis-and-advanced-visualization).
+Los scripts se ejecutan en el proyecto hermano; aquí solo se citan como listados. Si se quieren regenerar las figuras:
 
-| Entorno | Dependencias |
-|---|---|
-| Python | `numpy`, `pandas`, `statsmodels`, `scikit-learn`, `matplotlib`, `seaborn`, `plotly`, `kaleido` |
-| R | Base (`stats`, `graphics`) más `ggplot2` |
+- **Python 3.10+** (probado en 3.14.7) con `statsmodels`, `scikit-learn`, `matplotlib`, `seaborn`, `plotly`, `kaleido`, `numpy`, `pandas` y `scipy`.
+- **R 4.x** (probado en 4.6.1) con `ggplot2`.
 
 ---
 
@@ -305,35 +235,26 @@ Los scripts viven en el proyecto hermano [`regression-analysis-and-advanced-visu
 ### Opción 1: `latexmk` (recomendado)
 
 ```bash
-latexmk -pdf -outdir=build main.tex
+latexmk -pdf -interaction=nonstopmode -outdir=build main.tex
 ```
-
-> ⚠️ BibTeX se ejecuta con el directorio de trabajo en `build/`, así que la ruta relativa `utils/references/references.bib` no se resuelve sola. Si aparece `I couldn't open database file`, exporta `BIBINPUTS` apuntando a la raíz del proyecto antes de compilar:
->
-> ```bash
-> # Linux / macOS
-> BIBINPUTS=".:..:$PWD:" latexmk -pdf -outdir=build main.tex
-> ```
->
-> ```powershell
-> # Windows (PowerShell) — el separador de rutas es ';'
-> $env:BIBINPUTS = "$PWD;"
-> latexmk -pdf -outdir=build main.tex
-> ```
 
 ### Opción 2: `pdflatex` manual
 
+La bibliografía necesita cuatro pases:
+
 ```bash
-pdflatex -output-directory=build main.tex
-bibtex build/main
-pdflatex -output-directory=build main.tex
-pdflatex -output-directory=build main.tex
+pdflatex -interaction=nonstopmode -output-directory=build main.tex
+bibtex   build/main
+pdflatex -interaction=nonstopmode -output-directory=build main.tex
+pdflatex -interaction=nonstopmode -output-directory=build main.tex
 ```
+
+El PDF queda en `build/main.pdf`.
 
 ### Limpiar artefactos temporales
 
 ```bash
-latexmk -c -outdir=build
+latexmk -C -outdir=build       # o simplemente: rm -rf build
 ```
 
 ---
@@ -342,7 +263,7 @@ latexmk -c -outdir=build
 
 ### Flotantes a doble columna
 
-Las 16 figuras se reparten entre `figure[H]` a una columna (las de proporción cercana al cuadrado, como el mapa de calor y la matriz de dispersión) y `figure*` a doble columna (las apaisadas, con proporciones de 2,5:1 a 3:1). Las tablas anchas —**II**, **V**, **VI**, **VIII**, **X**, **XI** y **XII**— usan `table*` por la misma razón.
+Las 12 figuras se reparten entre `figure[H]` a una columna (las de proporción cercana al cuadrado) y `figure*` a doble columna (las apaisadas, como el tablero de Plotly y las facetas de ggplot2). Las tablas anchas **V**, **VI**, **VII** y **VIII** usan `table*` por la misma razón, y la **II** usa el entorno `strip` de `cuted`, que ocupa el ancho completo **en su posición exacta** en lugar de flotar al tope de página.
 
 Un `figure*` solo admite la posición `t` (tope de página) o `p` (página de flotantes): **nunca `h` ni `b`**. Con los valores por defecto (`\dbltopfraction` = 0,7) las figuras altas no caben en el tope y se acumulan hasta el final del documento, así que el preámbulo amplía el espacio disponible:
 
@@ -357,35 +278,35 @@ Un `figure*` solo admite la posición `t` (tope de página) o `p` (página de fl
 \setcounter{totalnumber}{5}
 ```
 
-> ℹ️ Con 16 figuras y 13 tablas, algunas figuras aparecen una o dos páginas después del párrafo que las cita, y varias páginas se resuelven como páginas de flotantes. Es el comportamiento esperado del mecanismo de flotantes de IEEE cuando el material gráfico es abundante; el texto sigue siendo continuo y toda figura está referenciada desde él.
+### Listados de código: longitud de línea
 
-### Listados de código: `breakautoindent`
-
-El código de Plotly en `advanced_viz.py` tiene continuaciones con **más de 50 columnas de sangría**. Por defecto `listings` alinea el corte de una línea partida con esa sangría original (`breakautoindent=true`), y el resultado desborda la caja. Ampliar el margen derecho lo **empeora**, porque reduce el ancho útil. La solución es cortar al margen izquierdo del bloque:
+Con `basicstyle=\ttfamily\scriptsize` una columna IEEE admite unos **65 caracteres** por línea. `breaklines=true` parte las líneas largas de código, pero **no puede partir una secuencia continua de guiones**, así que los scripts no usan reglas de comentario del tipo `# ------` a ancho completo: cada una producía un `Overfull \hbox` de 83 pt. Las cabeceras de bloque son comentarios de texto normal.
 
 ```latex
 \lstset{
     breaklines=true,
     breakatwhitespace=false,
-    breakautoindent=false,
+    breakautoindent=false,   % la continuación se alinea al margen, no a la sangría original
     breakindent=0pt,
 }
 ```
 
 ### Caracteres no ASCII en el código fuente
 
-El bloque `literate` cubre tildes, `ñ`/`Ñ` y **los símbolos matemáticos que aparecen en los comentarios y en las etiquetas de los gráficos**: `×`, `−` (menos tipográfico, distinto del guion ASCII), `²`, `Δ`, `√`, `ŷ`, `·`, `—`, `–` y `¿`. Sin esas entradas, `inputenc` falla al procesar los `.py` y el `.R`.
+El bloque `literate` cubre tildes, `ñ`/`Ñ`, **`ü`/`Ü`** (necesaria por «antigüedad», que aparece en casi todos los scripts) y los símbolos que salen en comentarios y etiquetas de gráficos: `²`, `·`, `¿`, `×`, `−`, `—`, `–`. Sin esas entradas, `inputenc` aborta la compilación con `Invalid UTF-8 byte sequence`.
 
 ```latex
 literate=
-    {×}{{$\times$}}1 {−}{{$-$}}1 {²}{{$^{2}$}}1
-    {Δ}{{$\Delta$}}1 {√}{{$\surd$}}1 {ŷ}{{$\hat{y}$}}1
+    {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+    {ñ}{{\~n}}1 {Ñ}{{\~N}}1
+    {ü}{{\"u}}1 {Ü}{{\"U}}1
+    {²}{{$^{2}$}}1 {·}{{\textperiodcentered}}1 {¿}{{\textquestiondown}}1
     ...
 ```
 
 ### Tablas anchas: `\tabcolsep`
 
-Las Tablas **II** (fórmulas) y **VIII** (coeficientes de M3) son las más anchas del informe y desbordaban la caja a doble columna. En lugar de reducir el cuerpo de letra, que rompería la uniformidad tipográfica, se estrecha la separación entre columnas dentro del entorno:
+La Tabla **II** (fórmulas) es la más ancha del informe. En lugar de reducir el cuerpo de letra, que rompería la uniformidad tipográfica, se estrecha la separación entre columnas dentro del entorno:
 
 ```latex
 \setlength{\tabcolsep}{4pt}
@@ -427,34 +348,34 @@ Aparece en todas las páginas, dibujada en la capa de fondo (`\AddToShipoutPictu
 
 | Elemento | Ejemplos |
 |---|---|
-| Tablas | `dataset_variables`, `measures`, `workflow`, `correlations`, `coef_m1`, `diagnostics_m1`, `sector_bias`, `coef_m3`, `anova`, `tariffs`, `model_comparison`, `ml_validation`, `cross_check` |
-| Figuras | `heatmap`, `scatter_matrix`, `fit_m1`, `diag_panel`, `bias_boxplot`, `fit_m3`, `coef_plot`, `criteria`, `holdout`, `lmplot`, `lowess`, `dashboard`, `scatter_plotly`, `ggplot_fit`, `ggplot_bias`, `base_diag` |
+| Tablas | `dataset_variables`, `measures`, `workflow`, `correlations`, `coef_simple`, `coef_multiple`, `model_comparison`, `ml_validation`, `cross_check` |
+| Figuras | `heatmap`, `scatter_matrix`, `fit_simple`, `effects`, `residuals_comparison`, `validation_fig`, `lmplot`, `dashboard`, `scatter_plotly`, `ggplot_fit`, `ggplot_facets`, `ggplot_pred` |
 | Apéndices | `anexo_python`, `anexo_r` |
 
 ---
 
 ## 📋 Estado del Documento
 
-El informe está **terminado**: compila en 21 páginas sin desbordes de caja y sin referencias ni citas sin resolver; todas las figuras y tablas están referenciadas desde el texto.
+El informe está **terminado**: compila en 16 páginas **sin errores, sin desbordes de caja y sin referencias ni citas sin resolver**; todas las figuras y tablas están referenciadas desde el texto.
 
 ### ✅ Completado
 
 #### Secciones
 - ✅ **Resumen** — con las cifras principales del estudio
-- ✅ **Introducción** — el problema del *R²* engañoso y anticipo de los tres hallazgos
-- ✅ **Metodología** — conjunto de datos, la secuencia M1→M2→M3, las diez medidas con sus fórmulas y las seis fases del flujo
-- ✅ **Resultados** — correlación, regresión simple y diagnóstico, regresión múltiple y selección, validación predictiva, visualización avanzada y verificación cruzada
-- ✅ **Conclusiones** — ocho conclusiones respaldadas por las cifras de la ejecución
+- ✅ **Introducción** — el problema de la correlación bivariada y anticipo del hallazgo central
+- ✅ **Metodología** — conjunto de datos, los dos modelos, las once medidas con sus fórmulas, los esquemas de validación y las cinco fases del flujo
+- ✅ **Resultados** — correlación, regresión simple, regresión múltiple, comparación de modelos, validación predictiva, visualización avanzada y verificación en R
+- ✅ **Conclusiones** — siete conclusiones respaldadas por las cifras de la ejecución
 
 #### Apéndices
-- ✅ **Apéndice A** — los cinco scripts de Python, en su orden de ejecución
+- ✅ **Apéndice A** — los cuatro scripts de Python, en su orden de ejecución
 - ✅ **Apéndice B** — `regression.R`
 
 #### Infraestructura
-- ✅ 6 scripts en `utils/codes/`, reproducidos en los apéndices sin sus comentarios (copias del repositorio hermano, donde sí los conservan)
-- ✅ 16 imágenes, todas referenciadas desde el texto
-- ✅ 13 tablas con las cifras reales de la ejecución
-- ✅ Bibliografía IEEE (20 referencias citadas en `utils/references/references.bib`)
+- ✅ 5 scripts en `utils/codes/` (copias del repositorio hermano)
+- ✅ 12 imágenes, todas referenciadas desde el texto
+- ✅ 9 tablas con las cifras reales de la ejecución
+- ✅ Bibliografía IEEE (18 referencias citadas en `utils/references/references.bib`)
 - ✅ Etiquetas en español (Tabla, Código) vía `\captionsspanish`
 - ✅ Marca de agua institucional en todas las páginas, con flag de activación
 - ✅ Resaltado de sintaxis diferenciado para Python y R
@@ -471,13 +392,13 @@ El informe está **terminado**: compila en 21 páginas sin desbordes de caja y s
 | Tamaño de página | Carta (8.5" × 11") |
 | Fuente base | 10 pt |
 | Bibliografía | IEEE |
-| Extensión | 21 páginas |
+| Extensión | 16 páginas |
 
 ---
 
 ## 🔑 Palabras Clave
 
-`Criterios de Información` · `Diagnóstico de Supuestos` · `ggplot2` · `Plotly` · `Regresión Lineal Múltiple` · `scikit-learn` · `seaborn` · `statsmodels` · `Validación Cruzada` · `Visualización Avanzada`
+`Coeficiente de Determinación` · `ggplot2` · `Matplotlib` · `Plotly` · `Regresión Lineal Múltiple` · `Regresión Lineal Simple` · `scikit-learn` · `seaborn` · `statsmodels` · `Tablero Interactivo` · `Validación Cruzada` · `Visualización Avanzada`
 
 ---
 

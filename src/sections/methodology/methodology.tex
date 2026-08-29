@@ -1,9 +1,12 @@
 \section{Metodología}
     \subsection{Conjunto de datos}
-        Se emplea el conjunto de datos simulado del consumo energético mensual de
-        120 clientes de una empresa distribuidora, generado con la semilla fija 42
-        para que cualquier ejecución reproduzca exactamente las mismas
-        observaciones. La Tabla \ref{dataset_variables} describe sus variables.
+        Se emplea un conjunto de datos simulado de 150 apartamentos usados de
+        Bogotá, generado con la semilla fija 42 para que cualquier ejecución
+        reproduzca exactamente las mismas observaciones. Cada una de las cuatro
+        características se sortea de forma independiente, de modo que los
+        coeficientes de la regresión múltiple admitan una lectura sin ambigüedad,
+        es decir, que el efecto de una variable no quede contaminado por el de
+        otra. La Tabla \ref{dataset_variables} describe las variables.
 
         \begin{table}[H]
             \centering
@@ -13,59 +16,60 @@
                     \hline
                     \textbf{Variable} & \textbf{Tipo} & \textbf{Descripción} \\
                     \hline
-                    cliente\_id & Nominal & Identificador único del cliente \\
+                    inmueble\_id & Nominal & Identificador único del apartamento \\
                     \hline
-                    sector & Nominal & Residencial (62), Comercial (40) o
-                    Industrial (18) \\
+                    area\_m2 & Continua & Área construida en metros cuadrados,
+                    entre 45,7 y 137,7 \\
                     \hline
-                    consumo\_kwh & Continua & Consumo mensual en kilovatios hora \\
+                    habitaciones & Discreta & Número de habitaciones, entre 1 y 4 \\
                     \hline
-                    costo\_miles\_cop & Continua & Costo facturado en miles de
-                    pesos \\
+                    antiguedad\_anios & Discreta & Años transcurridos desde la
+                    construcción, entre 0 y 35 \\
                     \hline
-                    tarifa\_cop\_kwh & Derivada & Cociente costo $\times$ 1000 /
-                    consumo, en pesos por kilovatio hora \\
+                    estrato & Ordinal & Estrato socioeconómico, entre 3 y 5 \\
+                    \hline
+                    precio\_millones\_cop & Continua & Variable respuesta, precio
+                    en millones de pesos \\
                     \hline
                 \end{tabular}
                 \label{dataset_variables}
             \end{center}
         \end{table}
 
-        La variable derivada \texttt{tarifa\_cop\_kwh} cumple un papel fundamental en 
-        el análisis, ya que se obtiene directamente del cociente entre el costo y el
-        consumo sin intervención de ningún modelo, utilizándose como referencia para 
-        contrastar las tarifas estimadas mediante las pendientes de la regresión.
+        El precio promedio observado es de 431,3 millones de pesos con una
+        desviación estándar de 128,6 millones, y el recorrido va de 141,5 a 663,9
+        millones. El estrato se trata como variable ordinal y no como categórica,
+        puesto que sus tres niveles son consecutivos y su efecto sobre el precio
+        se supone constante entre niveles, lo que evita introducir variables
+        indicadoras y mantiene el modelo en su forma más simple, con cuatro
+        regresores numéricos.
 
     \subsection{Modelos y medidas empleadas}
-        El análisis comprende tres modelos de complejidad creciente, donde cada uno 
-        aborda una limitación identificada:
+        El análisis compara dos modelos, donde el segundo amplía al primero:
 
         \vspace{10pt}
 
         \begin{itemize}
-            \item \textbf{M1, regresión simple}: utiliza únicamente el consumo para explicar
-            el costo y establece el modelo de referencia para el análisis posterior.
+            \item \textbf{Modelo simple}: explica el precio únicamente a partir del
+            área construida, que es la variable con mayor correlación con la
+            respuesta, y establece la referencia contra la cual se mide cualquier
+            mejora posterior.
 
-            \item \textbf{M2, regresión múltiple aditiva}: incorpora el sector como variable
-            indicadora, permitiendo que cada grupo tenga un intercepto diferente, pero
-            manteniendo una pendiente común.
-
-            \item \textbf{M3, regresión múltiple con interacción}: incorpora la interacción
-            entre consumo y sector, permitiendo estimar una pendiente específica para cada
-            grupo y representar de forma más precisa sus diferencias tarifarias.
+            \item \textbf{Modelo múltiple}: incorpora además el número de
+            habitaciones, la antigüedad y el estrato, de modo que cada coeficiente
+            cuantifica el efecto propio de una variable manteniendo constantes las
+            demás.
         \end{itemize}
 
         \vspace{10pt}
 
-        Los tres modelos se comparan con criterios que no se dejan engañar por el
-        coeficiente de determinación, porque este crece siempre que se añaden
-        regresores, es decir, el coeficiente ajustado, los criterios de información
-        de Akaike \cite{akaike1974new} y de Schwarz \cite{schwarz1978estimating}, el
-        error cuadrático medio en las unidades originales y las pruebas de supuestos,
-        después, las mismas especificaciones se someten a validación cruzada con
-        \textit{scikit-learn} para medir su capacidad predictiva sobre datos no
-        vistos \cite{hastie2009elements}, \cite{james2023islp}. La Tabla
-        \ref{measures} reúne las medidas empleadas junto con su expresión formal.
+        Ambos modelos se estiman por mínimos cuadrados ordinarios y se comparan
+        con el coeficiente de determinación, su versión ajustada, que penaliza el
+        número de parámetros porque el coeficiente sin ajustar crece siempre que
+        se añaden regresores, y con las medidas de error en las unidades
+        originales de la respuesta \cite{hastie2009elements}, \cite{james2023islp}.
+        La Tabla \ref{measures} reúne las medidas empleadas junto con su expresión
+        formal.
 
         \begin{strip}
             \centering
@@ -84,11 +88,11 @@
                     {\sqrt{\sum_{i=1}^{n} (x_{i} - \bar{x})^{2}
                     \sum_{i=1}^{n} (y_{i} - \bar{y})^{2}}}$ &
                     Intensidad y sentido de la asociación lineal entre dos
-                    variables \\
+                    variables, sin controlar por ninguna otra \\
                     \hline
                     Regresión lineal simple &
                     $y_{i} = \beta_{0} + \beta_{1} x_{i} + \varepsilon_{i}$ &
-                    Descompone el costo en una parte lineal en el consumo y un error
+                    Descompone el precio en una parte lineal en el área y un error
                     aleatorio \\
                     \hline
                     Criterio de mínimos cuadrados &
@@ -104,54 +108,70 @@
                     $\hat{\beta}_{0} = \bar{y} - \hat{\beta}_{1} \bar{x}$ &
                     Solución cerrada del criterio anterior, sin búsqueda numérica \\
                     \hline
+                    Regresión lineal múltiple &
+                    $y_{i} = \beta_{0} + \beta_{1} x_{1i} + \beta_{2} x_{2i} +
+                    \beta_{3} x_{3i} + \beta_{4} x_{4i} + \varepsilon_{i}$ &
+                    Cada $\beta_{j}$ mide el efecto de su variable manteniendo
+                    constantes las demás \\
+                    \hline
                     Coeficiente de determinación &
                     $R^{2} = 1 - \dfrac{\sum_{i=1}^{n} (y_{i} - \hat{y}_{i})^{2}}
                     {\sum_{i=1}^{n} (y_{i} - \bar{y})^{2}}$ &
-                    Proporción de la variabilidad del costo que el modelo explica \\
-                    \hline
-                    Regresión múltiple con interacción &
-                    $y_{i} = \beta_{0} + \beta_{1} x_{i} + \beta_{2} D_{C,i} +
-                    \beta_{3} D_{I,i} + \beta_{4} x_{i} D_{C,i} +
-                    \beta_{5} x_{i} D_{I,i} + \varepsilon_{i}$ &
-                    Da a cada sector su propio intercepto y su propia pendiente \\
+                    Proporción de la variabilidad del precio que el modelo
+                    explica \\
                     \hline
                     Coeficiente de determinación ajustado &
                     $R^{2}_{aj} = 1 - (1 - R^{2}) \dfrac{n - 1}{n - k - 1}$ &
-                    Penaliza el número de parámetros, que el coeficiente sin ajustar
-                    premia \\
+                    Penaliza el número de parámetros, que el coeficiente sin
+                    ajustar premia \\
+                    \hline
+                    Estadístico $t$ e intervalo de confianza &
+                    $t_{j} = \dfrac{\hat{\beta}_{j}}{ee(\hat{\beta}_{j})}$, \quad
+                    $\hat{\beta}_{j} \pm t_{1-\alpha/2,\,n-k-1}\,
+                    ee(\hat{\beta}_{j})$ &
+                    Un coeficiente es significativo cuando su intervalo no contiene
+                    al cero \\
+                    \hline
+                    Raíz del error cuadrático medio &
+                    $RMSE = \sqrt{\dfrac{1}{n} \sum_{i=1}^{n}
+                    (y_{i} - \hat{y}_{i})^{2}}$ &
+                    Error medio en las unidades del precio, comunicable a un lector
+                    no técnico \\
+                    \hline
+                    Error absoluto medio &
+                    $MAE = \dfrac{1}{n} \sum_{i=1}^{n} |y_{i} - \hat{y}_{i}|$ &
+                    Igual que el anterior, pero sin penalizar de más los errores
+                    grandes \\
                     \hline
                     Criterio de información de Akaike &
                     $AIC = -2 \ln L + 2k$ &
                     Compara modelos equilibrando ajuste y complejidad \\
                     \hline
-                    Criterio de información de Schwarz &
-                    $BIC = -2 \ln L + k \ln n$ &
-                    Igual que el anterior, pero castiga más la complejidad \\
-                    \hline
-                    Raíz del error cuadrático medio &
-                    $RMSE = \sqrt{\dfrac{1}{n} \sum_{i=1}^{n}
-                    (y_{i} - \hat{y}_{i})^{2}}$ &
-                    Error medio en las unidades del costo, comunicable a un lector
-                    no técnico \\
-                    \hline
                 \end{tabular}
             \end{center}
         \end{strip}
 
-        En la tabla, $n$ es el número de observaciones, $k$ el número de parámetros
-        del modelo, $\hat{y}$ el valor ajustado, $\bar{y}$ la media de la variable
-        dependiente y $L$ la log-verosimilitud. Los supuestos que sostienen la
-        inferencia se contrastan aparte, con la prueba RESET de Ramsey para la
-        linealidad, la de Breusch-Pagan para la homocedasticidad
-        \cite{breusch1979simple}, la de Jarque-Bera para la normalidad de los
-        residuos y el estadístico de Durbin-Watson para su independencia
-        \cite{wooldridge2020econometrics}, \cite{triola2018estadistica}.
+        En la tabla, $n$ es el número de observaciones, $k$ el número de
+        regresores del modelo, $\hat{y}$ el valor ajustado, $\bar{y}$ la media de
+        la variable dependiente, $ee$ el error estándar de un coeficiente y $L$ la
+        log-verosimilitud \cite{akaike1974new}, \cite{triola2018estadistica}.
+
+    \subsection{Validación sobre datos no utilizados en el ajuste}
+        Un coeficiente de determinación alto calculado sobre las mismas
+        observaciones con las que se estimó el modelo no prueba capacidad
+        predictiva, por lo que la comparación entre los dos modelos se repite con
+        \textit{scikit-learn} bajo dos esquemas complementarios
+        \cite{pedregosa2011scikit}. El primero aparta el 30\% de los apartamentos
+        antes de ajustar nada, de modo que las 45 observaciones retenidas midan el
+        error sobre datos que el modelo nunca vio. El segundo aplica validación
+        cruzada de cinco pliegues sobre el conjunto completo, lo que repite el
+        experimento con cinco particiones distintas y permite valorar, además del
+        promedio, la estabilidad del resultado a través de su desviación estándar.
 
     \subsection{Flujo de trabajo y reproducibilidad}
-        Los datos se generan en Python y las tablas resultantes se reutilizan en 
-        R para mantener consistencia entre las figuras y el texto, los resultados 
-        se contrastan con las estimaciones obtenidas en Python, el flujo de trabjo 
-        se resume en la Tabla \ref{workflow}:
+        El trabajo se organiza en cinco fases secuenciales, una por guion, donde la
+        primera genera el conjunto de datos que consumen todas las demás. La Tabla
+        \ref{workflow} resume el flujo.
 
         \begin{table}[H]
             \centering
@@ -159,42 +179,41 @@
             \begin{center}
                 \begin{tabular}{|c|l|>{\raggedright\arraybackslash}p{3.1cm}|}
                     \hline
-                    \textbf{Fase} & \textbf{Script} & \textbf{Qué produce} \\
+                    \textbf{Fase} & \textbf{Guion} & \textbf{Qué produce} \\
                     \hline
-                    0 & \textit{dataset.py} & Conjunto de datos reproducible de 120
-                    clientes \\
+                    1 & \textit{dataset.py} & Conjunto de datos reproducible de 150
+                    apartamentos \\
                     \hline
-                    1 & \textit{simple\_regression.py} & Correlaciones, modelo M1,
-                    pruebas de supuestos y 3 figuras \\
+                    2 & \textit{regression.py} & Correlaciones, modelo simple,
+                    modelo múltiple, comparación y 3 figuras \\
                     \hline
-                    2 & \textit{multiple\_regression.py} & Modelos M2 y M3, contraste
-                    F, tarifas por sector y 3 figuras \\
+                    3 & \textit{validation.py} & Partición 70/30, validación cruzada
+                    de 5 pliegues y 1 figura \\
                     \hline
-                    3 & \textit{ml\_regression.py} & Partición estratificada,
-                    validación cruzada y 1 figura \\
-                    \hline
-                    4 & \textit{advanced\_viz.py} & 4 figuras de \textit{seaborn} y 2
-                    piezas interactivas de \textit{Plotly} \\
+                    4 & \textit{visualization.py} & 3 figuras de \textit{seaborn} y
+                    2 piezas interactivas de \textit{Plotly} \\
                     \hline
                     5 & \textit{regression.R} & Reestimación con \texttt{lm()},
-                    verificación cruzada y 4 figuras \\
+                    verificación cruzada y 3 figuras \\
                     \hline
                 \end{tabular}
                 \label{workflow}
             \end{center}
         \end{table}
 
-        El entorno es Python 3.14 con \textit{statsmodels},
-        \textit{scikit-learn}, \textit{Matplotlib}, \textit{seaborn} y
-        \textit{Plotly}, sobre NumPy y \textit{pandas} y R 4.6.1 con
-        \textit{ggplot2}. El reparto entre las librerías de Python no 
-        es arbitrario, dado que \textit{statsmodels} entrega los errores 
-        estándar, intervalos y pruebas de supuestos para la interpretación 
-        de coeficientes, mientras que \textit{scikit-learn} aporta la 
-        partición estratificada y validación cruzada, R cumple el papel 
-        de control, reestimando los mismos modelos de forma independiente y
-        la reproducibilidad descansa en la semilla fija en la generación de
-        datos y en todas las particiones (\texttt{random\_state = 42}), con 
-        encapsulamiento del preprocesamiento en un \texttt{Pipeline}, que 
-        garantiza que el escalado se ajuste únicamente con los datos de 
-        entrenamiento.
+        El entorno es Python 3.14 con \textit{statsmodels}
+        \cite{seabold2010statsmodels}, \textit{scikit-learn}, \textit{Matplotlib}
+        \cite{hunter2007matplotlib}, \textit{seaborn} \cite{waskom2021seaborn} y
+        \textit{Plotly} \cite{plotly2015collaborative}, sobre NumPy
+        \cite{harris2020numpy} y \textit{pandas} \cite{mckinney2010data}, junto con
+        R 4.6.1 \cite{rcore2026r} y \textit{ggplot2} \cite{wickham2016ggplot2}. El
+        reparto entre las librerías de Python no es arbitrario, dado que
+        \textit{statsmodels} entrega los errores estándar, los estadísticos $t$ y
+        los intervalos de confianza necesarios para interpretar los coeficientes,
+        mientras que \textit{scikit-learn} aporta la partición y la validación
+        cruzada, y R cumple el papel de control al reestimar los mismos modelos de
+        forma independiente \cite{fox2019companion}, \cite{posit2026rstudio}. La
+        reproducibilidad descansa en la semilla fija empleada tanto en la
+        generación de los datos como en todas las particiones
+        (\texttt{random\_state = 42}), de modo que las cifras de este informe se
+        obtienen idénticas en cualquier ejecución.

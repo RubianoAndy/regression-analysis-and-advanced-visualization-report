@@ -1,34 +1,39 @@
 \section{Introducción}
-    El costo que una empresa distribuidora factura a un cliente está estrechamente
-    relacionado con la energía consumida, lo que puede generar un ajuste lineal
-    aparentemente suficiente para describir los datos, sin embargo, un coeficiente
-    de determinación de 0,9969 no garantiza por sí solo la validez del modelo, ya
-    que el análisis de los residuos revela una estructura asociada al sector al que
-    pertenece cada cliente, variable que determina la tarifa aplicada. Identificar
-    esta estructura, incorporarla al modelo y verificar el cumplimiento de sus
-    supuestos constituye el eje del análisis de regresión desarrollado en este
-    trabajo \cite{montgomery2021regression}, \cite{wooldridge2020econometrics}.
+    El precio de un apartamento usado depende de un conjunto reducido de
+    características que cualquier avalúo revisa en primer lugar, es decir, el área
+    construida, el número de habitaciones, la antigüedad de la edificación y el
+    estrato socioeconómico. Determinar cuánto aporta cada una de ellas al precio
+    final y con qué precisión puede estimarse ese precio a partir únicamente de la
+    ficha técnica constituye un problema clásico de regresión lineal
+    \cite{montgomery2021regression}, \cite{wooldridge2020econometrics}, cuyo
+    interés no es solo predictivo, ya que los coeficientes estimados se traducen
+    de forma directa en criterios de decisión para compradores, vendedores y
+    avaluadores.
 
     \vspace{10pt}
 
-    El análisis utiliza un conjunto de datos simulado correspondiente al consumo
-    energético mensual de 120 clientes, clasificados en los sectores Residencial,
-    Comercial e Industrial. Esta estructura conocida permite evaluar los modelos
-    no solo por su capacidad de ajuste, sino también por su capacidad para
-    representar las diferencias tarifarias entre sectores. El informe presenta la
-    metodología, los modelos y métricas empleadas, así como los resultados del
-    análisis de correlación, diagnóstico, regresión múltiple y validación
-    predictiva, además, los cálculos se replican de forma independiente en Python
-    y R, y los scripts completos se incluyen en los Apéndices
-    \ref{anexo_python} y \ref{anexo_r} para garantizar la reproducibilidad
-    \cite{castro2026avanzada}.
+    El análisis emplea un conjunto de datos simulado de 150 apartamentos de
+    Bogotá, generado con una semilla fija de modo que cualquier ejecución
+    reproduzca las mismas observaciones. Esta estructura conocida permite evaluar
+    los modelos no solo por su capacidad de ajuste, sino también por su capacidad
+    para recuperar los efectos que realmente generaron los datos. El informe
+    presenta la metodología, los modelos y las medidas empleadas, así como los
+    resultados del análisis de correlación, de la regresión simple, de la
+    regresión múltiple, de la validación sobre datos no utilizados en el ajuste y
+    de la visualización avanzada, además, los cálculos se replican de forma
+    independiente en Python y en R, y los guiones completos se incluyen en los
+    Apéndices \ref{anexo_python} y \ref{anexo_r} para garantizar la
+    reproducibilidad \cite{castro2026avanzada}.
 
     \vspace{10pt}
 
-    Los resultados muestran que las pendientes del modelo múltiple estiman
-    tarifas de 791,6, 704,8 y 671,0 pesos por kilovatio hora para los sectores
-    Residencial, Comercial e Industrial, respectivamente, con diferencias
-    inferiores al 4\% frente a los cocientes directos. La validación cruzada de
-    diez pliegues reduce el error un 16,7\% respecto al modelo simple y la 
-    tarifa Industrial es 121 pesos por kilovatio hora menor que la Residencial, 
-    evidenciando el efecto del sector sobre la relación entre consumo y costo.
+    El resultado central del trabajo es una advertencia metodológica de alcance
+    general, dado que el número de habitaciones no muestra ninguna asociación con
+    el precio cuando se mide de forma aislada, con un coeficiente de correlación
+    de 0,0807 y un p-valor de 0,326, y aun así resulta altamente significativo en
+    el modelo múltiple, con un efecto estimado de 16,0 millones de pesos por
+    habitación adicional. Descartar una variable por su correlación bivariada
+    habría eliminado del modelo un predictor real, lo que ilustra por qué la
+    regresión múltiple, que aísla el efecto de cada variable manteniendo
+    constantes las demás, no es un refinamiento opcional del análisis sino su
+    herramienta central.

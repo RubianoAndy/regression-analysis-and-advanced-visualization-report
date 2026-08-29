@@ -1,68 +1,65 @@
 \section{Conclusiones}
     \begin{itemize}
-        \item Un coeficiente de determinación de 0,9969 puede acompañar a un modelo
-        mal especificado, dado que la regresión simple ajustó casi a la perfección y
-        aun así falló en dos de los cuatro supuestos, con residuos medios de $-4{,}4$,
-        $+15{,}5$ y $-19{,}2$ miles de pesos según el sector. Lo que detectó el
-        problema fue el diagnóstico, no la bondad del ajuste.
+        \item La correlación bivariada es insuficiente para descartar una variable,
+        dado que el número de habitaciones no mostró asociación con el precio al
+        medirse de forma aislada, con un coeficiente de 0,0807 y un p-valor de
+        0,326, y resultó altamente significativo en el modelo múltiple, con un
+        efecto de 16,0 millones de pesos por habitación y un p-valor de
+        $9{,}2 \times 10^{-6}$. La diferencia no está en los datos sino en la
+        pregunta, puesto que comparar apartamentos cualesquiera no equivale a
+        comparar apartamentos por lo demás equivalentes.
 
         \vspace{10pt}
 
-        \item La combinación de pruebas es más informativa que cada una por separado,
-        puesto que el hecho de que la prueba RESET no rechazara y Breusch-Pagan sí lo
-        hiciera indicó que la forma funcional era correcta y que el problema estaba en
-        una variable omitida, lo que orientó la corrección hacia la especificación
-        múltiple y no hacia una transformación polinómica.
+        \item El modelo múltiple redujo el error a la mitad, ya que pasar de un
+        regresor a cuatro elevó el coeficiente de determinación de 0,6043 a 0,8960
+        y disminuyó el error medio absoluto de 66,7 a 33,1 millones de pesos. El
+        coeficiente ajustado creció en la misma magnitud que el coeficiente sin
+        ajustar, lo que descarta que la mejora provenga del simple hecho de haber
+        añadido términos.
 
         \vspace{10pt}
 
-        \item Los coeficientes de un buen modelo tienen nombre, ya que las pendientes
-        del modelo con interacción son tarifas, 791,6, 704,8 y 671,0 pesos por
-        kilovatio hora, que reproducen con menos del 4\% de diferencia el cociente
-        entre costo y consumo calculado sin intervención del modelo. Esa
-        correspondencia es una validación externa que ningún criterio de información
-        puede ofrecer.
+        \item Los coeficientes estimados son directamente accionables, puesto que
+        traducidos a metros cuadrados equivalentes indican que una habitación
+        adicional vale 4,2 metros cuadrados, que un nivel de estrato vale 22,4 y
+        que cada década de antigüedad cuesta 6,5. Son magnitudes que un comprador o
+        un avaluador puede aplicar sin conocimiento estadístico previo para
+        sustentar una decisión de compra o una valoración.
 
         \vspace{10pt}
 
-        \item El descuento por escala es el hallazgo de negocio del laboratorio,
-        puesto que el sector Industrial paga 121 pesos por kilovatio hora menos que el
-        Residencial y el Comercial 87 menos, cifras que se obtienen como subproducto
-        del modelo y que la empresa puede contrastar directamente contra su política
-        tarifaria para decidir si el descuento responde a una diferencia real de costo
-        de servicio.
+        \item La mejora no obedece a sobreajuste, dado que la diferencia entre el
+        coeficiente de determinación de entrenamiento y el de prueba fue de
+        $-0{,}0021$ y el modelo múltiple ganó en los cinco pliegues de la
+        validación cruzada, con una desviación estándar cerca de cuatro veces menor
+        que la del modelo simple. Un coeficiente creciente dentro de la muestra no
+        habría bastado para afirmarlo.
 
         \vspace{10pt}
 
-        \item La mejora se sostiene fuera de la muestra, dado que la validación
-        cruzada de diez pliegues redujo el error del modelo múltiple un 16,7\% frente
-        al simple, y sobre 36 clientes nunca vistos alcanzó un coeficiente de
-        determinación de 0,9944 con un error porcentual absoluto medio del 3,68\%. Un
-        coeficiente de determinación creciente dentro de la muestra no habría bastado
-        para afirmarlo.
+        \item El error residual está acotado y admite explicación, ya que el modelo
+        se equivoca en promedio un 8,1\% del precio sobre apartamentos que no
+        intervinieron en el ajuste. El 10\% de variabilidad que no explica
+        corresponde a lo que las cuatro variables no capturan, es decir, la
+        ubicación exacta dentro del barrio, el estado de los acabados, el piso o la
+        vista, lo que delimita el alcance honesto de un avalúo automático basado
+        únicamente en la ficha técnica.
 
         \vspace{10pt}
 
-        \item El análisis reconoce su límite, ya que incluso el mejor de los tres
-        modelos sigue rechazando la homocedasticidad, porque el error crece con el
-        tamaño de la factura. Los coeficientes siguen siendo insesgados y su lectura
-        como tarifas se mantiene, pero los intervalos de predicción de los clientes
-        más grandes deben interpretarse con cautela y conviene acompañarlos de una
-        estimación robusta de los errores estándar antes de usarlos para tomar
-        decisiones.
+        \item La visualización avanzada forma parte del método y no es un adorno
+        final, puesto que el ajuste por estrato de \textit{seaborn} hizo visible el
+        supuesto de rectas paralelas que el modelo asume, la comparación de errores
+        en escala común mostró la reducción real del error sin recurrir a ejes
+        truncados, y el tablero interactivo de \textit{Plotly} trasladó el
+        razonamiento completo a un lector que no ejecuta código.
 
         \vspace{10pt}
 
-        \item La visualización avanzada es parte del método y no un adorno final,
-        puesto que el sesgo por sector se descubrió coloreando un gráfico de residuos,
-        el suavizado local lo confirmó sin suponer forma funcional y el tablero
-        interactivo traslada ese mismo razonamiento a un lector que no ejecuta código.
-
-        \vspace{10pt}
-
-        \item Dos implementaciones independientes coinciden dígito a dígito, dado que
-        la función \texttt{lm()} de R reprodujo los seis coeficientes del modelo
-        múltiple con diferencia máxima de 0,0000, y las discrepancias de convención
-        encontradas, el orden de la matriz de diseño y el conteo de parámetros en el
-        criterio de Akaike, resultaron explicables y constantes.
+        \item Dos implementaciones independientes coincidieron, dado que la función
+        \texttt{lm()} de R reprodujo los cinco coeficientes del modelo múltiple con
+        una diferencia máxima de 0,000000 respecto de \textit{statsmodels}, lo que
+        descarta que los resultados dependan de la herramienta empleada y refuerza
+        la reproducibilidad del análisis.
     \end{itemize}
