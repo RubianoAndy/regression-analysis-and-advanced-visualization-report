@@ -102,7 +102,7 @@ El informe responde una sola pregunta: **¿qué determina el precio de un aparta
 │   │   └── r/
 │   │       └── regression.R                   # Fase 5
 │   └── references/
-│       └── references.bib            # Bibliografía IEEE (18 referencias citadas)
+│       └── references.bib            # Bibliografía IEEE (7 referencias citadas)
 └── build/                            # Artefactos de compilación LaTeX (generado)
 ```
 
@@ -119,7 +119,7 @@ El informe responde una sola pregunta: **¿qué determina el precio de un aparta
 | IV | Conclusiones | Siete conclusiones respaldadas por las cifras de la ejecución |
 | A | Apéndice · Código en Python | `dataset.py`, `regression.py`, `validation.py` y `visualization.py` |
 | B | Apéndice · Código en R | `regression.R` |
-| — | Referencias | 18 entradas en formato IEEE |
+| — | Referencias | 7 entradas en formato IEEE |
 
 **El cuerpo del informe no lleva listados de código.** La metodología describe cada decisión de implementación y remite a los Apéndices A y B, donde los cinco scripts se reproducen en su orden de ejecución.
 
@@ -445,7 +445,7 @@ Aparece en todas las páginas, dibujada en la capa de fondo (`\AddToShipoutPictu
 
 ## 📋 Estado del Documento
 
-El informe está **terminado**: compila en 18 páginas **sin errores, sin desbordes de caja y sin referencias ni citas sin resolver**; todas las figuras y tablas están referenciadas desde el texto.
+El informe está **terminado**: compila en 17 páginas **sin errores, sin desbordes de caja y sin referencias ni citas sin resolver**; todas las figuras y tablas están referenciadas desde el texto.
 
 ### ✅ Completado
 
@@ -464,7 +464,7 @@ El informe está **terminado**: compila en 18 páginas **sin errores, sin desbor
 - ✅ 5 scripts en `utils/codes/` (copias del repositorio hermano)
 - ✅ 14 imágenes, todas referenciadas desde el texto
 - ✅ 9 tablas con las cifras reales de la ejecución
-- ✅ Bibliografía IEEE (18 referencias citadas en `utils/references/references.bib`)
+- ✅ Bibliografía IEEE (7 referencias citadas en `utils/references/references.bib`)
 - ✅ Etiquetas en español (Tabla, Código) vía `\captionsspanish`
 - ✅ Marca de agua institucional en todas las páginas, con flag de activación
 - ✅ Resaltado de sintaxis diferenciado para Python y R
@@ -481,7 +481,7 @@ El informe está **terminado**: compila en 18 páginas **sin errores, sin desbor
 | Tamaño de página | Carta (8.5" × 11") |
 | Fuente base | 10 pt |
 | Bibliografía | IEEE |
-| Extensión | 18 páginas |
+| Extensión | 17 páginas |
 
 ---
 
