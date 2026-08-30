@@ -75,12 +75,14 @@ El informe responde una sola pregunta: **¿qué determina el precio de un aparta
 │           │   │   ├── sns_matriz_dispersion.png      # Fig. 2  · matriz de dispersión
 │           │   │   └── sns_ajuste_por_estrato.png     # Fig. 7  · una regresión por estrato
 │           │   └── dashboard/        # Fase 4 (Plotly) — capturas de las piezas interactivas
-│           │       ├── dashboard.png                  # Fig. 8  · tablero de cuatro paneles
-│           │       └── dispersion_interactiva.png     # Fig. 9  · dispersión explorable
+│           │       ├── dashboard.png                  # Fig. 8  · tablero de Plotly
+│           │       ├── dashboard_dash.png             # Fig. 9  · aplicación de Dash
+│           │       ├── dashboard_dash_filtrado.png    # Fig. 10 · la misma, filtrada
+│           │       └── dispersion_interactiva.png     # Fig. 11 · dispersión explorable
 │           └── r/                    # Fase 5 (ggplot2) — 3 figuras
-│               ├── ggplot_ajuste_simple.png           # Fig. 10 · ajuste simple en R
-│               ├── ggplot_real_vs_estimado.png        # Fig. 11 · real frente a estimado
-│               └── ggplot_facetas_estrato.png         # Fig. 12 · un panel por estrato
+│               ├── ggplot_ajuste_simple.png           # Fig. 12 · ajuste simple en R
+│               ├── ggplot_real_vs_estimado.png        # Fig. 13 · real frente a estimado
+│               └── ggplot_facetas_estrato.png         # Fig. 14 · un panel por estrato
 ├── src/
 │   ├── sections/                     # Secciones del informe (en orden de compilación)
 │   │   ├── introduction/             # I. Introducción
@@ -113,7 +115,7 @@ El informe responde una sola pregunta: **¿qué determina el precio de un aparta
 | — | Resumen y palabras clave | Cifras principales del estudio |
 | I | Introducción | El problema de la correlación bivariada, el conjunto de datos y anticipo del hallazgo central |
 | II | Metodología | Conjunto de datos (**Tabla I**), los dos modelos con las once medidas y sus fórmulas (**Tabla II**), los esquemas de validación y las cinco fases del flujo (**Tabla III**) |
-| III | Resultados | Correlación (**Tabla IV**, **Figs. 1–2**), regresión simple (**Tabla V**, **Fig. 3**), regresión múltiple (**Tabla VI**, **Fig. 4**), comparación de modelos (**Tabla VII**, **Fig. 5**), validación (**Tabla VIII**, **Fig. 6**), visualización avanzada (**Figs. 7–9**) y verificación en R (**Tabla IX**, **Figs. 10–12**) |
+| III | Resultados | Correlación (**Tabla IV**, **Figs. 1–2**), regresión simple (**Tabla V**, **Fig. 3**), regresión múltiple (**Tabla VI**, **Fig. 4**), comparación de modelos (**Tabla VII**, **Fig. 5**), validación (**Tabla VIII**, **Fig. 6**), visualización avanzada (**Figs. 7–11**) y verificación en R (**Tabla IX**, **Figs. 12–14**) |
 | IV | Conclusiones | Siete conclusiones respaldadas por las cifras de la ejecución |
 | A | Apéndice · Código en Python | `dataset.py`, `regression.py`, `validation.py` y `visualization.py` |
 | B | Apéndice · Código en R | `regression.R` |
@@ -236,7 +238,7 @@ La brecha entre entrenamiento y prueba es de **−0,0021**: no hay sobreajuste. 
 
 **Figura 6 · Validación** (`scikit-learn` + `Matplotlib`) — a la izquierda, el precio real frente al predicho sobre los 45 apartamentos de prueba, contra la diagonal de predicción perfecta; a la derecha, el R² pliegue a pliegue, que muestra que la ventaja del modelo múltiple no fue suerte de una partición.
 
-### Visualización avanzada (Figuras 7 a 9)
+### Visualización avanzada (Figuras 7 a 11)
 
 <div align="center">
     <img src="assets/images/figures/python/advanced/sns_ajuste_por_estrato.png" width="900" alt="Una regresión por estrato con seaborn">
@@ -251,10 +253,22 @@ La brecha entre entrenamiento y prueba es de **−0,0021**: no hay sobreajuste. 
 **Figura 8 · Tablero interactivo** (`Plotly`) — cuatro paneles y un menú desplegable que filtra por estrato: el ajuste con la ficha de cada apartamento al pasar el cursor, el precio promedio por estrato (359,3 · 447,4 · 517,9 millones), el precio real frente al estimado y el efecto de cada variable. El HTML navegable vive en el proyecto hermano: [`dashboard.html`](../regression-analysis-and-advanced-visualization/public/assets/images/figures/python/dashboard/dashboard.html).
 
 <div align="center">
+    <img src="assets/images/figures/python/dashboard/dashboard_dash.png" width="960" alt="Aplicación de Dash">
+</div>
+
+**Figura 9 · Aplicación en Dash** — el tablero de Plotly tiene un límite: sus paneles están precalculados, así que el menú solo enciende y apaga puntos ya dibujados. Esta aplicación **reestima la regresión** sobre el subconjunto elegido, con filtros de estrato, área y antigüedad y un selector entre modelo simple y múltiple. Se levanta con `python app.py` en el proyecto hermano.
+
+<div align="center">
+    <img src="assets/images/figures/python/dashboard/dashboard_dash_filtrado.png" width="960" alt="La misma aplicación filtrada al estrato 5">
+</div>
+
+**Figura 10 · La misma aplicación, restringida al estrato 5** — el modelo se reestima sobre 37 apartamentos: el R² baja a 0,755, la columna `estrato` se descarta del ajuste por ser constante (la aplicación lo avisa) y **el efecto de las habitaciones deja de ser significativo** (p = 0,073, IC [−1,39 ; 29,60]). Es la tesis del informe vista en sentido inverso: un efecto real también puede desaparecer por medirlo sobre muy pocos datos.
+
+<div align="center">
     <img src="assets/images/figures/python/dashboard/dispersion_interactiva.png" width="900" alt="Dispersión interactiva de Plotly">
 </div>
 
-**Figura 9 · Dispersión explorable** (`Plotly`) — codifica cuatro variables a la vez: área en el eje horizontal, precio en el vertical, estrato en el color y habitaciones en el tamaño del punto, con la línea de tendencia MCO. Versión navegable: [`dispersion_interactiva.html`](../regression-analysis-and-advanced-visualization/public/assets/images/figures/python/dashboard/dispersion_interactiva.html).
+**Figura 11 · Dispersión explorable** (`Plotly`) — codifica cuatro variables a la vez: área en el eje horizontal, precio en el vertical, estrato en el color y habitaciones en el tamaño del punto, con la línea de tendencia MCO. Versión navegable: [`dispersion_interactiva.html`](../regression-analysis-and-advanced-visualization/public/assets/images/figures/python/dashboard/dispersion_interactiva.html).
 
 ### Verificación cruzada Python ↔ R (Tabla IX)
 
@@ -263,13 +277,13 @@ La brecha entre entrenamiento y prueba es de **−0,0021**: no hay sobreajuste. 
 | | |
 |---|---|
 | ![Ajuste simple en ggplot2](assets/images/figures/r/ggplot_ajuste_simple.png) | ![Real frente a estimado en ggplot2](assets/images/figures/r/ggplot_real_vs_estimado.png) |
-| **Figura 10 · `geom_smooth(method = "lm")`** — la gramática de gráficos declara el ajuste como una capa más, con su banda de confianza incluida | **Figura 11 · Precio real frente al estimado** — la diagonal es la predicción perfecta; el error típico del modelo es de 42,0 millones |
+| **Figura 12 · `geom_smooth(method = "lm")`** — la gramática de gráficos declara el ajuste como una capa más, con su banda de confianza incluida | **Figura 13 · Precio real frente al estimado** — la diagonal es la predicción perfecta; el error típico del modelo es de 42,0 millones |
 
 <div align="center">
     <img src="assets/images/figures/r/ggplot_facetas_estrato.png" width="900" alt="Una regresión por estrato en ggplot2">
 </div>
 
-**Figura 12 · `facet_wrap` por estrato** (`ggplot2`) — la misma idea del `lmplot` de seaborn resuelta con la gramática de ggplot2: un panel por estrato, misma pendiente, distinta altura.
+**Figura 14 · `facet_wrap` por estrato** (`ggplot2`) — la misma idea del `lmplot` de seaborn resuelta con la gramática de ggplot2: un panel por estrato, misma pendiente, distinta altura.
 
 ---
 
@@ -330,9 +344,9 @@ En su lugar, todo lo que necesita ancho completo usa el entorno `strip` de `cute
 | Elemento | Entorno |
 |---|---|
 | Tablas **II**, **VI** y **VIII** | `strip` + `\captionof{table}` |
-| Figuras **5**, **6**, **8** y **12** | `strip` + `\captionof{figure}` |
+| Figuras **5**, **6**, **8**, **9**, **10** y **14** | `strip` + `\captionof{figure}` |
 | Tablas **I**, **IV**, **V**, **VII**, **IX** | `table[H]` a una columna |
-| Figuras **1**, **2**, **3**, **4**, **7**, **9**, **10**, **11** | `figure[H]` a una columna |
+| Figuras **1**, **2**, **3**, **4**, **7**, **11**, **12**, **13** | `figure[H]` a una columna |
 
 Tres reglas aprendidas al aplicarlo:
 
@@ -431,7 +445,7 @@ Aparece en todas las páginas, dibujada en la capa de fondo (`\AddToShipoutPictu
 
 ## 📋 Estado del Documento
 
-El informe está **terminado**: compila en 17 páginas **sin errores, sin desbordes de caja y sin referencias ni citas sin resolver**; todas las figuras y tablas están referenciadas desde el texto.
+El informe está **terminado**: compila en 18 páginas **sin errores, sin desbordes de caja y sin referencias ni citas sin resolver**; todas las figuras y tablas están referenciadas desde el texto.
 
 ### ✅ Completado
 
@@ -448,7 +462,7 @@ El informe está **terminado**: compila en 17 páginas **sin errores, sin desbor
 
 #### Infraestructura
 - ✅ 5 scripts en `utils/codes/` (copias del repositorio hermano)
-- ✅ 12 imágenes, todas referenciadas desde el texto
+- ✅ 14 imágenes, todas referenciadas desde el texto
 - ✅ 9 tablas con las cifras reales de la ejecución
 - ✅ Bibliografía IEEE (18 referencias citadas en `utils/references/references.bib`)
 - ✅ Etiquetas en español (Tabla, Código) vía `\captionsspanish`
@@ -467,7 +481,7 @@ El informe está **terminado**: compila en 17 páginas **sin errores, sin desbor
 | Tamaño de página | Carta (8.5" × 11") |
 | Fuente base | 10 pt |
 | Bibliografía | IEEE |
-| Extensión | 17 páginas |
+| Extensión | 18 páginas |
 
 ---
 

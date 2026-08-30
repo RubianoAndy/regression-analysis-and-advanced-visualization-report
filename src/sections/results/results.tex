@@ -354,12 +354,69 @@
 
         \begin{strip}
             \centering
-            \includegraphics[width=0.92\textwidth]{assets/images/figures/python/dashboard/dashboard.png}
+            % 0,86 y no más: esta figura y la del tablero de Dash comparten
+            % página con el párrafo que las separa, y por encima de 0,87 el
+            % conjunto no cabe. cuted avisa entonces con «too tall» y deja un
+            % desborde de vbox de 1,9 pt.
+            \includegraphics[width=0.86\textwidth]{assets/images/figures/python/dashboard/dashboard.png}
             \captionof{figure}{Tablero interactivo de \textit{Plotly}, con el
             ajuste, el precio promedio por estrato, la comparación entre precio
             real y estimado y el efecto de cada variable}
             \label{dashboard}
         \end{strip}
+
+        Ese tablero tiene, sin embargo, un límite de fondo: sus paneles están
+        precalculados, de modo que el menú solo enciende y apaga puntos ya
+        dibujados. La recta que se ve sigue siendo la del modelo global aunque el
+        lector aísle un estrato. Para levantar esa restricción se construyó
+        además una aplicación en \textit{Dash} que reestima la regresión
+        sobre el subconjunto seleccionado, recogida en las Figuras
+        \ref{dash_completo} y \ref{dash_filtrado}.
+
+        % \clearpage
+
+        \begin{strip}
+            \centering
+            \includegraphics[width=0.99\textwidth]{assets/images/figures/python/dashboard/dashboard_dash.png}
+            \captionof{figure}{Aplicación en \textit{Dash}: filtros por estrato,
+            área y antigüedad, cinco indicadores y cuatro paneles que se
+            recalculan con cada cambio}
+            \label{dash_completo}
+        \end{strip}
+
+        La barra lateral ofrece tres filtros -estrato, rango de área y antigüedad
+        máxima- y un selector de especificación entre el modelo simple y el
+        múltiple. Con cada cambio la aplicación vuelve a ajustar por mínimos
+        cuadrados sobre los apartamentos que quedan y actualiza los cinco
+        indicadores, las cuatro figuras y la tabla de coeficientes. Filtrar y
+        reestimar responden a preguntas distintas, y es la segunda la que
+        interesa: el modelo de los apartamentos de estrato 5 no es el modelo
+        global mirado de cerca.
+
+        \begin{strip}
+            \centering
+            \includegraphics[width=0.99\textwidth]{assets/images/figures/python/dashboard/dashboard_dash_filtrado.png}
+            \captionof{figure}{La misma aplicación restringida al estrato 5: el
+            modelo se reestima sobre 37 apartamentos y el efecto de las
+            habitaciones deja de ser significativo}
+            \label{dash_filtrado}
+        \end{strip}
+
+        La Figura \ref{dash_filtrado} muestra por qué la distinción importa. Al
+        restringir la vista al estrato 5 quedan 37 apartamentos, el coeficiente de
+        determinación baja a 0,755 y la aplicación avisa de que la columna
+        \texttt{estrato} se ha descartado del ajuste, porque dentro de un solo
+        estrato es constante y una variable sin variación no puede explicar
+        diferencias de precio. Más revelador todavía, el efecto de las
+        habitaciones pasa a ser no significativo ($p = 0{,}073$, con un intervalo
+        de $[-1{,}39\,;\,29{,}60]$ que cruza el cero): con 37 observaciones el
+        mismo efecto que la muestra completa estimaba con holgura ya no se
+        distingue del ruido. Es la advertencia central del informe vista en
+        sentido inverso, dado que un efecto real puede desaparecer no solo por
+        medirlo sin controlar las demás variables, sino también por medirlo sobre
+        muy pocos datos.
+
+        \vspace{10pt}
 
         La Figura \ref{scatter_plotly} codifica cuatro variables a la vez, es
         decir, el área en el eje horizontal, el precio en el vertical, el estrato
