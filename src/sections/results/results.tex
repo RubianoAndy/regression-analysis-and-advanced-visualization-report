@@ -64,17 +64,18 @@
         $\hat{y} = 81{,}09 + 3{,}845\,x$, con ambos coeficientes significativos. La 
         Tabla \ref{coef_simple} recoge la estimación completa.
 
-        \begin{strip}
+        \begin{table}[H]
             \centering
-            \captionof{table}{Coeficientes del modelo simple con intervalos de
-            confianza al 95\%}
-            \label{coef_simple}
+            \caption{Coeficientes del modelo simple con intervalos de confianza
+            al 95\%}
             \begin{center}
+                \footnotesize
+                \setlength{\tabcolsep}{2pt}
                 \begin{tabular}{|l|c|c|c|c|c|}
                     \hline
                     \textbf{Término} & \textbf{Coeficiente} &
-                    \textbf{Error estándar} & $\mathbf{t}$ & \textbf{p-valor} &
-                    \textbf{IC 95\%} \\
+                    \shortstack{\textbf{Error}\\\textbf{estándar}} &
+                    $\mathbf{t}$ & \textbf{p-valor} & \textbf{IC 95\%} \\
                     \hline
                     Intercepto & 81,085 & 24,220 & 3,35 &
                     $1{,}0 \times 10^{-3}$ & [33,22 ; 128,95] \\
@@ -83,8 +84,9 @@
                     $1{,}4 \times 10^{-31}$ & [3,34 ; 4,35] \\
                     \hline
                 \end{tabular}
+                \label{coef_simple}
             \end{center}
-        \end{strip}
+        \end{table}
 
         La pendiente admite lectura directa, ya que cada metro cuadrado adicional
         se asocia con 3,845 millones de pesos más en el precio. El intercepto, en
@@ -149,8 +151,8 @@
 
         El hallazgo central del trabajo está en la fila de las habitaciones,
         puesto que el p-valor pasa de 0,326 en la Tabla \ref{correlations} a
-        $9,2 \times 10^{-6}$ en la Tabla \ref{coef_multiple}, aunque no cambiaron los
-        datos, si cambió la pregunta, ya que la correlación cuestiona si los
+        $9,2 \times 10^{-6}$ en la Tabla \ref{coef_multiple}, aunque no cambiaron 
+        los datos, si cambió la pregunta, ya que la correlación cuestiona si los
         apartamentos con más habitaciones son más caros, a lo que la respuesta es
         que no necesariamente, mientras que la regresión múltiple pregunta si,
         entre dos apartamentos de la misma área, antigüedad y estrato, vale más el
@@ -202,13 +204,12 @@
         que la comparación descanse en una sola cifra, ya que cada una castiga 
         de forma distinta el hecho de haber añadido tres variables.
 
-        \clearpage
-
-        \begin{strip}
+        \begin{table}[H]
             \centering
-            \captionof{table}{Comparación entre el modelo simple y el modelo múltiple}
-            \label{model_comparison}
+            \caption{Comparación entre el modelo simple y el modelo múltiple}
             \begin{center}
+                \footnotesize
+                \setlength{\tabcolsep}{4pt}
                 \begin{tabular}{|l|c|c|c|c|c|c|}
                     \hline
                     \textbf{Modelo} & \textbf{Regresores} & $\mathbf{R^{2}}$ &
@@ -220,25 +221,25 @@
                     Múltiple & 4 & 0,8960 & 0,8932 & 41,32 & 33,07 & 1.552,1 \\
                     \hline
                 \end{tabular}
+                \label{model_comparison}
             \end{center}
-        \end{strip}
+        \end{table}
 
-        Las cuatro medidas apuntan en la misma dirección. El coeficiente de
-        determinación sube 29,2 puntos porcentuales y su versión ajustada lo hace
-        en la misma magnitud, lo que descarta que la mejora sea el efecto mecánico
-        de haber añadido regresores, dado que el coeficiente ajustado habría
-        penalizado términos inútiles. El error medio absoluto cae de 66,7 a 33,1
-        millones de pesos, es decir, se reduce a la mitad, y el criterio de Akaike
-        desciende 194,4 unidades, una diferencia que en la escala habitual de este
-        criterio resulta concluyente.
+        El coeficiente de determinación sube 29,2 puntos porcentuales y su versión 
+        ajustada lo hace en la misma magnitud, lo que descarta que la mejora sea 
+        el efecto mecánico de haber añadido regresores, dado que el coeficiente 
+        ajustado habría penalizado términos inútiles, por su parte, el error medio 
+        absoluto cae de 66,7 a 33,1 millones de pesos, es decir, se reduce a la 
+        mitad, y el criterio de Akaike desciende 194,4 unidades, una diferencia que 
+        en la escala habitual de este criterio resulta concluyente.
 
-        \begin{figure}[H]
+        \begin{strip}
             \centering
-            \includegraphics[width=\linewidth]{assets/images/figures/python/regression/comparacion_residuos.png}
-            \caption{Errores de estimación de ambos modelos representados en la
-            misma escala}
+            \includegraphics[width=0.99\textwidth]{assets/images/figures/python/regression/comparacion_residuos.png}
+            \captionof{figure}{Errores de estimación de ambos modelos representados
+            en la misma escala}
             \label{residuals_comparison}
-        \end{figure}
+        \end{strip}
 
         La Figura \ref{residuals_comparison} representa los errores de los dos
         modelos con idéntico eje vertical, que es la forma honesta de comparar,
@@ -252,9 +253,10 @@
         La Tabla \ref{ml_validation} recoge el desempeño de ambos modelos bajo los
         dos esquemas de validación descritos en la metodología.
 
-        \begin{table*}[!t]
+        \begin{strip}
             \centering
-            \caption{Desempeño sobre datos no utilizados en el ajuste}
+            \captionof{table}{Desempeño sobre datos no utilizados en el ajuste}
+            \label{ml_validation}
             \begin{center}
                 \begin{tabular}{|l|c|c|c|c|c|}
                     \hline
@@ -270,31 +272,37 @@
                     $0{,}8888 \pm 0{,}0162$ \\
                     \hline
                 \end{tabular}
-                \label{ml_validation}
             \end{center}
-        \end{table*}
+        \end{strip}
 
-        \begin{figure}[H]
+        La tabla permite extraer tres conclusiones principales sobre el
+        desempeño del modelo. En primer lugar, no se observa evidencia de
+        sobreajuste, ya que la diferencia entre el coeficiente de determinación
+        de entrenamiento y prueba del modelo múltiple es de apenas $-0,0021$, 
+        indicando que el modelo conserva prácticamente el mismo desempeño al
+        enfrentarse a observaciones que no participaron en su ajuste, algo
+        coherente con una especificación de solo cuatro regresores y 150
+        observaciones. En segundo lugar, la ventaja frente al modelo simple es
+        consistente, pues el modelo múltiple obtiene mejores resultados en los
+        cinco pliegues de la validación cruzada, como se observa en el panel
+        derecho de la Figura \ref{validation_fig}, además, presenta una
+        desviación estándar de 0,0162 frente a 0,0620 del modelo simple, lo que
+        evidencia una estabilidad cercana a cuatro veces mayor. Finalmente, el
+        error de prueba resulta razonable, puesto que sobre los 45 apartamentos 
+        reservados, el modelo presenta un error medio de 34,8 millones de pesos, 
+        equivalente al 8,1\% del precio promedio del conjunto, lo que respalda 
+        su capacidad para realizar estimaciones sobre datos no utilizados durante 
+        el entrenamiento.
+
+        \clearpage
+
+        \begin{strip}
             \centering
-            \includegraphics[width=\linewidth]{assets/images/figures/python/regression/validacion_sklearn.png}
-            \caption{Validación con \textit{scikit-learn}, con el precio real
-            frente al predicho y el coeficiente de determinación por pliegue}
+            \includegraphics[width=0.99\textwidth]{assets/images/figures/python/regression/validacion_sklearn.png}
+            \captionof{figure}{Validación con \textit{scikit-learn}, con el precio
+            real frente al predicho y el coeficiente de determinación por pliegue}
             \label{validation_fig}
-        \end{figure}
-
-        La tabla admite tres lecturas. La primera es que no hay sobreajuste,
-        puesto que la diferencia entre el coeficiente de determinación de
-        entrenamiento y el de prueba del modelo múltiple es de $-0{,}0021$, es
-        decir, el modelo se comporta igual de bien dentro y fuera de la muestra, lo
-        que resulta esperable en una especificación con solo cuatro regresores y
-        150 observaciones. La segunda es que la ventaja es consistente, dado que
-        el modelo múltiple gana en los cinco pliegues de la validación cruzada,
-        como muestra el panel derecho de la Figura \ref{validation_fig}, y lo hace
-        con una desviación estándar de 0,0162 frente a 0,0620 del modelo simple,
-        es decir, resulta además cerca de cuatro veces más estable. La tercera es
-        que el error alcanzado es utilizable, ya que sobre los 45 apartamentos de
-        prueba el modelo se equivoca en promedio 34,8 millones de pesos, un 8,1\%
-        del precio medio del conjunto.
+        \end{strip}
 
     \subsection{Visualización avanzada}
         La Figura \ref{lmplot} traduce a imagen el supuesto que sostiene el modelo
@@ -313,14 +321,20 @@
             \label{lmplot}
         \end{figure}
 
-        \begin{figure*}[!t]
-            \centering
-            \includegraphics[width=0.92\textwidth]{assets/images/figures/python/dashboard/dashboard.png}
-            \caption{Tablero interactivo de \textit{Plotly}, con el ajuste, el
-            precio promedio por estrato, la comparación entre precio real y
-            estimado y el efecto de cada variable}
-            \label{dashboard}
-        \end{figure*}
+        De la figura se deducen dos cosas. La primera es que, si las tres rectas
+        comparten pendiente, la distancia vertical entre dos consecutivas es
+        constante y coincide con el coeficiente del estrato de la Tabla
+        \ref{coef_multiple}, es decir, 85,185 millones de pesos, de modo que un
+        apartamento de estrato 3 necesita 22,4 metros cuadrados adicionales para
+        igualar el precio de uno equivalente de estrato 4. La segunda explica un
+        resultado anterior, dado que los recorridos de precio de los tres
+        estratos se solapan ampliamente y un apartamento grande de estrato 3
+        supera en precio a uno pequeño de estrato 5, ese solapamiento es lo que
+        rebaja la correlación simple del estrato a 0,4872 en la Tabla
+        \ref{correlations} pese a que su estadístico $t$ en el modelo múltiple
+        alcanza 19,18.
+
+        \vspace{10pt}
 
         El tablero de la Figura \ref{dashboard} reúne el análisis completo en una
         sola página navegable. Su primer panel muestra el precio frente al área
@@ -332,13 +346,16 @@
         los paneles por estrato sin necesidad de regenerar nada, lo que convierte
         una figura estática en una herramienta de exploración.
 
-        \begin{figure}[H]
+        \clearpage
+
+        \begin{strip}
             \centering
-            \includegraphics[width=\linewidth]{assets/images/figures/python/dashboard/dispersion_interactiva.png}
-            \caption{Dispersión interactiva con línea de tendencia, color por
-            estrato y tamaño proporcional al número de habitaciones}
-            \label{scatter_plotly}
-        \end{figure}
+            \includegraphics[width=0.92\textwidth]{assets/images/figures/python/dashboard/dashboard.png}
+            \captionof{figure}{Tablero interactivo de \textit{Plotly}, con el
+            ajuste, el precio promedio por estrato, la comparación entre precio
+            real y estimado y el efecto de cada variable}
+            \label{dashboard}
+        \end{strip}
 
         La Figura \ref{scatter_plotly} codifica cuatro variables a la vez, es
         decir, el área en el eje horizontal, el precio en el vertical, el estrato
@@ -347,6 +364,14 @@
         interactiva permite ampliar cualquier región e identificar apartamentos
         concretos, una capacidad que ninguna imagen fija ofrece y que resulta
         especialmente útil para revisar los casos que el modelo estima peor.
+
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=\linewidth]{assets/images/figures/python/dashboard/dispersion_interactiva.png}
+            \caption{Dispersión interactiva con línea de tendencia, color por
+            estrato y tamaño proporcional al número de habitaciones}
+            \label{scatter_plotly}
+        \end{figure}
 
     \subsection{Verificación independiente en R}
         La función \texttt{lm()} reestima los mismos modelos sobre el mismo archivo
@@ -385,6 +410,19 @@
         libertad que consumen. El error típico del modelo múltiple es de 42,0
         millones de pesos.
 
+        \vspace{10pt}
+
+        Las tres figuras siguientes reproducen con la gramática de gráficos de
+        \textit{ggplot2} las mismas vistas construidas en Python. La Figura
+        \ref{ggplot_fit} declara el ajuste como una capa más mediante
+        \texttt{geom\_smooth}, que internamente invoca la misma función
+        \texttt{lm()}, de modo que la recta dibujada coincide con la estimada. La
+        Figura \ref{ggplot_pred} contrasta el precio real con el estimado y cierra
+        el circuito de verificación al reproducir el mismo comportamiento que la
+        Figura \ref{validation_fig} obtuvo en Python. La Figura
+        \ref{ggplot_facets} separa los estratos en paneles independientes y
+        confirma el paralelismo observado en la Figura \ref{lmplot}.
+
         \begin{figure}[H]
             \centering
             \includegraphics[width=\linewidth]{assets/images/figures/r/ggplot_ajuste_simple.png}
@@ -393,14 +431,6 @@
             \label{ggplot_fit}
         \end{figure}
 
-        \begin{figure*}[!t]
-            \centering
-            \includegraphics[width=0.92\textwidth]{assets/images/figures/r/ggplot_facetas_estrato.png}
-            \caption{Una regresión por estrato en paneles independientes,
-            construida con \texttt{facet\_wrap} de \textit{ggplot2}}
-            \label{ggplot_facets}
-        \end{figure*}
-
         \begin{figure}[H]
             \centering
             \includegraphics[width=\linewidth]{assets/images/figures/r/ggplot_real_vs_estimado.png}
@@ -408,13 +438,20 @@
             \label{ggplot_pred}
         \end{figure}
 
-        Las Figuras \ref{ggplot_fit}, \ref{ggplot_facets} y \ref{ggplot_pred}
-        reproducen con la gramática de gráficos de \textit{ggplot2} las mismas
-        vistas construidas en Python. La primera declara el ajuste como una capa
-        más mediante \texttt{geom\_smooth}, que internamente invoca la misma
-        función \texttt{lm()}, de modo que la recta dibujada coincide con la
-        estimada. La segunda separa los estratos en paneles independientes y
-        confirma el paralelismo observado en la Figura \ref{lmplot}. La tercera
-        contrasta el precio real con el estimado y cierra el circuito de
-        verificación al reproducir el mismo comportamiento que la Figura
-        \ref{validation_fig} obtuvo en Python.
+        \begin{strip}
+            \centering
+            \includegraphics[width=0.90\textwidth]{assets/images/figures/r/ggplot_facetas_estrato.png}
+            \captionof{figure}{Una regresión por estrato en paneles independientes,
+            construida con \texttt{facet\_wrap} de \textit{ggplot2}}
+            \label{ggplot_facets}
+        \end{strip}
+
+        Conviene subrayar qué hace y qué no hace esta verificación. R no reutiliza
+        ningún objeto de Python, únicamente lee el mismo archivo de datos, de modo
+        que la coincidencia hasta el sexto decimal descarta un error de
+        implementación, pero no valida el modelo en sí, ya que dos programas
+        pueden estar igual de equivocados si la especificación lo está. Lo que sí
+        aporta es que ninguna cifra del informe depende de una biblioteca
+        concreta, y que las figuras construidas con dos gramáticas gráficas
+        distintas, \textit{Matplotlib} y \textit{seaborn} por un lado y
+        \textit{ggplot2} por otro, conducen a la misma lectura.
