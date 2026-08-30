@@ -156,13 +156,13 @@
         log-verosimilitud \cite{akaike1974new}, \cite{triola2018estadistica}.
 
     \subsection{Validación sobre datos no utilizados en el ajuste}
-        Un coeficiente de determinación alto sobre las mismas observaciones de 
-        ajuste no garantiza capacidad predictiva, por lo que la comparación se 
-        repite con \textit{*scikit-learn*} mediante dos esquemas, el primero 
-        reserva el 30\% de los apartamentos (45 observaciones) para evaluar el 
-        error sobre datos no vistos y wl segundo aplica validación cruzada de 
-        cinco pliegues sobre el conjunto completo, permitiendo evaluar tanto el 
-        error promedio como su estabilidad.
+        Un coeficiente de determinación alto sobre las mismas observaciones de
+        ajuste no garantiza capacidad predictiva, por lo que la comparación se
+        repite con \textit{scikit-learn} \cite{pedregosa2011scikit} mediante dos
+        esquemas, el primero reserva el 30\% de los apartamentos (45
+        observaciones) para evaluar el error sobre datos no vistos y el segundo
+        aplica validación cruzada de cinco pliegues sobre el conjunto completo,
+        permitiendo evaluar tanto el error promedio como su estabilidad.
 
     \subsection{Flujo de trabajo y reproducibilidad}
         El trabajo se organiza en cinco fases secuenciales, una por guion, donde la
@@ -197,10 +197,16 @@
             \end{center}
         \end{table}
 
-        El entorno utiliza Python 3.14 con \textit{statsmodels}, \textit{scikit-learn}, 
-        \textit{Matplotlib}, \textit{seaborn}, \textit{Plotly}, NumPy y \textit{pandas}, 
-        junto con R 4.6.1 y \textit{ggplot2}. \textit{statsmodels} se emplea para el 
-        análisis estadístico, \textit{scikit-learn} para la partición y validación y R 
-        para verificar los resultados de forma independiente. La reproducibilidad se 
-        garantiza mediante una semilla fija (\texttt{random\_state = 42}) en la 
-        generación de datos y las particiones.
+        El entorno utiliza Python 3.14 con \textit{statsmodels}
+        \cite{seabold2010statsmodels}, \textit{scikit-learn}, \textit{Matplotlib}
+        \cite{hunter2007matplotlib}, \textit{seaborn} \cite{waskom2021seaborn} y
+        \textit{Plotly} \cite{plotly2015collaborative}, sobre NumPy
+        \cite{harris2020numpy} y \textit{pandas} \cite{mckinney2010data}, junto
+        con R 4.6.1 \cite{rcore2026r} y \textit{ggplot2}
+        \cite{wickham2016ggplot2} desde RStudio \cite{posit2026rstudio}.
+        \textit{statsmodels} se emplea para el análisis estadístico,
+        \textit{scikit-learn} para la partición y la validación, y R para
+        verificar los resultados de forma independiente
+        \cite{fox2019companion}. La reproducibilidad se garantiza mediante una
+        semilla fija (\texttt{random\_state = 42}) en la generación de datos y
+        las particiones.

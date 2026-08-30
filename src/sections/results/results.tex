@@ -1,8 +1,9 @@
 \section{Resultados}
     \subsection{Análisis de correlación}
-        Se mide la asociación de cada característica con el precio sin controlar 
-        a través del coeficiente de Pearson. La Tabla \ref{correlations} recoge 
-        el resultado ordenado por magnitud.
+        Se mide con el coeficiente de Pearson la asociación de cada
+        característica con el precio, tomada de forma aislada y sin controlar por
+        ninguna otra. La Tabla \ref{correlations} recoge el resultado ordenado
+        por magnitud.
 
         \begin{table}[H]
             \centering
@@ -28,7 +29,7 @@
 
         La tabla muestra que el área es la principal variable asociada al precio, 
         seguida por el estrato, mientras que la antigüedad tiene una influencia 
-        reducida. Las habitaciones parecen irrelevantes ($p=0,326$), pero esta 
+        reducida. Las habitaciones parecen irrelevantes ($p = 0{,}326$), pero esta
         conclusión resulta engañosa, pues la variación del área puede ocultar 
         su efecto al comparar apartamentos de distintos tamaños.
 
@@ -151,8 +152,8 @@
 
         El hallazgo central del trabajo está en la fila de las habitaciones,
         puesto que el p-valor pasa de 0,326 en la Tabla \ref{correlations} a
-        $9,2 \times 10^{-6}$ en la Tabla \ref{coef_multiple}, aunque no cambiaron 
-        los datos, si cambió la pregunta, ya que la correlación cuestiona si los
+        $9{,}2 \times 10^{-6}$ en la Tabla \ref{coef_multiple}. No cambiaron los
+        datos, sí cambió la pregunta, ya que la correlación cuestiona si los
         apartamentos con más habitaciones son más caros, a lo que la respuesta es
         que no necesariamente, mientras que la regresión múltiple pregunta si,
         entre dos apartamentos de la misma área, antigüedad y estrato, vale más el
@@ -169,9 +170,9 @@
         \end{figure}
 
         La Figura \ref{effects} muestra los cuatro efectos con sus intervalos de
-        confianza, ninguno de los cuales contiene al cero, los cuales son expresados 
-        en metros cuadrados equivalentes, es decir, dividiendo cada coeficiente por 
-        el valor estimado del metro cuadrado, los efectos se vuelven directamente
+        confianza, ninguno de los cuales contiene al cero. Al dividir cada
+        coeficiente por el valor estimado del metro cuadrado, los efectos quedan
+        expresados en metros cuadrados equivalentes y se vuelven directamente
         comparables entre sí:
 
         \vspace{10pt}
@@ -198,11 +199,11 @@
 
     \subsection{Comparación de los dos modelos}
         La Tabla \ref{model_comparison} contrasta ambos modelos en seis
-        columnas, el número de regresores que emplea cada una, el coeficiente de
+        columnas, el número de regresores que emplea cada uno, el coeficiente de
         determinación y su versión ajustada, la raíz del error cuadrático medio,
-        el error absoluto medio y el criterio de información de Akaike; evitando 
-        que la comparación descanse en una sola cifra, ya que cada una castiga 
-        de forma distinta el hecho de haber añadido tres variables.
+        el error absoluto medio y el criterio de información de Akaike. Reunirlas
+        evita que la comparación descanse en una sola cifra, ya que cada medida
+        castiga de forma distinta el hecho de haber añadido tres variables.
 
         \begin{table}[H]
             \centering
@@ -278,7 +279,7 @@
         La tabla permite extraer tres conclusiones principales sobre el
         desempeño del modelo. En primer lugar, no se observa evidencia de
         sobreajuste, ya que la diferencia entre el coeficiente de determinación
-        de entrenamiento y prueba del modelo múltiple es de apenas $-0,0021$, 
+        de entrenamiento y prueba del modelo múltiple es de apenas $-0{,}0021$,
         indicando que el modelo conserva prácticamente el mismo desempeño al
         enfrentarse a observaciones que no participaron en su ajuste, algo
         coherente con una especificación de solo cuatro regresores y 150
@@ -344,7 +345,10 @@
         con el estimado por el modelo frente a la diagonal de predicción perfecta,
         y el cuarto resume el efecto de cada variable. Un menú desplegable filtra
         los paneles por estrato sin necesidad de regenerar nada, lo que convierte
-        una figura estática en una herramienta de exploración.
+        una figura estática en una herramienta de exploración. La imagen incluida
+        aquí es una captura, dado que un documento impreso no admite interacción,
+        la versión navegable se entrega como el archivo \texttt{dashboard.html}
+        que produce la fase 4 de la Tabla \ref{workflow}.
 
         \clearpage
 
@@ -361,9 +365,10 @@
         decir, el área en el eje horizontal, el precio en el vertical, el estrato
         en el color y el número de habitaciones en el tamaño del punto, y añade la
         línea de tendencia estimada por mínimos cuadrados. En su versión
-        interactiva permite ampliar cualquier región e identificar apartamentos
-        concretos, una capacidad que ninguna imagen fija ofrece y que resulta
-        especialmente útil para revisar los casos que el modelo estima peor.
+        interactiva, entregada como \texttt{dispersion\_interactiva.html}, permite
+        ampliar cualquier región e identificar apartamentos concretos, una
+        capacidad que ninguna imagen fija ofrece y que resulta especialmente útil
+        para revisar los casos que el modelo estima peor.
 
         \begin{figure}[H]
             \centering

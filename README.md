@@ -79,8 +79,8 @@ El informe responde una sola pregunta: **¿qué determina el precio de un aparta
 │           │       └── dispersion_interactiva.png     # Fig. 9  · dispersión explorable
 │           └── r/                    # Fase 5 (ggplot2) — 3 figuras
 │               ├── ggplot_ajuste_simple.png           # Fig. 10 · ajuste simple en R
-│               ├── ggplot_facetas_estrato.png         # Fig. 11 · un panel por estrato
-│               └── ggplot_real_vs_estimado.png        # Fig. 12 · real frente a estimado
+│               ├── ggplot_real_vs_estimado.png        # Fig. 11 · real frente a estimado
+│               └── ggplot_facetas_estrato.png         # Fig. 12 · un panel por estrato
 ├── src/
 │   ├── sections/                     # Secciones del informe (en orden de compilación)
 │   │   ├── introduction/             # I. Introducción
@@ -263,13 +263,13 @@ La brecha entre entrenamiento y prueba es de **−0,0021**: no hay sobreajuste. 
 | | |
 |---|---|
 | ![Ajuste simple en ggplot2](assets/images/figures/r/ggplot_ajuste_simple.png) | ![Real frente a estimado en ggplot2](assets/images/figures/r/ggplot_real_vs_estimado.png) |
-| **Figura 10 · `geom_smooth(method = "lm")`** — la gramática de gráficos declara el ajuste como una capa más, con su banda de confianza incluida | **Figura 12 · Precio real frente al estimado** — la diagonal es la predicción perfecta; el error típico del modelo es de 42,0 millones |
+| **Figura 10 · `geom_smooth(method = "lm")`** — la gramática de gráficos declara el ajuste como una capa más, con su banda de confianza incluida | **Figura 11 · Precio real frente al estimado** — la diagonal es la predicción perfecta; el error típico del modelo es de 42,0 millones |
 
 <div align="center">
     <img src="assets/images/figures/r/ggplot_facetas_estrato.png" width="900" alt="Una regresión por estrato en ggplot2">
 </div>
 
-**Figura 11 · `facet_wrap` por estrato** (`ggplot2`) — la misma idea del `lmplot` de seaborn resuelta con la gramática de ggplot2: un panel por estrato, misma pendiente, distinta altura.
+**Figura 12 · `facet_wrap` por estrato** (`ggplot2`) — la misma idea del `lmplot` de seaborn resuelta con la gramática de ggplot2: un panel por estrato, misma pendiente, distinta altura.
 
 ---
 
@@ -321,11 +321,26 @@ latexmk -C -outdir=build       # o simplemente: rm -rf build
 
 ## 🎨 Configuración del Documento
 
-### Flotantes a doble columna
+### Ancho completo sin flotar: el entorno `strip`
 
-Las 12 figuras se reparten entre `figure[H]` a una columna (las de proporción cercana al cuadrado) y `figure*` a doble columna (las apaisadas, como el tablero de Plotly y las facetas de ggplot2). Las tablas anchas **V**, **VI**, **VII** y **VIII** usan `table*` por la misma razón, y la **II** usa el entorno `strip` de `cuted`, que ocupa el ancho completo **en su posición exacta** en lugar de flotar al tope de página.
+El documento **no usa `figure*` ni `table*`**. La razón es que ambos solo admiten la posición `t` (tope de página) o `p` (página de flotantes) —**nunca `h` ni `b`**—, de modo que el material ancho se despegaba del párrafo que lo cita y aparecía una o dos páginas más adelante, rompiendo el orden narrativo.
 
-Un `figure*` solo admite la posición `t` (tope de página) o `p` (página de flotantes): **nunca `h` ni `b`**. Con los valores por defecto (`\dbltopfraction` = 0,7) las figuras altas no caben en el tope y se acumulan hasta el final del documento, así que el preámbulo amplía el espacio disponible:
+En su lugar, todo lo que necesita ancho completo usa el entorno `strip` de `cuted`, que ocupa las dos columnas **en su posición exacta del flujo de texto**:
+
+| Elemento | Entorno |
+|---|---|
+| Tablas **II**, **VI** y **VIII** | `strip` + `\captionof{table}` |
+| Figuras **5**, **6**, **8** y **12** | `strip` + `\captionof{figure}` |
+| Tablas **I**, **IV**, **V**, **VII**, **IX** | `table[H]` a una columna |
+| Figuras **1**, **2**, **3**, **4**, **7**, **9**, **10**, **11** | `figure[H]` a una columna |
+
+Tres reglas aprendidas al aplicarlo:
+
+1. **`\caption` no funciona dentro de un `strip`** (no es un flotante): hay que usar `\captionof{table}` o `\captionof{figure}`, de `capt-of`. Y el `\label` debe ir **justo después** del `\captionof`, no al final del bloque.
+2. **Si el bloque no cabe en lo que resta de página, hay que anteponerle `\clearpage`.** Suele avisarlo `cuted` con `Optional argument of \twocolumn too tall`, pero **no siempre**: la Figura 6 compilaba sin una sola advertencia y aun así quedaba cortada al pie de una página con su pie de figura huérfano en la siguiente. Hay que mirar el PDF, no solo el log.
+3. El coste de cada `\clearpage` es una página parcialmente vacía, así que conviene reservarlo para el material que de verdad lo necesita.
+
+Los parámetros de flotantes se conservan porque siguen gobernando la colocación de `[H]` y de las páginas de flotantes:
 
 ```latex
 \renewcommand{\topfraction}{0.92}
@@ -416,7 +431,7 @@ Aparece en todas las páginas, dibujada en la capa de fondo (`\AddToShipoutPictu
 
 ## 📋 Estado del Documento
 
-El informe está **terminado**: compila en 16 páginas **sin errores, sin desbordes de caja y sin referencias ni citas sin resolver**; todas las figuras y tablas están referenciadas desde el texto.
+El informe está **terminado**: compila en 17 páginas **sin errores, sin desbordes de caja y sin referencias ni citas sin resolver**; todas las figuras y tablas están referenciadas desde el texto.
 
 ### ✅ Completado
 
@@ -452,7 +467,7 @@ El informe está **terminado**: compila en 16 páginas **sin errores, sin desbor
 | Tamaño de página | Carta (8.5" × 11") |
 | Fuente base | 10 pt |
 | Bibliografía | IEEE |
-| Extensión | 16 páginas |
+| Extensión | 17 páginas |
 
 ---
 
