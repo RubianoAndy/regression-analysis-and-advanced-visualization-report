@@ -44,11 +44,7 @@
         la única variable que empuja el precio hacia abajo y que las cuatro
         características son prácticamente independientes entre sí, lo que resulta
         conveniente porque elimina la colinealidad como fuente de ambigüedad en la
-        interpretación de los coeficientes. La matriz de dispersión de la Figura
-        \ref{scatter_matrix} añade una segunda observación, dado que el precio se
-        ordena en bandas superpuestas según el estrato, es decir, para una misma
-        área los apartamentos de estrato superior se sitúan de forma sistemática
-        por encima.
+        interpretación de los coeficientes.
 
         \begin{figure}[H]
             \centering
@@ -58,10 +54,15 @@
             \label{scatter_matrix}
         \end{figure}
 
+        La matriz de dispersión de la Figura \ref{scatter_matrix} añade una segunda 
+        observación, dado que el precio se ordena en bandas superpuestas según el 
+        estrato, es decir, para una misma área los apartamentos de estrato superior 
+        se sitúan de forma sistemática por encima.
+
     \subsection{Regresión lineal simple}
         El modelo estimado por mínimos cuadrados sobre el área es
-        $\hat{y} = 81{,}09 + 3{,}845\,x$, con ambos coeficientes significativos.
-        La Tabla \ref{coef_simple} recoge la estimación completa.
+        $\hat{y} = 81{,}09 + 3{,}845\,x$, con ambos coeficientes significativos. La 
+        Tabla \ref{coef_simple} recoge la estimación completa.
 
         \begin{strip}
             \centering
@@ -102,11 +103,12 @@
 
         El coeficiente de determinación es 0,6043, es decir, el área explica el
         60,4\% de la variabilidad del precio y deja sin explicar el 39,6\%
-        restante. La Figura \ref{fit_simple} hace visible ese resto, dado que la
-        dispersión vertical de los puntos alrededor de la recta es precisamente lo
-        que las tres variables omitidas tendrán que dar cuenta. El error medio
-        absoluto del modelo es de 66,7 millones de pesos por apartamento, una
-        magnitud demasiado grande para sostener un avalúo.
+        restante, de ahí que la Figura \ref{fit_simple} vislumbre ese restante, 
+        dado que la dispersión vertical de los puntos alrededor de la recta es 
+        precisamente lo que las tres variables omitidas tendrán que dar cuenta, 
+        adicionalmente, el error medio absoluto del modelo es de 66,7 millones 
+        de pesos por apartamento, una magnitud demasiado grande para sostener 
+        un avalúo.
 
     \subsection{Regresión lineal múltiple}
         Al incorporar el número de habitaciones, la antigüedad y el estrato, las
@@ -114,10 +116,11 @@
         correlación había descartado. La Tabla \ref{coef_multiple} recoge la
         estimación.
 
-        \begin{table*}[!t]
+        \begin{strip}
             \centering
-            \caption{Coeficientes del modelo múltiple con intervalos de confianza
-            al 95\%}
+            \captionof{table}{Coeficientes del modelo múltiple con intervalos de
+            confianza al 95\%}
+            \label{coef_multiple}
             \begin{center}
                 \begin{tabular}{|l|c|c|c|c|c|}
                     \hline
@@ -141,9 +144,19 @@
                     $1{,}3 \times 10^{-41}$ & [76,41 ; 93,96] \\
                     \hline
                 \end{tabular}
-                \label{coef_multiple}
             \end{center}
-        \end{table*}
+        \end{strip}
+
+        El hallazgo central del trabajo está en la fila de las habitaciones,
+        puesto que el p-valor pasa de 0,326 en la Tabla \ref{correlations} a
+        $9,2 \times 10^{-6}$ en la Tabla \ref{coef_multiple}, aunque no cambiaron los
+        datos, si cambió la pregunta, ya que la correlación cuestiona si los
+        apartamentos con más habitaciones son más caros, a lo que la respuesta es
+        que no necesariamente, mientras que la regresión múltiple pregunta si,
+        entre dos apartamentos de la misma área, antigüedad y estrato, vale más el
+        que tiene una habitación adicional, a lo que la respuesta es que sí, 16,0
+        millones de pesos más, de ahí que descartar una variable por su correlación
+        bivariada, habría eliminado del modelo un efecto real.
 
         \begin{figure}[H]
             \centering
@@ -153,24 +166,10 @@
             \label{effects}
         \end{figure}
 
-        El hallazgo central del trabajo está en la fila de las habitaciones,
-        puesto que el p-valor pasa de 0,326 en la Tabla \ref{correlations} a
-        $9{,}2 \times 10^{-6}$ en la Tabla \ref{coef_multiple}. No cambiaron los
-        datos, cambió la pregunta, ya que la correlación pregunta si los
-        apartamentos con más habitaciones son más caros, a lo que la respuesta es
-        que no necesariamente, mientras que la regresión múltiple pregunta si,
-        entre dos apartamentos de la misma área, antigüedad y estrato, vale más el
-        que tiene una habitación adicional, a lo que la respuesta es que sí, 16,0
-        millones de pesos más. Descartar una variable por su correlación
-        bivariada, práctica frecuente en la selección preliminar de predictores,
-        habría eliminado del modelo un efecto real.
-
-        \vspace{10pt}
-
         La Figura \ref{effects} muestra los cuatro efectos con sus intervalos de
-        confianza, ninguno de los cuales contiene al cero. Expresados en metros
-        cuadrados equivalentes, es decir, dividiendo cada coeficiente por el valor
-        estimado del metro cuadrado, los efectos se vuelven directamente
+        confianza, ninguno de los cuales contiene al cero, los cuales son expresados 
+        en metros cuadrados equivalentes, es decir, dividiendo cada coeficiente por 
+        el valor estimado del metro cuadrado, los efectos se vuelven directamente
         comparables entre sí:
 
         \vspace{10pt}
@@ -196,12 +195,19 @@
         impresión.
 
     \subsection{Comparación de los dos modelos}
-        La Tabla \ref{model_comparison} contrasta ambas especificaciones bajo
-        todas las medidas descritas en la metodología.
+        La Tabla \ref{model_comparison} contrasta ambos modelos en seis
+        columnas, el número de regresores que emplea cada una, el coeficiente de
+        determinación y su versión ajustada, la raíz del error cuadrático medio,
+        el error absoluto medio y el criterio de información de Akaike; evitando 
+        que la comparación descanse en una sola cifra, ya que cada una castiga 
+        de forma distinta el hecho de haber añadido tres variables.
 
-        \begin{table*}[!t]
+        \clearpage
+
+        \begin{strip}
             \centering
-            \caption{Comparación entre el modelo simple y el modelo múltiple}
+            \captionof{table}{Comparación entre el modelo simple y el modelo múltiple}
+            \label{model_comparison}
             \begin{center}
                 \begin{tabular}{|l|c|c|c|c|c|c|}
                     \hline
@@ -214,9 +220,8 @@
                     Múltiple & 4 & 0,8960 & 0,8932 & 41,32 & 33,07 & 1.552,1 \\
                     \hline
                 \end{tabular}
-                \label{model_comparison}
             \end{center}
-        \end{table*}
+        \end{strip}
 
         Las cuatro medidas apuntan en la misma dirección. El coeficiente de
         determinación sube 29,2 puntos porcentuales y su versión ajustada lo hace
